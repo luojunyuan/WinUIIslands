@@ -16,6 +16,7 @@ public partial class Application : Windows.UI.Xaml.Application
 
     protected Application()
     {
+        if (Current != null) throw new InvalidOperationException("An instance of Application has already been created.");
         Current = this;
 
         _xamlManager = WindowsXamlManager.InitializeForCurrentThread();
