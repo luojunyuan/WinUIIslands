@@ -21,12 +21,7 @@
     <ProjectReference Include="..\..\CoreIsland\CoreIsland.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.UI.Xaml" Version="2.8.7" />
-    <PackageReference Include="CommunityToolkit.Uwp.Controls.SettingsControls" Version="8.2.251219" />
-  </ItemGroup>
-
   <!-- Not needed when consuming CoreIsland as a NuGet package -->
-  <Import Project="..\..\CoreIsland\build\CoreIsland.props" />
-  <Import Project="..\..\CoreIsland\build\CoreIsland.targets" />
+  <Import Project="..\..\CoreIsland\buildTransitive\CoreIsland.props" />
+  <Import Project="..\..\CoreIsland\buildTransitive\CoreIsland.targets" />
 </Project>

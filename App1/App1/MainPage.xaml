@@ -19,11 +19,5 @@
             Click="Button_Click"
             Content="Click me!" />
 
-        <SettingsCard
-            xmlns="using:CommunityToolkit.WinUI.Controls"
-            VerticalAlignment="Bottom"
-            Content="asdfsdf"
-            Header="sdfsdf"
-            HeaderIcon="Emoji" />
     </Grid>
 </Page>
