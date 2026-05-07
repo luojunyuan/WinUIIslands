@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
     <id>CoreIsland</id>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
     <authors>CoreIsland</authors>
     <license type="expression">MIT</license>
     <readme>README.md</readme>
@@ -20,26 +20,26 @@
   </metadata>
   <files>
     <!-- Runtime assembly -->
-    <file src="bin\x64\Release\net10.0-windows10.0.26100.0\CoreIsland.dll" target="lib\net10.0-windows10.0.26100\CoreIsland.dll" />
+    <file src="bin\Release\net10.0-windows10.0.26100.0\CoreIsland.dll" target="lib\net10.0-windows10.0.26100\CoreIsland.dll" />
 
     <!-- NuGet README (shown after install) -->
     <file src="readme.txt" target="readme.txt" />
     <file src="..\README.md" target="README.md" />
 	  
     <!-- Auto-import wrappers (NuGet convention: build/{id}.props + build/{id}.targets) -->
-    <file src="build\CoreIsland.props" target="build\CoreIsland.props" />
-    <file src="build\CoreIsland.targets" target="build\CoreIsland.targets" />
+    <file src="buildTransitive\CoreIsland.props" target="buildTransitive\CoreIsland.props" />
+    <file src="buildTransitive\CoreIsland.targets" target="buildTransitive\CoreIsland.targets" />
 
     <!-- Feature files imported by the wrappers -->
-    <file src="build\CoreIsland.XbfEmbed.props" target="build\CoreIsland.XbfEmbed.props" />
-    <file src="build\CoreIsland.XbfEmbed.targets" target="build\CoreIsland.XbfEmbed.targets" />
-    <file src="build\CoreIsland.Mux.props" target="build\CoreIsland.Mux.props" />
-    <file src="build\CoreIsland.Mux.targets" target="build\CoreIsland.Mux.targets" />
-    <file src="build\CoreIsland.AppMain.targets" target="build\CoreIsland.AppMain.targets" />
+    <file src="buildTransitive\CoreIsland.XbfEmbed.props" target="buildTransitive\CoreIsland.XbfEmbed.props" />
+    <file src="buildTransitive\CoreIsland.XbfEmbed.targets" target="buildTransitive\CoreIsland.XbfEmbed.targets" />
+    <file src="buildTransitive\CoreIsland.Mux.props" target="buildTransitive\CoreIsland.Mux.props" />
+    <file src="buildTransitive\CoreIsland.Mux.targets" target="buildTransitive\CoreIsland.Mux.targets" />
+    <file src="buildTransitive\CoreIsland.AppMain.targets" target="buildTransitive\CoreIsland.AppMain.targets" />
 
     <!-- PowerShell helpers (called by MSBuild Exec tasks, not init scripts) -->
-    <file src="build\Utils\Prepare-Mux.ps1" target="build\Utils\Prepare-Mux.ps1" />
-    <file src="build\Utils\Trim-MuxPri.ps1" target="build\Utils\Trim-MuxPri.ps1" />
-    <file src="build\Utils\Patch-AppMain.ps1" target="build\Utils\Patch-AppMain.ps1" />
+    <file src="buildTransitive\Utils\Prepare-Mux.ps1" target="buildTransitive\Utils\Prepare-Mux.ps1" />
+    <file src="buildTransitive\Utils\Trim-MuxPri.ps1" target="buildTransitive\Utils\Trim-MuxPri.ps1" />
+    <file src="buildTransitive\Utils\Patch-AppMain.ps1" target="buildTransitive\Utils\Patch-AppMain.ps1" />
   </files>
 </package>
