@@ -1,4 +1,5 @@
 ﻿using Windows.ApplicationModel.Activation;
+using Windows.System;
 using Windows.UI.Xaml.Hosting;
 using Windows.Win32;
 using Windows.Win32.Foundation;
@@ -19,6 +20,7 @@ public partial class Application : Windows.UI.Xaml.Application
         if (Current != null) throw new InvalidOperationException("An instance of Application has already been created.");
         Current = this;
 
+        // Note: this will immediatly call OnLaunched
         _xamlManager = WindowsXamlManager.InitializeForCurrentThread();
     }
 
@@ -29,7 +31,12 @@ public partial class Application : Windows.UI.Xaml.Application
         var xamlWindowBoundToCoreWindow = global::Windows.UI.Xaml.Window.Current;
         xamlWindowBoundToCoreWindow.As<IXamlSourceTransparency>().IsBackgroundTransparent = true;
 
-        OnIslandLaunched(e);
+        // Ensure OnIslandLaunched is calling after ctor of derived class is completed
+        var queue = DispatcherQueue.GetForCurrentThread();
+        queue.TryEnqueue(() =>
+        {
+            OnIslandLaunched(e);
+        });
     }
 
     protected virtual void OnIslandLaunched(LaunchActivatedEventArgs e) { }
