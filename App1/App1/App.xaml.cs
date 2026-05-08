@@ -30,6 +30,13 @@ namespace App1
             rootFrame.Navigate(typeof(MainPage), e.Arguments);
 
             _window.Activate();
+
+            if (_window.AppWindow?.Presenter is CoreIsland.Windowing.OverlappedPresenter presenter)
+            {
+                presenter.PreferredMinimumWidth = 640;
+                presenter.PreferredMinimumHeight = 500;
+            }
+            _window.Title = "Island App";
         }
 
         /// <summary>

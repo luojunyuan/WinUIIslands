@@ -58,8 +58,6 @@ public unsafe partial class Window
 
 public unsafe partial class Window
 {
-    private const string DefaultTitle = "CoreIsland";
-
     private readonly DesktopWindowXamlSource _xamlHost = new();
     private readonly GCHandle _selfHandle;
     private readonly HWND _xamlHwnd;
@@ -67,13 +65,24 @@ public unsafe partial class Window
 
     internal HWND Hwnd => _hwnd;
 
+    public string Title
+    {
+        get;
+        set
+        {
+            field = value;
+            if (_hwnd != default)
+                PInvoke.SetWindowText(_hwnd, value);
+        }
+    } = "";
+
     public Window()
     {
         _selfHandle = GCHandle.Alloc(this);
         var hwnd = PInvoke.CreateWindowEx(
             dwExStyle: WINDOW_EX_STYLE.WS_EX_NOREDIRECTIONBITMAP,
             lpClassName: ClassName,
-            lpWindowName: DefaultTitle,
+            lpWindowName: string.Empty,
             dwStyle: WINDOW_STYLE.WS_OVERLAPPEDWINDOW,
             X: PInvoke.CW_USEDEFAULT,
             Y: PInvoke.CW_USEDEFAULT,
@@ -116,6 +125,10 @@ public unsafe partial class Window
         {
             case PInvoke.WM_ACTIVATE when wParam.Value != 0:
                 Application.Current.OnWindowActivated(this);
+                return default;
+
+            case PInvoke.WM_GETMINMAXINFO:
+                HandleGetMinMaxInfo(lParam);
                 return default;
 
             case PInvoke.WM_SIZE when wParam.Value != PInvoke.SIZE_MINIMIZED:

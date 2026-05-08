@@ -14,6 +14,7 @@ CreateWindowEx
 CW_USEDEFAULT
 ShowWindow
 UpdateWindow
+SetWindowText
 
 // ---- Window Procedure ----
 WINDOW_LONG_PTR_INDEX
@@ -25,3 +26,9 @@ SIZE_MINIMIZED
 GetClientRect
 SetWindowPos
 SendMessage
+MINMAXINFO
+USER_DEFAULT_SCREEN_DPI
+
+// ---- AppWindow ----
+GetDpiForWindow
+AdjustWindowRectExForDpi
