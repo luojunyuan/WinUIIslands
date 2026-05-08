@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows10.0.26100.0</TargetFramework>
+    <TargetPlatformMinVersion>10.0.18362.0</TargetPlatformMinVersion>
+    <UseUwp>true</UseUwp>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Platforms>x86;x64;ARM64</Platforms>
+    <RuntimeIdentifiers>win-x86;win-x64;win-arm64</RuntimeIdentifiers>
+    <DefaultLanguage>en-US</DefaultLanguage>
+    <PublishAot>true</PublishAot>
+    <DisableRuntimeMarshalling>true</DisableRuntimeMarshalling>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <CoreIslandPackaging>false</CoreIslandPackaging>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CoreIsland" Version="CORESLAND_NUGET_VERSION" />
+    <!--#if (UseWinUI)-->
+    <PackageReference Include="Microsoft.UI.Xaml" Version="WINUI_NUGET_VERSION" />
+    <!--#endif-->
+  </ItemGroup>
+
+</Project>

@@ -1,4 +1,5 @@
 ﻿using System;
+using CoreIsland.Windowing;
 using Windows.ApplicationModel.Activation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -37,6 +38,10 @@ namespace App1
                 presenter.PreferredMinimumHeight = 500;
             }
             _window.Title = "Island App";
+
+            nint hWnd = WindowNative.GetWindowHandle(_window);
+            WindowId wndId = Win32Interop.GetWindowIdFromWindow(hWnd);
+            var appWindow = AppWindow.GetFromWindowId(wndId);
         }
 
         /// <summary>
