@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <!-- Template packages MUST set PackageType to Template -->
+    <PackageType>Template</PackageType>
+    <PackageId>CoreIsland.Templates</PackageId>
+    <Version>1.0.0</Version>
+    <Authors>CoreIsland</Authors>
+    <Description>Project templates for CoreIsland — XAML Islands unpackaged .NET apps. Includes optional Microsoft.UI.Xaml (WinUI 2) support.</Description>
+    <PackageTags>dotnet-new;templates;coreisland;xaml-islands;winui</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/luojunyuan/CoreIsland</PackageProjectUrl>
+
+    <!-- Template packages shouldn't include build output -->
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+    <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
+
+    <!-- Required for content-only packages -->
+    <TargetFramework>net10.0</TargetFramework>
+    <NoDefaultExcludes>true</NoDefaultExcludes>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!--
+      Pack all template files. Physical structure:
+        content\CoreIslandApp\...  →  content\CoreIslandApp\... (in nupkg)
+      The template engine scans content/ for .template.config/template.json.
+    -->
+    <Content Include="content\**\*"
+             Exclude="content\**\bin\**;content\**\obj\**"
+             Pack="true"
+             PackagePath="content\" />
+
+    <!-- Suppress compiling anything (this is a content-only package) -->
+    <Compile Remove="**\*" />
+  </ItemGroup>
+
+</Project>
