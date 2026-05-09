@@ -11,3 +11,9 @@ public abstract class AppWindowPresenter
         AppWindow = appWindow;
     }
 }
+
+public enum AppWindowPresenterKind
+{
+    Default,
+    Overlapped,
+}

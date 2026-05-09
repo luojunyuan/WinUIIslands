@@ -1,4 +1,5 @@
 using Windows.Win32;
+using Windows.Win32.Foundation;
 using Windows.Win32.UI.WindowsAndMessaging;
 
 namespace CoreIsland.Windowing;
@@ -35,6 +36,22 @@ public sealed class OverlappedPresenter : AppWindowPresenter
     public int PreferredMinimumHeight { get; set; }
 
     internal OverlappedPresenter(AppWindow appWindow) : base(appWindow) { }
+
+    public void AddChildStyle()
+    {
+        var hwnd = AppWindow.Hwnd;
+        var style = (WINDOW_STYLE)PInvoke.GetWindowLongAnyCPU(hwnd, WINDOW_LONG_PTR_INDEX.GWL_STYLE);
+        style |= WINDOW_STYLE.WS_CHILD;
+        PInvoke.SetWindowLongAnyCPU(hwnd, WINDOW_LONG_PTR_INDEX.GWL_STYLE, (nint)style);
+    }
+
+    public void MakeClickThrough()
+    {
+        var hwnd = AppWindow.Hwnd;
+        var exStyle = (WINDOW_EX_STYLE)PInvoke.GetWindowLongAnyCPU(hwnd, WINDOW_LONG_PTR_INDEX.GWL_EXSTYLE);
+        exStyle |= WINDOW_EX_STYLE.WS_EX_TRANSPARENT | WINDOW_EX_STYLE.WS_EX_LAYERED;
+        PInvoke.SetWindowLongAnyCPU(hwnd, WINDOW_LONG_PTR_INDEX.GWL_EXSTYLE, (nint)exStyle);
+    }
 
     public void SetBorderAndTitleBar(bool hasBorder, bool hasTitleBar)
     {
