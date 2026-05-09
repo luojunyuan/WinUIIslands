@@ -11,7 +11,7 @@ namespace CoreIsland;
 public partial class Application : Windows.UI.Xaml.Application
 {
     internal static HWND CoreHwnd;
-    internal new static Application Current { get; private set; } = null!;
+    public new static Application Current { get; private set; } = null!;
 
     private readonly WindowsXamlManager _xamlManager;
 

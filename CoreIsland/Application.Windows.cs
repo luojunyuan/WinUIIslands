@@ -7,11 +7,16 @@ public partial class Application
     private readonly List<Window> _windows = [];
     public IReadOnlyList<Window> Windows => _windows;
 
+    public Window? MainWindow { get; set; }
+
+    public ShutdownMode ShutdownMode { get; set; } = ShutdownMode.OnLastWindowClose;
+
     internal Window? CoreOwner { get; private set; }
 
     internal void RegisterWindow(Window window)
     {
         _windows.Add(window);
+        MainWindow ??= window;
     }
 
     internal void OnWindowActivated(Window window)
@@ -32,7 +37,27 @@ public partial class Application
             PInvoke.SetParent(CoreHwnd, next.Hwnd);
             CoreOwner = next;
         }
-        if (_windows.Count == 0)
+
+        if (MainWindow == window)
+        {
+            MainWindow = null;
+            if (ShutdownMode == ShutdownMode.OnMainWindowClose)
+            {
+                PInvoke.PostQuitMessage(0);
+                return;
+            }
+        }
+
+        if (_windows.Count == 0 && ShutdownMode != ShutdownMode.OnExplicitShutdown)
             PInvoke.PostQuitMessage(0);
     }
+
+    public void Shutdown(int exitCode = 0) => PInvoke.PostQuitMessage(exitCode);
+}
+
+public enum ShutdownMode
+{
+    OnLastWindowClose,
+    OnMainWindowClose,
+    OnExplicitShutdown,
 }

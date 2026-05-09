@@ -117,6 +117,8 @@ public unsafe partial class Window
         PInvoke.UpdateWindow(_hwnd);
     }
 
+    public void Close() => PInvoke.SendMessage(_hwnd, PInvoke.WM_CLOSE, 0, 0);
+
     private IFrameworkApplicationPrivate FrameworkAppPrivate { get; } = Windows.UI.Xaml.Application.Current.As<IFrameworkApplicationPrivate>();
 
     private LRESULT WndProc(uint msg, WPARAM wParam, LPARAM lParam)

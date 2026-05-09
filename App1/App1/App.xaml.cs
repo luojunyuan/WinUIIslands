@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Diagnostics;
+using System.Runtime.InteropServices;
+using System.Runtime.Versioning;
 using CoreIsland.Windowing;
 using Windows.ApplicationModel.Activation;
 using Windows.UI.Xaml;
@@ -28,21 +31,26 @@ namespace App1
                 Content = rootFrame
             };
 
-            rootFrame.Navigate(typeof(MainPage), e.Arguments);
+            nint hWnd = WindowNative.GetWindowHandle(_window);
 
-            _window.Activate();
+            rootFrame.Navigate(typeof(MainPage), e.Arguments);
 
             if (_window.AppWindow?.Presenter is CoreIsland.Windowing.OverlappedPresenter presenter)
             {
-                presenter.PreferredMinimumWidth = 640;
-                presenter.PreferredMinimumHeight = 500;
+                presenter.SetBorderAndTitleBar(false, false);
             }
-            _window.Title = "Island App";
 
-            nint hWnd = WindowNative.GetWindowHandle(_window);
-            WindowId wndId = Win32Interop.GetWindowIdFromWindow(hWnd);
-            var appWindow = AppWindow.GetFromWindowId(wndId);
+            var notepad = Process.Start("notepad");
+            notepad!.WaitForInputIdle();
+            var p = notepad.MainWindowHandle;
+
+            SetParent(hWnd, p);
+
+            _window.Activate();
         }
+
+        [LibraryImport("USER32.dll", SetLastError = false), DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+        public static partial nint SetParent(IntPtr hWndChild, IntPtr hWndNewParent);
 
         /// <summary>
         /// Invoked when Navigation to a certain page fails.
