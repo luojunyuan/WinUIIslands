@@ -32,12 +32,6 @@
       "defaultValue": "2.8.7",
       "description": "Version of Microsoft.UI.Xaml (only effective when UseWinUI is true).",
       "replaces": "WINUI_NUGET_VERSION"
-    },
-    "CoreIslandPackaging": {
-      "type": "parameter",
-      "datatype": "bool",
-      "defaultValue": "false",
-      "description": "Set to true when packaging with Windows Application Packaging (WAP). Controls whether XBF embedding and MUX staging are performed by CoreIsland build targets."
     }
   },
   "primaryOutputs": [
