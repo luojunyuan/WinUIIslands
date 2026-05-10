@@ -31,6 +31,8 @@ public partial class Application : Windows.UI.Xaml.Application
         var xamlWindowBoundToCoreWindow = global::Windows.UI.Xaml.Window.Current;
         xamlWindowBoundToCoreWindow.As<IXamlSourceTransparency>().IsBackgroundTransparent = true;
 
+        SynchronizationContext.SetSynchronizationContext(new DispatcherQueueSynchronizationContext(DispatcherQueue.GetForCurrentThread()));
+
         // Ensure OnIslandLaunched is calling after ctor of derived class is completed
         var queue = DispatcherQueue.GetForCurrentThread();
         queue.TryEnqueue(() =>

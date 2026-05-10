@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
+using System.Threading.Tasks;
 using CoreIsland.Windowing;
 using Windows.ApplicationModel.Activation;
 using Windows.UI.Xaml;
@@ -21,8 +22,12 @@ namespace App1
         }
 
         /// <inheritdoc/>
-        protected override void OnIslandLaunched(LaunchActivatedEventArgs e)
+        protected override async void OnIslandLaunched(LaunchActivatedEventArgs e)
         {
+            await Task.Delay(500);
+            Debug.WriteLine("");
+
+
             var rootFrame = new Frame();
             rootFrame.NavigationFailed += OnNavigationFailed;
 
