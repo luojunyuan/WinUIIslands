@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using Windows.UI.Xaml;
 using Windows.UI.Xaml.Hosting;
 using Windows.Win32;
 using Windows.Win32.Foundation;
@@ -65,17 +64,6 @@ public unsafe partial class Window
 
     internal HWND Hwnd => _hwnd;
 
-    public string Title
-    {
-        get;
-        set
-        {
-            field = value;
-            if (_hwnd != default)
-                PInvoke.SetWindowText(_hwnd, value);
-        }
-    } = "";
-
     public Window()
     {
         _selfHandle = GCHandle.Alloc(this);
@@ -103,12 +91,6 @@ public unsafe partial class Window
         nativeSource.GetWindowHandle(out _xamlHwnd);
 
         EnableResizeLayoutSynchronization(_hwnd, true);
-    }
-
-    public UIElement Content
-    {
-        get => _xamlHost.Content;
-        set => _xamlHost.Content = value;
     }
 
     public void Activate()

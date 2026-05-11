@@ -20,17 +20,15 @@ namespace App1
 
         private async void Button_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
-            CoreIsland.Application.Current.MainWindow?.Close();
+            var rootFrame = new Frame();
+            var _window = new SecondWindow()
+            {
+                Content = rootFrame
+            };
 
-            //var rootFrame = new Frame();
-            //var _window = new CoreIsland.Window()
-            //{
-            //    Content = rootFrame
-            //};
+            rootFrame.Navigate(typeof(MainPage));
 
-            //rootFrame.Navigate(typeof(MainPage));
-
-            //_window.Activate();
+            _window.Activate();
         }
     }
 }

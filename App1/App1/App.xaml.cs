@@ -14,8 +14,6 @@ namespace App1
 {
     public sealed partial class App : CoreIsland.Application
     {
-        private CoreIsland.Window? _window;
-
         public App()
         {
             InitializeComponent();
@@ -24,34 +22,9 @@ namespace App1
         /// <inheritdoc/>
         protected override async void OnIslandLaunched(LaunchActivatedEventArgs e)
         {
-            await Task.Delay(500);
-            Debug.WriteLine("");
-
-
-            var rootFrame = new Frame();
-            rootFrame.NavigationFailed += OnNavigationFailed;
-
-            _window = new CoreIsland.Window()
-            {
-                Content = rootFrame
-            };
-
-            nint hWnd = WindowNative.GetWindowHandle(_window);
-
-            rootFrame.Navigate(typeof(MainPage), e.Arguments);
-
-            if (_window.AppWindow?.Presenter is CoreIsland.Windowing.OverlappedPresenter presenter)
-            {
-                presenter.SetBorderAndTitleBar(false, false);
-            }
-
-            var notepad = Process.Start("notepad");
-            notepad!.WaitForInputIdle();
-            var p = notepad.MainWindowHandle;
-
-            SetParent(hWnd, p);
-
-            _window.Activate();
+            var mainWindow = new MainWindow();
+            //mainWindow.Content = new MainPage();
+            mainWindow.Activate();
         }
 
         [LibraryImport("USER32.dll", SetLastError = false), DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
