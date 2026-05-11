@@ -13,22 +13,26 @@ MUXC (WinUI 2, the `Microsoft.UI.Xaml` NuGet package) is an **extension controls
 
 ## Build
 
-The **startup project** (App1) is a UWP app — it must be built with MSBuild, not `dotnet` CLI.
-
-The CoreIsland library itself can be built with either MSBuild or `dotnet`.
+The **startup project** (App1) is a UWP app. CoreIsland's build targets now transparently
+redirect `dotnet build` → Framework MSBuild (required for the UWP XAML compiler), so
+both entry points work:
 
 ```powershell
-# ✅ Correct — MSBuild for the startup project
+# ✅ Correct — dotnet (auto-redirects to Framework MSBuild)
+dotnet build App1\App1\App1.csproj -p:Platform=x64 -p:Configuration=Debug
+dotnet run   --project App1\App1 -p:Platform=x64 -p:Configuration=Debug
+dotnet publish App1\App1\App1.csproj -p:Platform=x64 -p:Configuration=Release -p:RuntimeIdentifier=win-x64
+
+# ✅ Also fine — MSBuild directly
 msbuild CoreIsland.slnx -p:Platform=x64 -p:Configuration=Debug
 msbuild CoreIsland.slnx -p:Platform=ARM64 -p:Configuration=Release
 
-# ✅ Also fine — dotnet for the library only
+# ✅ CoreIsland library builds with either
 dotnet build CoreIsland\CoreIsland.csproj
-
-# ❌ Wrong — dotnet for the UWP startup project
-dotnet build App1\App1\App1.csproj
-dotnet build CoreIsland.slnx
 ```
+
+If `msbuild.exe` is not found (e.g. no Visual Studio installed), `dotnet build` will
+fail with a clear error telling the user to install VS.
 
 ## File Encoding
 

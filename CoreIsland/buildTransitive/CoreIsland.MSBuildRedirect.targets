@@ -1,41 +1,68 @@
 ﻿<Project>
   <!--
-    CoreIsland MSBuild redirect: imported via CustomAfterMicrosoftCommonTargets
-    so it runs AFTER Microsoft.Common.CurrentVersion.targets defines Build/Publish.
-    On .NET Core MSBuild + UWP: overrides Build and Publish to delegate to Framework msbuild.exe.
+    CoreIsland: transparently redirect dotnet build → Framework MSBuild for UWP XAML apps.
+    The UWP XAML compiler task DLL depends on Microsoft.Build.Utilities.v4.0 (.NET Framework).
+    dotnet build runs on .NET Core MSBuild and cannot load it.
+
+    Because NuGet auto-imports run BEFORE Microsoft.Common.CurrentVersion.targets, we use
+    CustomAfterMicrosoftCommonTargets to inject our Build/Publish/Rebuild overrides AFTER
+    the SDK has defined them.
   -->
 
   <PropertyGroup>
+    <_CoreIslandIsRunningOnDotNet Condition="'$(MSBuildRuntimeType)' == 'Core'">true</_CoreIslandIsRunningOnDotNet>
+    <_CoreIslandVSBase Condition="'$(ProgramFiles)' != ''">$(ProgramFiles)\Microsoft Visual Studio</_CoreIslandVSBase>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <_CoreIslandMSBuildExe Condition="'$(_CoreIslandMSBuildExe)' == '' And Exists('$(_CoreIslandVSBase)\18\Professional\MSBuild\Current\Bin\MSBuild.exe')">$(_CoreIslandVSBase)\18\Professional\MSBuild\Current\Bin\MSBuild.exe</_CoreIslandMSBuildExe>
+    <_CoreIslandMSBuildExe Condition="'$(_CoreIslandMSBuildExe)' == '' And Exists('$(_CoreIslandVSBase)\18\Community\MSBuild\Current\Bin\MSBuild.exe')">$(_CoreIslandVSBase)\18\Community\MSBuild\Current\Bin\MSBuild.exe</_CoreIslandMSBuildExe>
+    <_CoreIslandMSBuildExe Condition="'$(_CoreIslandMSBuildExe)' == '' And Exists('$(_CoreIslandVSBase)\18\Enterprise\MSBuild\Current\Bin\MSBuild.exe')">$(_CoreIslandVSBase)\18\Enterprise\MSBuild\Current\Bin\MSBuild.exe</_CoreIslandMSBuildExe>
+    <_CoreIslandMSBuildExe Condition="'$(_CoreIslandMSBuildExe)' == '' And Exists('$(_CoreIslandVSBase)\2022\Professional\MSBuild\Current\Bin\MSBuild.exe')">$(_CoreIslandVSBase)\2022\Professional\MSBuild\Current\Bin\MSBuild.exe</_CoreIslandMSBuildExe>
+    <_CoreIslandMSBuildExe Condition="'$(_CoreIslandMSBuildExe)' == '' And Exists('$(_CoreIslandVSBase)\2022\Community\MSBuild\Current\Bin\MSBuild.exe')">$(_CoreIslandVSBase)\2022\Community\MSBuild\Current\Bin\MSBuild.exe</_CoreIslandMSBuildExe>
+    <_CoreIslandMSBuildExe Condition="'$(_CoreIslandMSBuildExe)' == '' And Exists('$(_CoreIslandVSBase)\2022\Enterprise\MSBuild\Current\Bin\MSBuild.exe')">$(_CoreIslandVSBase)\2022\Enterprise\MSBuild\Current\Bin\MSBuild.exe</_CoreIslandMSBuildExe>
+  </PropertyGroup>
+
+  <!-- Save original dependency lists and set redirect flag.
+       This runs AFTER Microsoft.Common.CurrentVersion.targets so BuildDependsOn etc. are set. -->
+  <PropertyGroup>
+    <_CoreIslandOriginalBuildDependsOn>$(BuildDependsOn)</_CoreIslandOriginalBuildDependsOn>
+    <_CoreIslandOriginalPublishDependsOn>$(PublishBuildDependsOn)</_CoreIslandOriginalPublishDependsOn>
+    <_CoreIslandOriginalRebuildDependsOn>$(RebuildDependsOn)</_CoreIslandOriginalRebuildDependsOn>
+    <_CoreIslandOriginalCleanDependsOn>$(CleanDependsOn)</_CoreIslandOriginalCleanDependsOn>
+
     <_CoreIslandShouldRedirect Condition="'$(_CoreIslandIsRunningOnDotNet)' == 'true' And '$(CORESLAND_MSBUILD_REDIRECTED)' != 'true' And '$(UseUwp)' == 'true'">true</_CoreIslandShouldRedirect>
   </PropertyGroup>
 
+  <!-- ==================== Build ==================== -->
   <Target Name="Build" DependsOnTargets="_CoreIsland_BuildRouter" />
-
   <Target Name="_CoreIsland_BuildRouter">
-    <CallTarget Targets="_CoreIsland_DelegateToFrameworkMSBuild"
-                Condition="'$(_CoreIslandShouldRedirect)' == 'true'" />
-    <CallTarget Targets="$(_CoreIslandOriginalBuildDependsOn)"
-                Condition="'$(_CoreIslandShouldRedirect)' != 'true'" />
+    <CallTarget Targets="_CoreIsland_DelegateToFrameworkMSBuild" Condition="'$(_CoreIslandShouldRedirect)' == 'true'" />
+    <CallTarget Targets="$(_CoreIslandOriginalBuildDependsOn)" Condition="'$(_CoreIslandShouldRedirect)' != 'true'" />
   </Target>
 
+  <!-- ==================== Publish ==================== -->
   <Target Name="Publish" DependsOnTargets="_CoreIsland_PublishRouter" />
-
   <Target Name="_CoreIsland_PublishRouter">
-    <CallTarget Targets="_CoreIsland_DelegateToFrameworkMSBuild"
-                Condition="'$(_CoreIslandShouldRedirect)' == 'true'" />
-    <CallTarget Targets="$(_CoreIslandOriginalPublishDependsOn)"
-                Condition="'$(_CoreIslandShouldRedirect)' != 'true'" />
+    <CallTarget Targets="_CoreIsland_DelegateToFrameworkMSBuild" Condition="'$(_CoreIslandShouldRedirect)' == 'true'" />
+    <CallTarget Targets="$(_CoreIslandOriginalPublishDependsOn)" Condition="'$(_CoreIslandShouldRedirect)' != 'true'" />
   </Target>
 
+  <!-- ==================== Rebuild ==================== -->
   <Target Name="Rebuild" DependsOnTargets="_CoreIsland_RebuildRouter" />
-
   <Target Name="_CoreIsland_RebuildRouter">
-    <CallTarget Targets="_CoreIsland_DelegateToFrameworkMSBuild"
-                Condition="'$(_CoreIslandShouldRedirect)' == 'true'" />
-    <CallTarget Targets="$(_CoreIslandOriginalRebuildDependsOn)"
-                Condition="'$(_CoreIslandShouldRedirect)' != 'true'" />
+    <CallTarget Targets="_CoreIsland_DelegateToFrameworkMSBuild" Condition="'$(_CoreIslandShouldRedirect)' == 'true'" />
+    <CallTarget Targets="$(_CoreIslandOriginalRebuildDependsOn)" Condition="'$(_CoreIslandShouldRedirect)' != 'true'" />
   </Target>
 
+  <!-- ==================== Clean ==================== -->
+  <Target Name="Clean" DependsOnTargets="_CoreIsland_CleanRouter" />
+  <Target Name="_CoreIsland_CleanRouter">
+    <CallTarget Targets="_CoreIsland_DelegateToFrameworkMSBuild" Condition="'$(_CoreIslandShouldRedirect)' == 'true'" />
+    <CallTarget Targets="$(_CoreIslandOriginalCleanDependsOn)" Condition="'$(_CoreIslandShouldRedirect)' != 'true'" />
+  </Target>
+
+  <!-- ==================== Implementation ==================== -->
   <Target Name="_CoreIsland_DelegateToFrameworkMSBuild">
     <PropertyGroup>
       <_RedirArgs>-p:Platform=$(Platform)</_RedirArgs>
@@ -48,8 +75,13 @@
       <_RedirTargets Condition="'$(MSBuildTargets)' != ''">-t:$(MSBuildTargets)</_RedirTargets>
       <_RedirTargets Condition="'$(_RedirTargets)' == ''">-t:Build</_RedirTargets>
     </PropertyGroup>
-    <Error Condition="'$(_CoreIslandMSBuildExe)' == ''" Text="CoreIsland: Cannot find Framework msbuild.exe. Install Visual Studio 2022+ with UWP workload, or use 'msbuild' directly instead of 'dotnet build'." />
-    <Message Importance="high" Text="CoreIsland: redirecting dotnet build → Framework MSBuild ($(_CoreIslandMSBuildExe))" />
-    <Exec Command="&quot;$(_CoreIslandMSBuildExe)&quot; &quot;$(MSBuildProjectFullPath)&quot; $(_RedirTargets) $(_RedirArgs)" />
+
+    <Error Condition="'$(_CoreIslandMSBuildExe)' == ''" Text="CoreIsland: Cannot find Framework msbuild.exe. Install Visual Studio 2022+ with UWP workload, or build with 'msbuild' instead of 'dotnet build'." />
+
+    <Message Importance="high" Text="CoreIsland: delegating to Framework MSBuild → $(_CoreIslandMSBuildExe)" />
+    <Exec Command="&quot;$(_CoreIslandMSBuildExe)&quot; &quot;$(MSBuildProjectFullPath)&quot; $(_RedirTargets) $(_RedirArgs)"
+          ConsoleToMSBuild="true" EchoOff="true" />
+
+    <Message Importance="high" Text="$(MSBuildProjectName) $(TargetFramework) succeeded → $(OutputPath)$(TargetFileName)" />
   </Target>
 </Project>

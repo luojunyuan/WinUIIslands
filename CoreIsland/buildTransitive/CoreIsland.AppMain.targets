@@ -28,9 +28,6 @@
     Then point CustomAfterMicrosoftCommonTargets at our redirect-override file.
   -->
   <PropertyGroup>
-    <_CoreIslandOriginalBuildDependsOn>$(BuildDependsOn)</_CoreIslandOriginalBuildDependsOn>
-    <_CoreIslandOriginalPublishDependsOn>$(PublishBuildDependsOn)</_CoreIslandOriginalPublishDependsOn>
-    <_CoreIslandOriginalRebuildDependsOn>$(RebuildDependsOn)</_CoreIslandOriginalRebuildDependsOn>
     <CustomAfterMicrosoftCommonTargets>$(MSBuildThisFileDirectory)CoreIsland.MSBuildRedirect.targets</CustomAfterMicrosoftCommonTargets>
   </PropertyGroup>
 
