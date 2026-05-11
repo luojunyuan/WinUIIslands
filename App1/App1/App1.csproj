@@ -28,6 +28,13 @@
     <PackageReference Include="CommunityToolkit.Uwp.Controls.SettingsControls" Version="8.2.251219" />
   </ItemGroup>
 
+  <!-- XAML files: App.xaml is the application entry, others are pages -->
+  <ItemGroup>
+    <ApplicationDefinition Include="App.xaml" />
+    <Page Include="MainPage.xaml" />
+    <Page Include="MainWindow.xaml" />
+  </ItemGroup>
+
   <!-- Not needed when consuming CoreIsland as a NuGet package -->
   <Import Project="..\..\CoreIsland\buildTransitive\CoreIsland.props" />
   <Import Project="..\..\CoreIsland\buildTransitive\CoreIsland.targets" />
