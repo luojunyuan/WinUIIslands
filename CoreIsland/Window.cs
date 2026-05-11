@@ -68,7 +68,7 @@ public unsafe partial class Window
     {
         _selfHandle = GCHandle.Alloc(this);
         var hwnd = PInvoke.CreateWindowEx(
-            dwExStyle: WINDOW_EX_STYLE.WS_EX_NOREDIRECTIONBITMAP,
+            dwExStyle: WINDOW_EX_STYLE.WS_EX_NOREDIRECTIONBITMAP | WINDOW_EX_STYLE.WS_EX_DLGMODALFRAME,
             lpClassName: ClassName,
             lpWindowName: string.Empty,
             dwStyle: WINDOW_STYLE.WS_OVERLAPPEDWINDOW,

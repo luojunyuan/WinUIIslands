@@ -11,7 +11,7 @@ public partial class Application
 
     public ShutdownMode ShutdownMode { get; set; } = ShutdownMode.OnLastWindowClose;
 
-    internal Window? CoreOwner { get; private set; }
+    private Window? _coreOwner;
 
     internal void RegisterWindow(Window window)
     {
@@ -21,21 +21,21 @@ public partial class Application
 
     internal void OnWindowActivated(Window window)
     {
-        if (CoreOwner != window)
+        if (_coreOwner != window)
         {
             PInvoke.SetParent(CoreHwnd, window.Hwnd);
-            CoreOwner = window;
+            _coreOwner = window;
         }
     }
 
     internal void OnWindowClosing(Window window)
     {
         _windows.Remove(window);
-        if (CoreOwner == window && _windows.Count > 0)
+        if (_coreOwner == window && _windows.Count > 0)
         {
             var next = _windows[^1];
             PInvoke.SetParent(CoreHwnd, next.Hwnd);
-            CoreOwner = next;
+            _coreOwner = next;
         }
 
         if (MainWindow == window)
