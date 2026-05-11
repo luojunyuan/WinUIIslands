@@ -1,0 +1,55 @@
+﻿<Project>
+  <!--
+    CoreIsland MSBuild redirect: imported via CustomAfterMicrosoftCommonTargets
+    so it runs AFTER Microsoft.Common.CurrentVersion.targets defines Build/Publish.
+    On .NET Core MSBuild + UWP: overrides Build and Publish to delegate to Framework msbuild.exe.
+  -->
+
+  <PropertyGroup>
+    <_CoreIslandShouldRedirect Condition="'$(_CoreIslandIsRunningOnDotNet)' == 'true' And '$(CORESLAND_MSBUILD_REDIRECTED)' != 'true' And '$(UseUwp)' == 'true'">true</_CoreIslandShouldRedirect>
+  </PropertyGroup>
+
+  <Target Name="Build" DependsOnTargets="_CoreIsland_BuildRouter" />
+
+  <Target Name="_CoreIsland_BuildRouter">
+    <CallTarget Targets="_CoreIsland_DelegateToFrameworkMSBuild"
+                Condition="'$(_CoreIslandShouldRedirect)' == 'true'" />
+    <CallTarget Targets="$(_CoreIslandOriginalBuildDependsOn)"
+                Condition="'$(_CoreIslandShouldRedirect)' != 'true'" />
+  </Target>
+
+  <Target Name="Publish" DependsOnTargets="_CoreIsland_PublishRouter" />
+
+  <Target Name="_CoreIsland_PublishRouter">
+    <CallTarget Targets="_CoreIsland_DelegateToFrameworkMSBuild"
+                Condition="'$(_CoreIslandShouldRedirect)' == 'true'" />
+    <CallTarget Targets="$(_CoreIslandOriginalPublishDependsOn)"
+                Condition="'$(_CoreIslandShouldRedirect)' != 'true'" />
+  </Target>
+
+  <Target Name="Rebuild" DependsOnTargets="_CoreIsland_RebuildRouter" />
+
+  <Target Name="_CoreIsland_RebuildRouter">
+    <CallTarget Targets="_CoreIsland_DelegateToFrameworkMSBuild"
+                Condition="'$(_CoreIslandShouldRedirect)' == 'true'" />
+    <CallTarget Targets="$(_CoreIslandOriginalRebuildDependsOn)"
+                Condition="'$(_CoreIslandShouldRedirect)' != 'true'" />
+  </Target>
+
+  <Target Name="_CoreIsland_DelegateToFrameworkMSBuild">
+    <PropertyGroup>
+      <_RedirArgs>-p:Platform=$(Platform)</_RedirArgs>
+      <_RedirArgs>$(_RedirArgs) -p:Configuration=$(Configuration)</_RedirArgs>
+      <_RedirArgs Condition="'$(RuntimeIdentifier)' != ''">$(_RedirArgs) -p:RuntimeIdentifier=$(RuntimeIdentifier)</_RedirArgs>
+      <_RedirArgs Condition="'$(TargetFramework)' != ''">$(_RedirArgs) -p:TargetFramework=$(TargetFramework)</_RedirArgs>
+      <_RedirArgs Condition="'$(SelfContained)' != ''">$(_RedirArgs) -p:SelfContained=$(SelfContained)</_RedirArgs>
+      <_RedirArgs Condition="'$(PublishAot)' != ''">$(_RedirArgs) -p:PublishAot=$(PublishAot)</_RedirArgs>
+      <_RedirArgs>$(_RedirArgs) -p:CORESLAND_MSBUILD_REDIRECTED=true</_RedirArgs>
+      <_RedirTargets Condition="'$(MSBuildTargets)' != ''">-t:$(MSBuildTargets)</_RedirTargets>
+      <_RedirTargets Condition="'$(_RedirTargets)' == ''">-t:Build</_RedirTargets>
+    </PropertyGroup>
+    <Error Condition="'$(_CoreIslandMSBuildExe)' == ''" Text="CoreIsland: Cannot find Framework msbuild.exe. Install Visual Studio 2022+ with UWP workload, or use 'msbuild' directly instead of 'dotnet build'." />
+    <Message Importance="high" Text="CoreIsland: redirecting dotnet build → Framework MSBuild ($(_CoreIslandMSBuildExe))" />
+    <Exec Command="&quot;$(_CoreIslandMSBuildExe)&quot; &quot;$(MSBuildProjectFullPath)&quot; $(_RedirTargets) $(_RedirArgs)" />
+  </Target>
+</Project>

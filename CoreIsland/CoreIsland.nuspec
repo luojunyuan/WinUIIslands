@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
     <id>CoreIsland</id>
-    <version>1.1.8</version>
+    <version>1.1.9</version>
     <authors>CoreIsland</authors>
     <license type="expression">MIT</license>
     <readme>README.md</readme>
@@ -36,6 +36,7 @@
     <file src="buildTransitive\CoreIsland.Mux.props" target="buildTransitive\CoreIsland.Mux.props" />
     <file src="buildTransitive\CoreIsland.Mux.targets" target="buildTransitive\CoreIsland.Mux.targets" />
     <file src="buildTransitive\CoreIsland.AppMain.targets" target="buildTransitive\CoreIsland.AppMain.targets" />
+    <file src="buildTransitive\CoreIsland.MSBuildRedirect.targets" target="buildTransitive\CoreIsland.MSBuildRedirect.targets" />
 
     <!-- PowerShell helpers (called by MSBuild Exec tasks, not init scripts) -->
     <file src="buildTransitive\Utils\Prepare-Mux.ps1" target="buildTransitive\Utils\Prepare-Mux.ps1" />

@@ -1,10 +1,42 @@
 ﻿<Project>
   <!--
-    CoreIsland: patch the generated App.g.i.cs to replace UWP Application.Start
-    with CoreIsland's XAML Islands initialization (app.Initialize() + app.Run()).
+    CoreIsland: transparently redirect dotnet build → Framework MSBuild for UWP XAML apps.
+    The UWP XAML compiler task DLL depends on Microsoft.Build.Utilities.v4.0 (.NET Framework).
+    dotnet build runs on .NET Core MSBuild and cannot load it.
+
+    Because NuGet auto-imports run BEFORE Microsoft.Common.CurrentVersion.targets, we can't
+    directly override Build/Publish from here. Instead we use CustomAfterMicrosoftCommonTargets
+    to inject our overrides AFTER the SDK has defined them.
   -->
+
+  <PropertyGroup>
+    <_CoreIslandIsRunningOnDotNet Condition="'$(MSBuildRuntimeType)' == 'Core'">true</_CoreIslandIsRunningOnDotNet>
+    <_CoreIslandVSBase Condition="'$(ProgramFiles)' != ''">$(ProgramFiles)\Microsoft Visual Studio</_CoreIslandVSBase>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <_CoreIslandMSBuildExe Condition="'$(_CoreIslandMSBuildExe)' == '' And Exists('$(_CoreIslandVSBase)\18\Professional\MSBuild\Current\Bin\MSBuild.exe')">$(_CoreIslandVSBase)\18\Professional\MSBuild\Current\Bin\MSBuild.exe</_CoreIslandMSBuildExe>
+    <_CoreIslandMSBuildExe Condition="'$(_CoreIslandMSBuildExe)' == '' And Exists('$(_CoreIslandVSBase)\18\Community\MSBuild\Current\Bin\MSBuild.exe')">$(_CoreIslandVSBase)\18\Community\MSBuild\Current\Bin\MSBuild.exe</_CoreIslandMSBuildExe>
+    <_CoreIslandMSBuildExe Condition="'$(_CoreIslandMSBuildExe)' == '' And Exists('$(_CoreIslandVSBase)\18\Enterprise\MSBuild\Current\Bin\MSBuild.exe')">$(_CoreIslandVSBase)\18\Enterprise\MSBuild\Current\Bin\MSBuild.exe</_CoreIslandMSBuildExe>
+    <_CoreIslandMSBuildExe Condition="'$(_CoreIslandMSBuildExe)' == '' And Exists('$(_CoreIslandVSBase)\2022\Professional\MSBuild\Current\Bin\MSBuild.exe')">$(_CoreIslandVSBase)\2022\Professional\MSBuild\Current\Bin\MSBuild.exe</_CoreIslandMSBuildExe>
+    <_CoreIslandMSBuildExe Condition="'$(_CoreIslandMSBuildExe)' == '' And Exists('$(_CoreIslandVSBase)\2022\Community\MSBuild\Current\Bin\MSBuild.exe')">$(_CoreIslandVSBase)\2022\Community\MSBuild\Current\Bin\MSBuild.exe</_CoreIslandMSBuildExe>
+    <_CoreIslandMSBuildExe Condition="'$(_CoreIslandMSBuildExe)' == '' And Exists('$(_CoreIslandVSBase)\2022\Enterprise\MSBuild\Current\Bin\MSBuild.exe')">$(_CoreIslandVSBase)\2022\Enterprise\MSBuild\Current\Bin\MSBuild.exe</_CoreIslandMSBuildExe>
+  </PropertyGroup>
+
+  <!--
+    Save original Build/PublishDependsOn before SDK's .targets erase them.
+    Then point CustomAfterMicrosoftCommonTargets at our redirect-override file.
+  -->
+  <PropertyGroup>
+    <_CoreIslandOriginalBuildDependsOn>$(BuildDependsOn)</_CoreIslandOriginalBuildDependsOn>
+    <_CoreIslandOriginalPublishDependsOn>$(PublishBuildDependsOn)</_CoreIslandOriginalPublishDependsOn>
+    <_CoreIslandOriginalRebuildDependsOn>$(RebuildDependsOn)</_CoreIslandOriginalRebuildDependsOn>
+    <CustomAfterMicrosoftCommonTargets>$(MSBuildThisFileDirectory)CoreIsland.MSBuildRedirect.targets</CustomAfterMicrosoftCommonTargets>
+  </PropertyGroup>
+
+  <!-- ==================== CoreIsland XAML patches ==================== -->
   <Target Name="CoreIsland_PatchAppMain"
-          AfterTargets="XamlMarkupCompilePass1"
+          AfterTargets="MarkupCompilePass1"
           BeforeTargets="CoreCompile">
     <Exec Command="powershell -NoProfile -ExecutionPolicy Bypass -File &quot;$(MSBuildThisFileDirectory)Utils\Patch-AppMain.ps1&quot; -FilePath &quot;$(IntermediateOutputPath)App.g.i.cs&quot;" />
   </Target>
