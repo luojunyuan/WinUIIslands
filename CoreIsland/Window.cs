@@ -117,6 +117,7 @@ public unsafe partial class Window
 
             case PInvoke.WM_SIZE when wParam.Value != PInvoke.SIZE_MINIMIZED:
                 PInvoke.GetClientRect(_hwnd, out RECT cr);
+                OnSizeChanged(cr.Width, cr.Height);
                 PInvoke.SetWindowPos(_xamlHwnd, default, cr.X, cr.Y, cr.Width, cr.Height,
                     SET_WINDOW_POS_FLAGS.SWP_NOZORDER | SET_WINDOW_POS_FLAGS.SWP_NOACTIVATE | SET_WINDOW_POS_FLAGS.SWP_SHOWWINDOW);
 

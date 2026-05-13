@@ -4,9 +4,28 @@ using Windows.Win32;
 
 namespace CoreIsland;
 
+public sealed class WindowSizeChangedEventArgs : EventArgs
+{
+    public int Width { get; }
+    public int Height { get; }
+
+    internal WindowSizeChangedEventArgs(int width, int height)
+    {
+        Width = width;
+        Height = height;
+    }
+}
+
 [ContentProperty(Name = nameof(Content))]
 public unsafe partial class Window
 {
+    public event EventHandler<WindowSizeChangedEventArgs>? SizeChanged;
+
+    private void OnSizeChanged(int width, int height)
+    {
+        SizeChanged?.Invoke(this, new WindowSizeChangedEventArgs(width, height));
+    }
+
     private string _title = "";
 
     public string Title
