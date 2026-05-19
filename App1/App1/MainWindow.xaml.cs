@@ -29,5 +29,10 @@ namespace App1
         }
 
         public string ButtonContent { get; set; } = "Click me!";
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            ButtonContent = "aasd";
+        }
     }
 }

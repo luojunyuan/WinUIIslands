@@ -31,17 +31,22 @@ public unsafe partial class Window : FrameworkElement
         SizeChanged?.Invoke(this, new WindowSizeChangedEventArgs(width, height));
     }
 
-    private string _title = "";
+    public static readonly DependencyProperty TitleProperty = DependencyProperty.Register(
+        nameof(Title),
+        typeof(string),
+        typeof(Window),
+        new PropertyMetadata(string.Empty, (d, e) =>
+        {
+            var window = (Window)d;
+            var value = (string)e.NewValue;
+            if (window._hwnd != default)
+                PInvoke.SetWindowText(window._hwnd, value);
+        }));
 
     public string Title
     {
-        get => _title;
-        set
-        {
-            _title = value;
-            if (_hwnd != default)
-                PInvoke.SetWindowText(_hwnd, value);
-        }
+        get => (string)GetValue(TitleProperty);
+        set => SetValue(TitleProperty, value);
     }
 
     public UIElement Content
