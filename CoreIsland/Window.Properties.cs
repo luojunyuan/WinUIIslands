@@ -1,3 +1,4 @@
+using Windows.Foundation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Markup;
 using Windows.Win32;
@@ -17,9 +18,13 @@ public sealed class WindowSizeChangedEventArgs : EventArgs
 }
 
 [ContentProperty(Name = nameof(Content))]
-public unsafe partial class Window
+public unsafe partial class Window : FrameworkElement
 {
-    public event EventHandler<WindowSizeChangedEventArgs>? SizeChanged;
+    public new event TypedEventHandler<FrameworkElement, object>? Loading;
+
+    public new event RoutedEventHandler? Loaded;
+
+    public new event EventHandler<WindowSizeChangedEventArgs>? SizeChanged;
 
     private void OnSizeChanged(int width, int height)
     {

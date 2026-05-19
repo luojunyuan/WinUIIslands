@@ -9,5 +9,5 @@
     Title="sdfsdfsd"
     mc:Ignorable="d">
 
-    <Button Content="sdf" />
+    <Button Content="{x:Bind ButtonContent}" />
 </island:Window>
