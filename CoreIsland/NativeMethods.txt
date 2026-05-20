@@ -32,3 +32,6 @@ USER_DEFAULT_SCREEN_DPI
 // ---- AppWindow ----
 GetDpiForWindow
 AdjustWindowRectExForDpi
+
+// ---- SystemBackdrop ----
+DwmSetWindowAttribute

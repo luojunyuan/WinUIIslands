@@ -24,11 +24,11 @@ public unsafe partial class Window : FrameworkElement
 
     public new event RoutedEventHandler? Loaded;
 
-    public new event EventHandler<WindowSizeChangedEventArgs>? SizeChanged;
+    public event EventHandler<WindowSizeChangedEventArgs>? WindowSizeChanged;
 
     private void OnSizeChanged(int width, int height)
     {
-        SizeChanged?.Invoke(this, new WindowSizeChangedEventArgs(width, height));
+        WindowSizeChanged?.Invoke(this, new WindowSizeChangedEventArgs(width, height));
     }
 
     public static readonly DependencyProperty TitleProperty = DependencyProperty.Register(
@@ -47,6 +47,25 @@ public unsafe partial class Window : FrameworkElement
     {
         get => (string)GetValue(TitleProperty);
         set => SetValue(TitleProperty, value);
+    }
+
+    public static readonly DependencyProperty SystemBackdropProperty = DependencyProperty.Register(
+        nameof(SystemBackdrop),
+        typeof(SystemBackdrop),
+        typeof(Window),
+        new PropertyMetadata(null, (d, e) =>
+        {
+            var window = (Window)d;
+            if (e.OldValue is SystemBackdrop oldBackdrop)
+                oldBackdrop.Remove(window);
+            if (e.NewValue is SystemBackdrop newBackdrop)
+                newBackdrop.Apply(window);
+        }));
+
+    public SystemBackdrop? SystemBackdrop
+    {
+        get => (SystemBackdrop?)GetValue(SystemBackdropProperty);
+        set => SetValue(SystemBackdropProperty, value);
     }
 
     public UIElement Content

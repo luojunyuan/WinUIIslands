@@ -9,5 +9,9 @@
     Title="{x:Bind ButtonContent, Mode=OneWay}"
     mc:Ignorable="d">
 
+    <island:Window.SystemBackdrop>
+        <island:DesktopAcrylicBackdrop />
+    </island:Window.SystemBackdrop>
+
     <Button Click="Button_Click" Content="{x:Bind ButtonContent}" />
 </island:Window>

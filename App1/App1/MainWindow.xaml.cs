@@ -26,6 +26,11 @@ namespace App1
         public MainWindow()
         {
             this.InitializeComponent();
+
+            //SystemBackdrop = new CoreIsland.MicaBackdrop()
+            //{
+            //    Kind = CoreIsland.MicaKind.Base,
+            //};
         }
 
         public string ButtonContent { get; set; } = "Click me!";
