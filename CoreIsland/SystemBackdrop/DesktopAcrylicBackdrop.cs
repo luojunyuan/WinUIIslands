@@ -7,12 +7,12 @@ namespace CoreIsland;
 
 public class DesktopAcrylicBackdrop : SystemBackdrop
 {
-    internal override void Apply(Window window)
+    protected override void OnApply(Window window)
     {
         SetBackdrop(window.Hwnd, DWM_SYSTEMBACKDROP_TYPE.DWMSBT_TRANSIENTWINDOW);
     }
 
-    internal override void Remove(Window window)
+    protected override void OnRemove(Window window)
     {
         SetBackdrop(window.Hwnd, DWM_SYSTEMBACKDROP_TYPE.DWMSBT_NONE);
     }

@@ -10,7 +10,7 @@
     mc:Ignorable="d">
 
     <island:Window.SystemBackdrop>
-        <island:DesktopAcrylicBackdrop />
+        <island:MicaBackdrop />
     </island:Window.SystemBackdrop>
 
     <Button Click="Button_Click" Content="{x:Bind ButtonContent}" />

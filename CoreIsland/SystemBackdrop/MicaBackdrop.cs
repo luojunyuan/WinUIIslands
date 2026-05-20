@@ -9,7 +9,7 @@ public class MicaBackdrop : SystemBackdrop
 {
     public MicaKind Kind { get; set; } = MicaKind.Base;
 
-    internal override void Apply(Window window)
+    protected override void OnApply(Window window)
     {
         SetBackdrop(window.Hwnd, Kind switch
         {
@@ -18,7 +18,7 @@ public class MicaBackdrop : SystemBackdrop
         });
     }
 
-    internal override void Remove(Window window)
+    protected override void OnRemove(Window window)
     {
         SetBackdrop(window.Hwnd, DWM_SYSTEMBACKDROP_TYPE.DWMSBT_NONE);
     }
