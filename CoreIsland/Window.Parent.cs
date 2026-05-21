@@ -11,26 +11,40 @@ namespace CoreIsland;
 
 public unsafe partial class Window
 {
-    private static readonly ConcurrentDictionary<HWND, WeakReference<Window>> s_parentToChildMapping = new();
+    private sealed class ParentEntry
+    {
+        public UnhookWinEventSafeHandle? Hook;
+        public readonly List<WeakReference<Window>> Children = [];
+    }
+
+    private static readonly ConcurrentDictionary<HWND, ParentEntry> s_parentToChildMapping = new();
     private static readonly WINEVENTPROC s_winEventProc = (delegate* unmanaged[Stdcall]<HWINEVENTHOOK, uint, HWND, int, int, uint, uint, void>)&WinEventProc;
 
     private readonly HWND _hwndParent;
-    private UnhookWinEventSafeHandle? _winEventHook;
 
+    /// <summary>
+    /// Activates the current window as a child layout element.
+    /// </summary>
     public void ActivateAsChild()
     {
         if (_hwndParent.IsNull)
             throw new InvalidOperationException("Parent window handle is not set.");
 
         Loading?.Invoke(this, EventArgs.Empty);
-        s_parentToChildMapping[_hwndParent] = new WeakReference<Window>(this);
-        var threadId = PInvoke.GetWindowThreadProcessId(_hwndParent, out var processId);
-        _winEventHook = PInvoke.SetWinEventHook(
-            PInvoke.EVENT_OBJECT_LOCATIONCHANGE, PInvoke.EVENT_OBJECT_LOCATIONCHANGE,
-            null, s_winEventProc, processId, threadId, PInvoke.WINEVENT_OUTOFCONTEXT);
 
-        if (_winEventHook.IsInvalid)
-            throw new Win32Exception();
+        var entry = s_parentToChildMapping.GetOrAdd(_hwndParent, _ => new ParentEntry());
+        entry.Children.Add(new WeakReference<Window>(this));
+
+        if (entry.Hook is null)
+        {
+            var threadId = PInvoke.GetWindowThreadProcessId(_hwndParent, out var processId);
+            entry.Hook = PInvoke.SetWinEventHook(
+                PInvoke.EVENT_OBJECT_LOCATIONCHANGE, PInvoke.EVENT_OBJECT_LOCATIONCHANGE,
+                null, s_winEventProc, processId, threadId, PInvoke.WINEVENT_OUTOFCONTEXT);
+
+            if (entry.Hook.IsInvalid)
+                throw new Win32Exception();
+        }
 
         PInvoke.GetClientRect(_hwndParent, out var rc);
         PInvoke.SetWindowPos(_hwnd, HWND.HWND_TOP, 0, 0, rc.Width, rc.Height, default);
@@ -49,11 +63,28 @@ public unsafe partial class Window
         if (eventType != PInvoke.EVENT_OBJECT_LOCATIONCHANGE)
             return;
 
-        if (!s_parentToChildMapping.TryGetValue(hwnd, out var weakRef) || !weakRef.TryGetTarget(out var windowInstance))
+        if (!s_parentToChildMapping.TryGetValue(hwnd, out var entry))
             return;
 
         PInvoke.GetClientRect(hwnd, out var rc);
-        PInvoke.SetWindowPos(windowInstance._hwnd, default, default, default, rc.Width, rc.Height,
-            SET_WINDOW_POS_FLAGS.SWP_NOZORDER | SET_WINDOW_POS_FLAGS.SWP_NOMOVE | SET_WINDOW_POS_FLAGS.SWP_NOACTIVATE);
+
+        for (int i = entry.Children.Count - 1; i >= 0; i--)
+        {
+            if (entry.Children[i].TryGetTarget(out var windowInstance))
+            {
+                PInvoke.SetWindowPos(windowInstance._hwnd, default, default, default, rc.Width, rc.Height,
+                    SET_WINDOW_POS_FLAGS.SWP_NOZORDER | SET_WINDOW_POS_FLAGS.SWP_NOMOVE | SET_WINDOW_POS_FLAGS.SWP_NOACTIVATE);
+            }
+            else
+            {
+                entry.Children.RemoveAt(i);
+            }
+        }
+
+        if (entry.Children.Count == 0)
+        {
+            entry.Hook?.Close();
+            s_parentToChildMapping.TryRemove(hwnd, out _);
+        }
     }
 }

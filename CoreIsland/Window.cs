@@ -130,8 +130,15 @@ public unsafe partial class Window
                 return default;
 
             case PInvoke.WM_DESTROY:
-                _winEventHook?.Close();
-                s_parentToChildMapping.TryRemove(_hwndParent, out _);
+                if (s_parentToChildMapping.TryGetValue(_hwndParent, out var entry))
+                {
+                    entry.Children.RemoveAll(wr => !wr.TryGetTarget(out var w) || w == this);
+                    if (entry.Children.Count == 0)
+                    {
+                        entry.Hook?.Close();
+                        s_parentToChildMapping.TryRemove(_hwndParent, out _);
+                    }
+                }
                 _xamlHost?.Dispose();
                 if (_selfHandle.IsAllocated)
                     _selfHandle.Free();

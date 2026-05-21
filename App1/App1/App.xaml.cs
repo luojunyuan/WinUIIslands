@@ -24,25 +24,12 @@ namespace App1
         /// <inheritdoc/>
         protected override async void OnIslandLaunched(LaunchActivatedEventArgs e)
         {
-            var win = new CoreIsland.NativeWindow();
-            win.Show();
-            return;
-
             var mainBtn = new Button() { Content = "Click me" };
             mainBtn.Click += (_, _) =>
             {
                 var notepad = Process.Start("notepad");
                 notepad.WaitForInputIdle();
                 var mainHandle = notepad.MainWindowHandle;
-
-                var win1 = new CoreIsland.Window(mainHandle)
-                {
-                    Content = new Border
-                    {
-                        BorderBrush = new SolidColorBrush(Colors.Red),
-                        BorderThickness = new Thickness(2),
-                    }
-                };
 
                 var win2 = new CoreIsland.Window(mainHandle)
                 {
@@ -53,9 +40,19 @@ namespace App1
                     }
                 };
 
-                win2.ActivateAsChild();
+                var win1 = new CoreIsland.Window(mainHandle)
+                {
+                    Content = new Border
+                    {
+                        BorderBrush = new SolidColorBrush(Colors.Red),
+                        BorderThickness = new Thickness(2),
+                    }
+                };
 
                 win1.ActivateAsChild();
+
+                win2.ActivateAsChild();
+
             };
 
             var window = new CoreIsland.Window()
