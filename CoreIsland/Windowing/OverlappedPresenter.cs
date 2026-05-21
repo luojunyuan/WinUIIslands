@@ -45,6 +45,14 @@ public sealed class OverlappedPresenter : AppWindowPresenter
         PInvoke.SetWindowLongAnyCPU(hwnd, WINDOW_LONG_PTR_INDEX.GWL_STYLE, (nint)style);
     }
 
+    public void AddLayeredStyle()
+    {
+        var hwnd = AppWindow.Hwnd;
+        var exStyle = (WINDOW_EX_STYLE)PInvoke.GetWindowLongAnyCPU(hwnd, WINDOW_LONG_PTR_INDEX.GWL_EXSTYLE);
+        exStyle |= WINDOW_EX_STYLE.WS_EX_LAYERED;
+        PInvoke.SetWindowLongAnyCPU(hwnd, WINDOW_LONG_PTR_INDEX.GWL_EXSTYLE, (nint)exStyle);
+    }
+
     public void MakeClickThrough()
     {
         var hwnd = AppWindow.Hwnd;

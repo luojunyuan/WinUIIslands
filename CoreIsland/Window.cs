@@ -64,20 +64,19 @@ public unsafe partial class Window
 
     internal HWND Hwnd => _hwnd;
 
-    public Window(nint hParent = default)
+    public Window()
     {
-        _hwndParent = new HWND(hParent);
         _selfHandle = GCHandle.Alloc(this);
         var hwnd = PInvoke.CreateWindowEx(
             dwExStyle: WINDOW_EX_STYLE.WS_EX_NOREDIRECTIONBITMAP | WINDOW_EX_STYLE.WS_EX_DLGMODALFRAME,
             lpClassName: ClassName,
             lpWindowName: string.Empty,
-            dwStyle: _hwndParent.IsNull ? WINDOW_STYLE.WS_OVERLAPPEDWINDOW : WINDOW_STYLE.WS_CHILDWINDOW,
+            dwStyle: WINDOW_STYLE.WS_OVERLAPPEDWINDOW,
             X: PInvoke.CW_USEDEFAULT,
             Y: PInvoke.CW_USEDEFAULT,
             nWidth: PInvoke.CW_USEDEFAULT,
             nHeight: PInvoke.CW_USEDEFAULT,
-            hWndParent: _hwndParent,
+            hWndParent: default,
             hMenu: default,
             hInstance: s_hModule,
             lpParam: (void*)GCHandle.ToIntPtr(_selfHandle));
