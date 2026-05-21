@@ -21,7 +21,7 @@ public unsafe partial class Window
     {
         if (_hwndParent.IsNull)
             throw new InvalidOperationException("Parent window handle is not set.");
-        
+
         Loading?.Invoke(this, EventArgs.Empty);
         s_parentToChildMapping[_hwndParent] = new WeakReference<Window>(this);
         var threadId = PInvoke.GetWindowThreadProcessId(_hwndParent, out var processId);
@@ -32,9 +32,8 @@ public unsafe partial class Window
         if (_winEventHook.IsInvalid)
             throw new Win32Exception();
 
-        // this is important
         PInvoke.GetClientRect(_hwndParent, out var rc);
-        PInvoke.SetWindowPos(_hwnd, default, 0, 0, rc.Width, rc.Height, SET_WINDOW_POS_FLAGS.SWP_NOZORDER);
+        PInvoke.SetWindowPos(_hwnd, HWND.HWND_TOP, 0, 0, rc.Width, rc.Height, default);
 
         PInvoke.ShowWindow(_hwnd, SHOW_WINDOW_CMD.SW_SHOWNORMAL);
         PInvoke.UpdateWindow(_hwnd);
@@ -54,6 +53,7 @@ public unsafe partial class Window
             return;
 
         PInvoke.GetClientRect(hwnd, out var rc);
-        PInvoke.SetWindowPos(windowInstance._hwnd, default, default, default, rc.Width, rc.Height, SET_WINDOW_POS_FLAGS.SWP_NOZORDER | SET_WINDOW_POS_FLAGS.SWP_NOMOVE);
+        PInvoke.SetWindowPos(windowInstance._hwnd, default, default, default, rc.Width, rc.Height,
+            SET_WINDOW_POS_FLAGS.SWP_NOZORDER | SET_WINDOW_POS_FLAGS.SWP_NOMOVE | SET_WINDOW_POS_FLAGS.SWP_NOACTIVATE);
     }
 }
