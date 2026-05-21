@@ -47,10 +47,9 @@ public unsafe partial class Window
         }
 
         PInvoke.GetClientRect(_hwndParent, out var rc);
-        PInvoke.SetWindowPos(_hwnd, HWND.HWND_TOP, 0, 0, rc.Width, rc.Height, default);
+        PInvoke.SetWindowPos(_hwnd, HWND.HWND_TOP, 0, 0, rc.Width, rc.Height, 
+            SET_WINDOW_POS_FLAGS.SWP_SHOWWINDOW);
 
-        PInvoke.ShowWindow(_hwnd, SHOW_WINDOW_CMD.SW_SHOWNORMAL);
-        PInvoke.UpdateWindow(_hwnd);
         Loaded?.Invoke(this, default);
     }
 
