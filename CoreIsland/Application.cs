@@ -26,10 +26,11 @@ public partial class Application : Windows.UI.Xaml.Application
 
     protected sealed override void OnLaunched(LaunchActivatedEventArgs e)
     {
-        global::Windows.UI.Core.CoreWindow.GetForCurrentThread().HideWindowInWin10(out CoreHwnd);
+        global::Windows.UI.Core.CoreWindow.GetForCurrentThread()
+            .HideWindowInWin10(out CoreHwnd);
 
-        var xamlWindowBoundToCoreWindow = global::Windows.UI.Xaml.Window.Current;
-        xamlWindowBoundToCoreWindow.As<IXamlSourceTransparency>().IsBackgroundTransparent = true;
+        var xamlWindowBoundToCoreWindow = global::Windows.UI.Xaml.Window.Current.As<IXamlSourceTransparency>();
+        xamlWindowBoundToCoreWindow.IsBackgroundTransparent = true;
 
         var dispatcherQueue = DispatcherQueue.GetForCurrentThread();
         SynchronizationContext.SetSynchronizationContext(new DispatcherQueueSynchronizationContext(dispatcherQueue));

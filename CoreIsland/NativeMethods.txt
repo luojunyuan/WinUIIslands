@@ -5,6 +5,7 @@ DispatchMessage
 
 // ---- Application.Windows ----
 SetParent
+PostQuitMessage
 
 // ---- Window ----
 GetModuleHandle
@@ -14,14 +15,12 @@ CreateWindowEx
 CW_USEDEFAULT
 ShowWindow
 UpdateWindow
-SetWindowText
 
 // ---- Window Procedure ----
 WINDOW_LONG_PTR_INDEX
 WM_*
 CREATESTRUCTW
 DefWindowProc
-PostQuitMessage
 SIZE_MINIMIZED
 GetClientRect
 SetWindowPos
@@ -29,7 +28,19 @@ SendMessage
 MINMAXINFO
 USER_DEFAULT_SCREEN_DPI
 
-// ---- AppWindow ----
+// ---- Window.Properties ----
+SetWindowText
+
+// ---- Window.Parent ----
+GetWindowThreadProcessId
+SetWinEventHook
+WINEVENTPROC
+EVENT_OBJECT_LOCATIONCHANGE
+WINEVENT_OUTOFCONTEXT
+CHILDID_SELF
+OBJID_WINDOW
+
+// ---- AppWindow / Windowing ----
 GetDpiForWindow
 AdjustWindowRectExForDpi
 
