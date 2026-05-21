@@ -31,7 +31,7 @@ namespace App1
                 notepad.WaitForInputIdle();
                 var mainHandle = notepad.MainWindowHandle;
 
-                var win2 = new CoreIsland.Window()
+                var win2 = new CoreIsland.Window(mainHandle)
                 {
                     Content = new Border
                     {
@@ -40,28 +40,18 @@ namespace App1
                     }
                 };
 
-                var win1 = new CoreIsland.Window()
+                var win1 = new CoreIsland.Window(mainHandle)
                 {
-                    Content =
-                    new Border
+                    Content = new Border
                     {
                         BorderBrush = new SolidColorBrush(Colors.Red),
                         BorderThickness = new Thickness(2),
                     }
                 };
 
-                //if (win1.AppWindow?.Presenter is OverlappedPresenter presenter)
-                //{
-                //    presenter.AddLayeredStyle();
-                //}
+                win1.ActivateAsChild();
 
-                if (win2.AppWindow?.Presenter is OverlappedPresenter presenter2)
-                {
-                    presenter2.AddLayeredStyle();
-                }
-
-                win1.ActivateAsChild(mainHandle);
-                win2.ActivateAsChild(mainHandle);
+                win2.ActivateAsChild();
 
             };
 

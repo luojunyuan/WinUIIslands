@@ -23,7 +23,7 @@ namespace App1
     /// </summary>
     public sealed partial class MainWindow : CoreIsland.Window
     {
-        public MainWindow()
+        public MainWindow(nint hParent) : base(hParent)
         {
             this.InitializeComponent();
 

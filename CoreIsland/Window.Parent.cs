@@ -2,7 +2,6 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using CoreIsland.Windowing;
 using Windows.Win32;
 using Windows.Win32.Foundation;
 using Windows.Win32.UI.Accessibility;
@@ -21,20 +20,21 @@ public unsafe partial class Window
     private static readonly ConcurrentDictionary<HWND, ParentEntry> s_parentToChildMapping = new();
     private static readonly WINEVENTPROC s_winEventProc = (delegate* unmanaged[Stdcall]<HWINEVENTHOOK, uint, HWND, int, int, uint, uint, void>)&WinEventProc;
 
-    private HWND _hwndParent;
-
-    internal bool HasParentWindoow => !_hwndParent.IsNull;
+    private readonly HWND _hwndParent;
 
     /// <summary>
     /// Activates the current window as a child layout element.
     /// </summary>
-    public void ActivateAsChild(nint hParent)
+    public void ActivateAsChild()
     {
-        _hwndParent = new(hParent);
+        if (_hwndParent.IsNull)
+            throw new InvalidOperationException("Parent window handle is not set.");
+
         Loading?.Invoke(this, EventArgs.Empty);
 
         var entry = s_parentToChildMapping.GetOrAdd(_hwndParent, _ => new ParentEntry());
         entry.Children.Add(new WeakReference<Window>(this));
+
         if (entry.Hook is null)
         {
             var threadId = PInvoke.GetWindowThreadProcessId(_hwndParent, out var processId);
@@ -46,23 +46,11 @@ public unsafe partial class Window
                 throw new Win32Exception();
         }
 
-        var style = (WINDOW_STYLE)PInvoke.GetWindowLongAnyCPU(_hwnd, WINDOW_LONG_PTR_INDEX.GWL_STYLE);
-        style &= ~WINDOW_STYLE.WS_OVERLAPPEDWINDOW;
-        style |= WINDOW_STYLE.WS_CHILD | WINDOW_STYLE.WS_CLIPSIBLINGS;
-        PInvoke.SetWindowLongAnyCPU(_hwnd, WINDOW_LONG_PTR_INDEX.GWL_STYLE, (nint)style);
-
-        var exStyle = (WINDOW_EX_STYLE)PInvoke.GetWindowLongAnyCPU(_hwnd, WINDOW_LONG_PTR_INDEX.GWL_EXSTYLE);
-        exStyle &= ~WINDOW_EX_STYLE.WS_EX_DLGMODALFRAME;
-        PInvoke.SetWindowLongAnyCPU(_hwnd, WINDOW_LONG_PTR_INDEX.GWL_EXSTYLE, (nint)exStyle);
-
-        PInvoke.SetParent(_hwnd, _hwndParent);
-
         PInvoke.GetClientRect(_hwndParent, out var rc);
-        PInvoke.SetWindowPos(_hwnd, HWND.HWND_TOP,
-            0, 0, rc.Width, rc.Height,
-            SET_WINDOW_POS_FLAGS.SWP_NOZORDER | SET_WINDOW_POS_FLAGS.SWP_FRAMECHANGED | SET_WINDOW_POS_FLAGS.SWP_SHOWWINDOW
-        );
+        PInvoke.SetWindowPos(_hwnd, HWND.HWND_TOP, 0, 0, rc.Width, rc.Height, default);
 
+        PInvoke.ShowWindow(_hwnd, SHOW_WINDOW_CMD.SW_SHOWNORMAL);
+        PInvoke.UpdateWindow(_hwnd);
         Loaded?.Invoke(this, default);
     }
 

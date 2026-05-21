@@ -21,7 +21,7 @@ public partial class Application
 
     internal void OnWindowActivated(Window window)
     {
-        if (_coreOwner != window && !window.HasParentWindoow)
+        if (_coreOwner != window)
         {
             PInvoke.SetParent(CoreHwnd, window.Hwnd);
             _coreOwner = window;
