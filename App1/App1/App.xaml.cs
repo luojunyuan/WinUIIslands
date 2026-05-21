@@ -5,9 +5,11 @@ using System.Runtime.Versioning;
 using System.Threading.Tasks;
 using CoreIsland.Windowing;
 using Windows.ApplicationModel.Activation;
+using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Markup;
+using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
 namespace App1
@@ -22,9 +24,47 @@ namespace App1
         /// <inheritdoc/>
         protected override async void OnIslandLaunched(LaunchActivatedEventArgs e)
         {
-            var mainWindow = new MainWindow();
-            //mainWindow.Content = new MainPage();
-            mainWindow.Activate();
+            var win = new CoreIsland.NativeWindow();
+            win.Show();
+            return;
+
+            var mainBtn = new Button() { Content = "Click me" };
+            mainBtn.Click += (_, _) =>
+            {
+                var notepad = Process.Start("notepad");
+                notepad.WaitForInputIdle();
+                var mainHandle = notepad.MainWindowHandle;
+
+                var win1 = new CoreIsland.Window(mainHandle)
+                {
+                    Content = new Border
+                    {
+                        BorderBrush = new SolidColorBrush(Colors.Red),
+                        BorderThickness = new Thickness(2),
+                    }
+                };
+
+                var win2 = new CoreIsland.Window(mainHandle)
+                {
+                    Content = new Border
+                    {
+                        BorderBrush = new SolidColorBrush(Colors.Blue),
+                        BorderThickness = new Thickness(1),
+                    }
+                };
+
+                win2.ActivateAsChild();
+
+                win1.ActivateAsChild();
+            };
+
+            var window = new CoreIsland.Window()
+            {
+                Title = "App1",
+                Content = mainBtn,
+                SystemBackdrop = new CoreIsland.MicaBackdrop()
+            };
+            window.Activate();
         }
 
         [LibraryImport("USER32.dll", SetLastError = false), DefaultDllImportSearchPaths(DllImportSearchPath.System32)]

@@ -57,13 +57,12 @@ public unsafe partial class NativeWindow
 
 public unsafe partial class NativeWindow
 {
-    private readonly GCHandle _selfHandle;
-    private HWND _hwnd;
-
     private static readonly ConcurrentDictionary<HWND, WeakReference<NativeWindow>> s_parentToChildMapping = new();
     private static readonly WINEVENTPROC s_winEventProc = (delegate* unmanaged[Stdcall]<HWINEVENTHOOK, uint, HWND, int, int, uint, uint, void>)&WinEventProc;
-
+    
     private readonly HWND _hwndParent;
+    private readonly GCHandle _selfHandle;
+    private HWND _hwnd;
     private UnhookWinEventSafeHandle? _winEventHook;
 
     public NativeWindow(nint hParent = default)
@@ -104,6 +103,12 @@ public unsafe partial class NativeWindow
         PInvoke.GetClientRect(_hwndParent, out var rc);
         PInvoke.SetWindowPos(_hwnd, HWND.HWND_TOP, 0, 0, rc.Width, rc.Height, default);
 
+        PInvoke.ShowWindow(_hwnd, SHOW_WINDOW_CMD.SW_SHOWNORMAL);
+        PInvoke.UpdateWindow(_hwnd);
+    }
+
+    public void Show()
+    {
         PInvoke.ShowWindow(_hwnd, SHOW_WINDOW_CMD.SW_SHOWNORMAL);
         PInvoke.UpdateWindow(_hwnd);
     }
