@@ -23,10 +23,6 @@ public unsafe partial class Window
             throw new InvalidOperationException("Parent window handle is not set.");
         
         Loading?.Invoke(this, EventArgs.Empty);
-        PInvoke.ShowWindow(_hwnd, SHOW_WINDOW_CMD.SW_SHOWNORMAL);
-        PInvoke.UpdateWindow(_hwnd);
-        Loaded?.Invoke(this, default);
-
         s_parentToChildMapping[_hwndParent] = new WeakReference<Window>(this);
         var threadId = PInvoke.GetWindowThreadProcessId(_hwndParent, out var processId);
         _winEventHook = PInvoke.SetWinEventHook(
@@ -39,6 +35,10 @@ public unsafe partial class Window
         // this is important
         PInvoke.GetClientRect(_hwndParent, out var rc);
         PInvoke.SetWindowPos(_hwnd, default, 0, 0, rc.Width, rc.Height, SET_WINDOW_POS_FLAGS.SWP_NOZORDER);
+
+        PInvoke.ShowWindow(_hwnd, SHOW_WINDOW_CMD.SW_SHOWNORMAL);
+        PInvoke.UpdateWindow(_hwnd);
+        Loaded?.Invoke(this, default);
     }
 
     [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvStdcall) })]
