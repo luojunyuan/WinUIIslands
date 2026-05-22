@@ -24,12 +24,16 @@ public unsafe partial class Window : FrameworkElement
 
     public new event RoutedEventHandler? Loaded;
 
+    public event EventHandler? Closed;
+
     public event EventHandler<WindowSizeChangedEventArgs>? WindowSizeChanged;
 
     private void OnSizeChanged(int width, int height)
     {
         WindowSizeChanged?.Invoke(this, new WindowSizeChangedEventArgs(width, height));
     }
+
+    // ---- Dependency Proerties
 
     public static readonly DependencyProperty TitleProperty = DependencyProperty.Register(
         nameof(Title),

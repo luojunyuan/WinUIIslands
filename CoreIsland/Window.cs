@@ -64,20 +64,19 @@ public unsafe partial class Window
 
     internal HWND Hwnd => _hwnd;
 
-    public Window(nint hParent = default)
+    public Window()
     {
-        _hwndParent = new HWND(hParent);
         _selfHandle = GCHandle.Alloc(this);
         var hwnd = PInvoke.CreateWindowEx(
             dwExStyle: WINDOW_EX_STYLE.WS_EX_NOREDIRECTIONBITMAP | WINDOW_EX_STYLE.WS_EX_DLGMODALFRAME,
             lpClassName: ClassName,
             lpWindowName: string.Empty,
-            dwStyle: _hwndParent.IsNull ? WINDOW_STYLE.WS_OVERLAPPEDWINDOW : WINDOW_STYLE.WS_CHILDWINDOW,
+            dwStyle: WINDOW_STYLE.WS_OVERLAPPEDWINDOW,
             X: PInvoke.CW_USEDEFAULT,
             Y: PInvoke.CW_USEDEFAULT,
             nWidth: PInvoke.CW_USEDEFAULT,
             nHeight: PInvoke.CW_USEDEFAULT,
-            hWndParent: _hwndParent,
+            hWndParent: default,
             hMenu: default,
             hInstance: s_hModule,
             lpParam: (void*)GCHandle.ToIntPtr(_selfHandle));
@@ -93,16 +92,6 @@ public unsafe partial class Window
 
         EnableResizeLayoutSynchronization(_hwnd, true);
     }
-
-    public void Activate()
-    {
-        Loading?.Invoke(this, EventArgs.Empty);
-        PInvoke.ShowWindow(_hwnd, SHOW_WINDOW_CMD.SW_SHOWNORMAL);
-        PInvoke.UpdateWindow(_hwnd);
-        Loaded?.Invoke(this, default);
-    }
-
-    public void Close() => PInvoke.SendMessage(_hwnd, PInvoke.WM_CLOSE, 0, 0);
 
     private IFrameworkApplicationPrivate FrameworkAppPrivate { get; } = Windows.UI.Xaml.Application.Current.As<IFrameworkApplicationPrivate>();
 
@@ -130,19 +119,11 @@ public unsafe partial class Window
                 return default;
 
             case PInvoke.WM_DESTROY:
-                if (s_parentToChildMapping.TryGetValue(_hwndParent, out var entry))
-                {
-                    entry.Children.RemoveAll(wr => !wr.TryGetTarget(out var w) || w == this);
-                    if (entry.Children.Count == 0)
-                    {
-                        entry.Hook?.Close();
-                        s_parentToChildMapping.TryRemove(_hwndParent, out _);
-                    }
-                }
                 _xamlHost?.Dispose();
                 if (_selfHandle.IsAllocated)
                     _selfHandle.Free();
                 Application.Current.OnWindowClosing(this);
+                Closed?.Invoke(this, EventArgs.Empty);
                 return default;
         }
 

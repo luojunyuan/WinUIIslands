@@ -6,13 +6,17 @@ namespace CoreIsland.Windowing;
 
 public sealed class OverlappedPresenter : AppWindowPresenter
 {
-    public override AppWindowPresenterKind Kind => AppWindowPresenterKind.Overlapped;
-
     private bool _isResizable = true;
     private bool _isMaximizable = true;
     private bool _isMinimizable = true;
     private bool _hasBorder = true;
     private bool _hasTitleBar = true;
+    
+    public override AppWindowPresenterKind Kind => AppWindowPresenterKind.Overlapped;
+
+    public int PreferredMinimumWidth { get; set; }
+
+    public int PreferredMinimumHeight { get; set; }
 
     public bool IsResizable
     {
@@ -32,33 +36,14 @@ public sealed class OverlappedPresenter : AppWindowPresenter
         set { _isMinimizable = value; ApplyStyles(); }
     }
 
-    public int PreferredMinimumWidth { get; set; }
-    public int PreferredMinimumHeight { get; set; }
-
-    internal OverlappedPresenter(AppWindow appWindow) : base(appWindow) { }
-
-    public void AddChildStyle()
-    {
-        var hwnd = AppWindow.Hwnd;
-        var style = (WINDOW_STYLE)PInvoke.GetWindowLongAnyCPU(hwnd, WINDOW_LONG_PTR_INDEX.GWL_STYLE);
-        style |= WINDOW_STYLE.WS_CHILD;
-        PInvoke.SetWindowLongAnyCPU(hwnd, WINDOW_LONG_PTR_INDEX.GWL_STYLE, (nint)style);
-    }
-
-    public void MakeClickThrough()
-    {
-        var hwnd = AppWindow.Hwnd;
-        var exStyle = (WINDOW_EX_STYLE)PInvoke.GetWindowLongAnyCPU(hwnd, WINDOW_LONG_PTR_INDEX.GWL_EXSTYLE);
-        exStyle |= WINDOW_EX_STYLE.WS_EX_TRANSPARENT | WINDOW_EX_STYLE.WS_EX_LAYERED;
-        PInvoke.SetWindowLongAnyCPU(hwnd, WINDOW_LONG_PTR_INDEX.GWL_EXSTYLE, (nint)exStyle);
-    }
-
     public void SetBorderAndTitleBar(bool hasBorder, bool hasTitleBar)
     {
         _hasBorder = hasBorder;
         _hasTitleBar = hasTitleBar;
         ApplyStyles();
     }
+
+    internal OverlappedPresenter(AppWindow appWindow) : base(appWindow) { }
 
     private void ApplyStyles()
     {
