@@ -27,37 +27,53 @@ namespace App1
             var mainBtn = new Button() { Content = "Click me" };
             mainBtn.Click += (_, _) =>
             {
+                var window = new CoreIsland.Window()
+                {
+                    Title = "App1",
+                    Content = new MainPage(),
+                };
+
                 var notepad = Process.Start("notepad");
                 notepad.WaitForInputIdle();
-                var mainHandle = notepad.MainWindowHandle;
 
-                var win2 = new CoreIsland.Window(mainHandle)
-                {
-                    Content = new Border
-                    {
-                        BorderBrush = new SolidColorBrush(Colors.Blue),
-                        BorderThickness = new Thickness(1),
-                    }
-                };
+                var child = CoreIsland.Windowing.WindowNative.GetWindowHandle(window);
+                window.SetParent(child, notepad.MainWindowHandle);
 
-                var win1 = new CoreIsland.Window(mainHandle)
-                {
-                    Content = new Border
-                    {
-                        BorderBrush = new SolidColorBrush(Colors.Red),
-                        BorderThickness = new Thickness(2),
-                    }
-                };
-
-                win1.ActivateAsChild();
-
-                win2.ActivateAsChild();
-
+                window.Activate();
             };
+
+            //mainBtn.Click += (_, _) =>
+            //{
+            //    var notepad = Process.Start("notepad");
+            //    notepad.WaitForInputIdle();
+            //    var mainHandle = notepad.MainWindowHandle;
+
+            //    var win2 = new CoreIsland.Window(mainHandle)
+            //    {
+            //        Content = new Border
+            //        {
+            //            BorderBrush = new SolidColorBrush(Colors.Blue),
+            //            BorderThickness = new Thickness(1),
+            //        }
+            //    };
+
+            //    var win1 = new CoreIsland.Window(mainHandle)
+            //    {
+            //        Content = new Border
+            //        {
+            //            BorderBrush = new SolidColorBrush(Colors.Red),
+            //            BorderThickness = new Thickness(2),
+            //        }
+            //    };
+
+            //    win1.ActivateAsChild();
+
+            //    win2.ActivateAsChild();
+
+            //};
 
             var window = new CoreIsland.Window()
             {
-                Title = "App1",
                 Content = mainBtn,
                 SystemBackdrop = new CoreIsland.MicaBackdrop()
             };

@@ -17,59 +17,40 @@ public sealed class WindowSizeChangedEventArgs : EventArgs
     }
 }
 
+public sealed class WindowEventArgs : EventArgs;
+
 [ContentProperty(Name = nameof(Content))]
-public unsafe partial class Window : FrameworkElement
+public partial class Window
 {
-    public new event TypedEventHandler<FrameworkElement, object>? Loading;
+    public event TypedEventHandler<object, WindowEventArgs>? Closed;
 
-    public new event RoutedEventHandler? Loaded;
-
-    public event EventHandler? Closed;
-
-    public event EventHandler<WindowSizeChangedEventArgs>? WindowSizeChanged;
+    public event TypedEventHandler<object, WindowSizeChangedEventArgs>? SizeChanged;
 
     private void OnSizeChanged(int width, int height)
     {
-        WindowSizeChanged?.Invoke(this, new WindowSizeChangedEventArgs(width, height));
+        SizeChanged?.Invoke(this, new WindowSizeChangedEventArgs(width, height));
     }
 
-    // ---- Dependency Proerties
-
-    public static readonly DependencyProperty TitleProperty = DependencyProperty.Register(
-        nameof(Title),
-        typeof(string),
-        typeof(Window),
-        new PropertyMetadata(string.Empty, (d, e) =>
-        {
-            var window = (Window)d;
-            var value = (string)e.NewValue;
-            if (window._hwnd != default)
-                PInvoke.SetWindowText(window._hwnd, value);
-        }));
+    private void OnClosed()
+    {
+        Closed?.Invoke(this, new WindowEventArgs());
+    }
 
     public string Title
     {
-        get => (string)GetValue(TitleProperty);
-        set => SetValue(TitleProperty, value);
-    }
-
-    public static readonly DependencyProperty SystemBackdropProperty = DependencyProperty.Register(
-        nameof(SystemBackdrop),
-        typeof(SystemBackdrop),
-        typeof(Window),
-        new PropertyMetadata(null, (d, e) =>
-        {
-            var window = (Window)d;
-            if (e.OldValue is SystemBackdrop oldBackdrop)
-                oldBackdrop.Remove(window);
-            if (e.NewValue is SystemBackdrop newBackdrop)
-                newBackdrop.Apply(window);
-        }));
+        get => field;
+        set { field = value; PInvoke.SetWindowText(_hwnd, value); }
+    } = string.Empty;
 
     public SystemBackdrop? SystemBackdrop
     {
-        get => (SystemBackdrop?)GetValue(SystemBackdropProperty);
-        set => SetValue(SystemBackdropProperty, value);
+        get => field;
+        set
+        {
+            field?.Remove(this);
+            field = value;
+            value?.Apply(this);
+        }
     }
 
     public UIElement Content

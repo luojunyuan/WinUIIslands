@@ -123,7 +123,7 @@ public unsafe partial class Window
                 if (_selfHandle.IsAllocated)
                     _selfHandle.Free();
                 Application.Current.OnWindowClosing(this);
-                Closed?.Invoke(this, EventArgs.Empty);
+                OnClosed();
                 return default;
         }
 
