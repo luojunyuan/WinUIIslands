@@ -6,12 +6,11 @@
     xmlns:island="using:CoreIsland"
     xmlns:local="using:App1"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    Title="{x:Bind ButtonContent, Mode=OneWay}"
     mc:Ignorable="d">
 
     <island:Window.SystemBackdrop>
         <island:MicaBackdrop />
     </island:Window.SystemBackdrop>
 
-    <Button Click="Button_Click" Content="{x:Bind ButtonContent}" />
+    <!--<Button Click="Button_Click" Content="ButtonContent" />-->
 </island:Window>

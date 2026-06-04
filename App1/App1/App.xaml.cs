@@ -37,7 +37,7 @@ namespace App1
                 notepad.WaitForInputIdle();
 
                 var child = CoreIsland.Windowing.WindowNative.GetWindowHandle(window);
-                window.SetParent(child, notepad.MainWindowHandle);
+                // window.SetParent(child, notepad.MainWindowHandle);
 
                 window.Activate();
             };

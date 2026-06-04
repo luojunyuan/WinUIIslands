@@ -9,15 +9,28 @@
     mc:Ignorable="d">
 
     <Grid BorderBrush="Red" BorderThickness="1">
-        <TextBlock
-            HorizontalAlignment="Right"
+        <!-- Danmaku display area -->
+        <Canvas x:Name="DanmakuCanvas" />
+
+        <!-- Bottom input bar -->
+        <StackPanel
+            HorizontalAlignment="Stretch"
             VerticalAlignment="Bottom"
-            Text="XAML islands loaded!" />
-
-        <Button
-            HorizontalAlignment="Right"
-            Click="Button_Click"
-            Content="Click me!" />
-
+            Margin="10"
+            Orientation="Horizontal">
+            <TextBox
+                x:Name="InputTextBox"
+                Width="300"
+                Height="32"
+                PlaceholderText="输入弹幕文本..."
+                KeyDown="InputTextBox_KeyDown" />
+            <Button
+                x:Name="SendButton"
+                Width="100"
+                Height="32"
+                Margin="10,0,0,0"
+                Click="SendButton_Click"
+                Content="发送弹幕" />
+        </StackPanel>
     </Grid>
 </Page>
