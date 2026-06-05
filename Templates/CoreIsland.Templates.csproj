@@ -4,7 +4,7 @@
     <!-- Template packages MUST set PackageType to Template -->
     <PackageType>Template</PackageType>
     <PackageId>CoreIsland.Templates</PackageId>
-    <Version>1.0.0</Version>
+    <Version>1.0.1</Version>
     <Authors>CoreIsland</Authors>
     <Description>Project templates for CoreIsland — XAML Islands unpackaged .NET apps. Includes optional Microsoft.UI.Xaml (WinUI 2) support.</Description>
     <PackageTags>dotnet-new;templates;coreisland;xaml-islands;winui</PackageTags>
