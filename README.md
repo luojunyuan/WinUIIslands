@@ -21,7 +21,7 @@ msbuild .\App1\App1\App1.csproj /t:Publish /p:PublishProfile=win-x64 /p:Platform
 
 ### TODO
 - [x] reduce "Microsoft.UI.Xaml.pri" size
-- [ ] ExtendsContentIntoTitleBar
+- [x] ExtendsContentIntoTitleBar
 - [x] release nuget package
 - [ ] fix when PublishAot on msix packaged (JIT pacakged is fine)
 - [ ] Verify x:Uid x-generate working correctly

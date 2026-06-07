@@ -27,7 +27,11 @@ namespace App1
         {
             this.InitializeComponent();
 
-            Content = new MainPage();
+            var page = new MainPage();
+            Content = page;
+
+            //ExtendsContentIntoTitleBar = true;
+            //SetTitleBar(page.CustomTitleBar);
 
             //SystemBackdrop = new CoreIsland.MicaBackdrop()
             //{

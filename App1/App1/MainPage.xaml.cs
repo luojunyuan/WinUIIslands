@@ -22,6 +22,7 @@ namespace App1
         private const double DefaultSpeed = 200; // pixels per second
         private const double FontSizeSmall = 16;
         private const double FontSizeLarge = 28;
+        public UIElement CustomTitleBar => (UIElement)FindName("TitleBarRoot");
 
         public MainPage()
         {

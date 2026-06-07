@@ -24,7 +24,15 @@ GetClientRect
 SetWindowPos
 SendMessage
 MINMAXINFO
+NCCALCSIZE_PARAMS
+POINT
 USER_DEFAULT_SCREEN_DPI
+DestroyWindow
+IsZoomed
+GetSystemMetricsForDpi
+ClientToScreen
+SetLayeredWindowAttributes
+DwmExtendFrameIntoClientArea
 
 // ---- Window.Properties ----
 SetWindowText
