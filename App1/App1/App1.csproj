@@ -21,6 +21,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\CoreIsland\CoreIsland.csproj" />
+    <ProjectReference Include="..\..\CoreIsland.TitleBar\CoreIsland.TitleBar.csproj" />
   </ItemGroup>
 
   <ItemGroup>

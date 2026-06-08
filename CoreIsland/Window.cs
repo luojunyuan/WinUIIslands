@@ -170,6 +170,7 @@ public unsafe partial class Window
                 break;
 
             case PInvoke.WM_SIZE when wParam.Value != PInvoke.SIZE_MINIMIZED:
+                _isMaximized = PInvoke.IsZoomed(_hwnd);
                 PInvoke.GetClientRect(_hwnd, out RECT cr);
                 OnSizeChanged(cr.Width, cr.Height);
                 var topBorderThickness = GetTopBorderThickness();

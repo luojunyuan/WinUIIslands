@@ -101,8 +101,9 @@ public unsafe partial class Window
         if (result.Value != 0)
             return true;
 
-        rects[0].top = originalTop;
         _isMaximized = PInvoke.IsZoomed(_hwnd);
+
+        rects[0].top = originalTop;
 
         if (_isMaximized)
             rects[0].top += GetResizeHandleHeight();
@@ -170,11 +171,9 @@ public unsafe partial class Window
             return;
         }
 
-        PInvoke.GetClientRect(_hwnd, out var clientRect);
         var topBorderThickness = GetTopBorderThickness();
-        var height = Math.Max(0, topBorderThickness + bounds.Y + bounds.Height + 1);
 
-        PInvoke.SetWindowPos(_titleBarHwnd, default, 0, 0, clientRect.Width, height,
+        PInvoke.SetWindowPos(_titleBarHwnd, default, bounds.X, topBorderThickness + bounds.Y, bounds.Width, bounds.Height + 1,
             SET_WINDOW_POS_FLAGS.SWP_NOACTIVATE | SET_WINDOW_POS_FLAGS.SWP_SHOWWINDOW);
     }
 

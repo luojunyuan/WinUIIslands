@@ -15,4 +15,5 @@
     </Project>
   </Folder>
   <Project Path="CoreIsland/CoreIsland.csproj" />
+  <Project Path="CoreIsland.TitleBar/CoreIsland.TitleBar.csproj" />
 </Solution>

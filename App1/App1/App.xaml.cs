@@ -27,8 +27,7 @@ namespace App1
             var page = new MainPage();
             var mainWindow = new CoreIsland.Window();
             mainWindow.Content = page;
-            mainWindow.ExtendsContentIntoTitleBar = true;
-            mainWindow.SetTitleBar(page.CustomTitleBar);
+            page.CustomTitleBar.Window = mainWindow;
             mainWindow.Activate();
         }
     }
