@@ -151,8 +151,11 @@ public unsafe partial class Window
     {
         switch (msg)
         {
-            case PInvoke.WM_ACTIVATE when wParam.Value != 0:
-                Application.Current.OnWindowActivated(this);
+            case PInvoke.WM_ACTIVATE:
+                var isActive = (wParam.Value & 0xffff) != 0;
+                OnActivated(isActive);
+                if (isActive)
+                    Application.Current.OnWindowActivated(this);
                 return default;
 
             case PInvoke.WM_GETMINMAXINFO:

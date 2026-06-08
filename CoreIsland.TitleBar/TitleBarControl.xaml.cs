@@ -111,6 +111,7 @@ public sealed partial class TitleBarControl : UserControl
         if (_configuredWindow is null)
         {
             _configuredWindow = Window;
+            _configuredWindow.Activated += ConfiguredWindow_Activated;
             _configuredWindow.SizeChanged += ConfiguredWindow_SizeChanged;
         }
 
@@ -144,14 +145,25 @@ public sealed partial class TitleBarControl : UserControl
         UpdateWindowState();
     }
 
+    private void ConfiguredWindow_Activated(object sender, WindowActivatedEventArgs e)
+    {
+        IsWindowActive(e.IsActive);
+    }
+
     private void UpdateWindowState()
     {
         if (Window is not null)
             CaptionButtons.IsWindowMaximized(Windows.Win32.PInvoke.IsZoomed(new Windows.Win32.Foundation.HWND(CoreIsland.Windowing.WindowNative.GetWindowHandle(Window))));
     }
 
+    private void IsWindowActive(bool value)
+    {
+        VisualStateManager.GoToState(this, value ? "Active" : "NotActive", true);
+    }
+
     private void DetachWindow(Window window)
     {
+        window.Activated -= ConfiguredWindow_Activated;
         window.SizeChanged -= ConfiguredWindow_SizeChanged;
         window.SetTitleBar(null);
         window.ExtendsContentIntoTitleBar = false;

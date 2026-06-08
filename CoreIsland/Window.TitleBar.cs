@@ -211,7 +211,7 @@ public unsafe partial class Window
         return true;
     }
 
-    private int GetTopBorderThickness() => ExtendsContentIntoTitleBar && !_isMaximized ? 1 : 0;
+    private int GetTopBorderThickness() => 0;
 
     private int GetResizeHandleHeight()
     {

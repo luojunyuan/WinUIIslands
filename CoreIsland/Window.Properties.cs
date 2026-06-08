@@ -19,10 +19,22 @@ public sealed class WindowSizeChangedEventArgs : EventArgs
 
 public sealed class WindowEventArgs : EventArgs;
 
+public sealed class WindowActivatedEventArgs : EventArgs
+{
+    public bool IsActive { get; }
+
+    internal WindowActivatedEventArgs(bool isActive)
+    {
+        IsActive = isActive;
+    }
+}
+
 [ContentProperty(Name = nameof(Content))]
 public partial class Window
 {
     public event TypedEventHandler<object, WindowEventArgs>? Closed;
+
+    public event TypedEventHandler<object, WindowActivatedEventArgs>? Activated;
 
     public event TypedEventHandler<object, WindowSizeChangedEventArgs>? SizeChanged;
 
@@ -34,6 +46,11 @@ public partial class Window
     private void OnClosed()
     {
         Closed?.Invoke(this, new WindowEventArgs());
+    }
+
+    private void OnActivated(bool isActive)
+    {
+        Activated?.Invoke(this, new WindowActivatedEventArgs(isActive));
     }
 
     public string Title

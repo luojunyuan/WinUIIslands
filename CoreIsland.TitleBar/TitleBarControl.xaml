@@ -28,6 +28,7 @@
                 <VisualState x:Name="Active" />
                 <VisualState x:Name="NotActive">
                     <VisualState.Setters>
+                        <Setter Target="TopBorder.Visibility" Value="Collapsed" />
                         <Setter Target="TitleTextBlock.Foreground" Value="#8E8E8E" />
                         <Setter Target="SubtitleTextBlock.Foreground" Value="#8E8E8E" />
                     </VisualState.Setters>
@@ -42,6 +43,13 @@
                 </VisualState>
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
+
+        <Border
+            x:Name="TopBorder"
+            Grid.ColumnSpan="7"
+            Height="1"
+            VerticalAlignment="Top"
+            Background="#0078D7" />
 
         <Viewbox
             x:Name="IconPresenterHost"
