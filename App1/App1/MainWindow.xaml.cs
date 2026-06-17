@@ -16,34 +16,15 @@ using Windows.UI.Xaml.Navigation;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
-namespace App1
+namespace App1;
+
+/// <summary>
+/// An empty page that can be used on its own or navigated to within a Frame.
+/// </summary>
+public sealed partial class MainWindow : CoreIsland.Window
 {
-    /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
-    /// </summary>
-    public sealed partial class MainWindow : CoreIsland.Window
+    public MainWindow()
     {
-        public MainWindow()
-        {
-            this.InitializeComponent();
-
-            var page = new MainPage();
-            Content = page;
-
-            //ExtendsContentIntoTitleBar = true;
-            //SetTitleBar(page.CustomTitleBar);
-
-            //SystemBackdrop = new CoreIsland.MicaBackdrop()
-            //{
-            //    Kind = CoreIsland.MicaKind.Base,
-            //};
-        }
-
-        public string ButtonContent { get; set; } = "Click me!";
-
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            ButtonContent = "aasd";
-        }
+        this.InitializeComponent();
     }
 }

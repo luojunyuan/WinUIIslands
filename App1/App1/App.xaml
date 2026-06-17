@@ -5,4 +5,7 @@
     xmlns:island="using:CoreIsland"
     xmlns:local="using:App1">
 
+    <Application.Resources>
+        <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" />
+    </Application.Resources>
 </island:Application>

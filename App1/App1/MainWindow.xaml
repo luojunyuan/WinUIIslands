@@ -6,11 +6,11 @@
     xmlns:island="using:CoreIsland"
     xmlns:local="using:App1"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d">
+    mc:Ignorable="d"
+    Title="MainWindow">
 
     <island:Window.SystemBackdrop>
         <island:MicaBackdrop />
     </island:Window.SystemBackdrop>
 
-    <!--<Button Click="Button_Click" Content="ButtonContent" />-->
 </island:Window>

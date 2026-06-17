@@ -16,6 +16,8 @@ namespace App1
 {
     public sealed partial class App : CoreIsland.Application
     {
+        private CoreIsland.Window? _mainWindow;
+
         public App()
         {
             InitializeComponent();
@@ -24,11 +26,11 @@ namespace App1
         /// <inheritdoc/>
         protected override async void OnIslandLaunched(LaunchActivatedEventArgs e)
         {
-            var page = new MainPage();
-            var mainWindow = new CoreIsland.Window();
-            mainWindow.Content = page;
-            page.CustomTitleBar.Window = mainWindow;
-            mainWindow.Activate();
+            _mainWindow = new MainWindow()
+            {
+                Content = new MainPage(),
+            };
+            _mainWindow.Activate();
         }
     }
 }
