@@ -19,6 +19,12 @@ public partial class Application
         MainWindow ??= window;
     }
 
+    private void OnRequestedThemeChanged()
+    {
+        foreach (var window in _windows.ToArray())
+            window.OnApplicationRequestedThemeChanged();
+    }
+
     internal void OnWindowActivated(Window window)
     {
         if (_coreOwner != window)

@@ -89,6 +89,24 @@ public unsafe partial class Window
 
     public bool IsMaximized => PInvoke.IsZoomed(_hwnd);
 
+    internal void OnApplicationRequestedThemeChanged()
+    {
+        SystemBackdrop?.RefreshTheme(this);
+
+        if (_hwnd.IsNull)
+            return;
+
+        if (ExtendsContentIntoTitleBar)
+            UpdateFrameMargins();
+
+        PInvoke.SetWindowPos(_hwnd, default, 0, 0, 0, 0,
+            SET_WINDOW_POS_FLAGS.SWP_NOMOVE |
+            SET_WINDOW_POS_FLAGS.SWP_NOSIZE |
+            SET_WINDOW_POS_FLAGS.SWP_NOZORDER |
+            SET_WINDOW_POS_FLAGS.SWP_NOACTIVATE |
+            SET_WINDOW_POS_FLAGS.SWP_FRAMECHANGED);
+    }
+
     public void PostCaptionButtonCommand(CaptionButton button)
     {
         int command = button switch

@@ -23,6 +23,19 @@ public partial class Application : Windows.UI.Xaml.Application
         _xamlManager = WindowsXamlManager.InitializeForCurrentThread();
     }
 
+    public new global::Windows.UI.Xaml.ApplicationTheme RequestedTheme
+    {
+        get;
+        set
+        {
+            if (field == value)
+                return;
+
+            field = value;
+            OnRequestedThemeChanged();
+        }
+    }
+
     protected sealed override void OnLaunched(LaunchActivatedEventArgs e)
     {
         global::Windows.UI.Core.CoreWindow.GetForCurrentThread()

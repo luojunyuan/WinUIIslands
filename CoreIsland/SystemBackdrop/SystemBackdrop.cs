@@ -12,24 +12,33 @@ public abstract class SystemBackdrop
 {
     private readonly DispatcherQueue _dispatcherQueue = DispatcherQueue.GetForCurrentThread();
     private UISettings? _uiSettings;
+    private Window? _window;
     private HWND _hwnd;
 
     internal void Apply(Window window)
     {
+        _window = window;
         _hwnd = window.Hwnd;
-        ApplyDarkMode(_hwnd);
         _uiSettings = new UISettings();
         _uiSettings.ColorValuesChanged += OnColorValuesChanged;
         SetXamlBackgroundTransparency(true);
-        OnApply(window);
+        RefreshTheme(window);
     }
 
     internal void Remove(Window window)
     {
         _uiSettings?.ColorValuesChanged -= OnColorValuesChanged;
         _uiSettings = null;
+        _window = null;
         OnRemove(window);
         SetXamlBackgroundTransparency(false);
+    }
+
+    internal void RefreshTheme(Window window)
+    {
+        _hwnd = window.Hwnd;
+        ApplyDarkMode(_hwnd);
+        OnApply(window);
     }
 
     protected abstract void OnApply(Window window);
@@ -37,7 +46,11 @@ public abstract class SystemBackdrop
 
     private void OnColorValuesChanged(UISettings sender, object args)
     {
-        _dispatcherQueue.TryEnqueue(() => ApplyDarkMode(_hwnd));
+        _dispatcherQueue.TryEnqueue(() =>
+        {
+            if (_window is not null)
+                RefreshTheme(_window);
+        });
     }
 
     private static void ApplyDarkMode(HWND hwnd)
