@@ -91,10 +91,11 @@ public unsafe partial class Window
 
     internal void OnApplicationRequestedThemeChanged()
     {
-        SystemBackdrop?.RefreshTheme(this);
-
         if (_hwnd.IsNull)
             return;
+
+        ApplyWindowTheme();
+        SystemBackdrop?.RefreshTheme(this);
 
         if (ExtendsContentIntoTitleBar)
             UpdateFrameMargins();
@@ -526,6 +527,16 @@ public unsafe partial class Window
         }
 
         return true;
+    }
+
+    private void ApplyWindowTheme()
+    {
+        if (_hwnd.IsNull)
+            return;
+
+        var isDark = Application.Current.RequestedTheme == Windows.UI.Xaml.ApplicationTheme.Dark ? 1 : 0;
+        var darkSpan = MemoryMarshal.CreateSpan(ref isDark, 1);
+        _ = PInvoke.DwmSetWindowAttribute(_hwnd, DWMWINDOWATTRIBUTE.DWMWA_USE_IMMERSIVE_DARK_MODE, MemoryMarshal.AsBytes(darkSpan));
     }
 
     private bool TryShowSystemMenu(LPARAM lParam)

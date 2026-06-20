@@ -120,6 +120,7 @@ public unsafe partial class Window
             throw new Win32Exception();
 
         Application.Current.RegisterWindow(this);
+        ApplyWindowTheme();
 
         var nativeSource = _xamlHost.As<IDesktopWindowXamlSourceNative2>();
         nativeSource.AttachToWindow(_hwnd);

@@ -1,9 +1,5 @@
-﻿using System.Runtime.InteropServices;
-using Windows.System;
+﻿using Windows.System;
 using Windows.UI.ViewManagement;
-using Windows.Win32;
-using Windows.Win32.Foundation;
-using Windows.Win32.Graphics.Dwm;
 using WinRT;
 
 namespace CoreIsland;
@@ -13,12 +9,10 @@ public abstract class SystemBackdrop
     private readonly DispatcherQueue _dispatcherQueue = DispatcherQueue.GetForCurrentThread();
     private UISettings? _uiSettings;
     private Window? _window;
-    private HWND _hwnd;
 
     internal void Apply(Window window)
     {
         _window = window;
-        _hwnd = window.Hwnd;
         _uiSettings = new UISettings();
         _uiSettings.ColorValuesChanged += OnColorValuesChanged;
         SetXamlBackgroundTransparency(true);
@@ -36,8 +30,6 @@ public abstract class SystemBackdrop
 
     internal void RefreshTheme(Window window)
     {
-        _hwnd = window.Hwnd;
-        ApplyDarkMode(_hwnd);
         OnApply(window);
     }
 
@@ -51,13 +43,6 @@ public abstract class SystemBackdrop
             if (_window is not null)
                 RefreshTheme(_window);
         });
-    }
-
-    private static void ApplyDarkMode(HWND hwnd)
-    {
-        var isDark = Application.Current.RequestedTheme == Windows.UI.Xaml.ApplicationTheme.Dark ? 1 : 0;
-        var darkSpan = MemoryMarshal.CreateSpan(ref isDark, 1);
-        _ = PInvoke.DwmSetWindowAttribute(hwnd, DWMWINDOWATTRIBUTE.DWMWA_USE_IMMERSIVE_DARK_MODE, MemoryMarshal.AsBytes(darkSpan));
     }
 
     private static void SetXamlBackgroundTransparency(bool enabled)

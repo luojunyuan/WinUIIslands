@@ -1,5 +1,7 @@
 ﻿using Windows.ApplicationModel.Activation;
 using Windows.System;
+using Windows.UI;
+using Windows.UI.ViewManagement;
 using Windows.UI.Xaml.Hosting;
 using Windows.Win32;
 using Windows.Win32.Foundation;
@@ -13,6 +15,10 @@ public partial class Application : Windows.UI.Xaml.Application
     public new static Application Current { get; private set; } = null!;
 
     private readonly WindowsXamlManager _xamlManager;
+    private UISettings? _uiSettings;
+    private DispatcherQueue? _dispatcherQueue;
+    private global::Windows.UI.Xaml.ApplicationTheme _requestedTheme = global::Windows.UI.Xaml.ApplicationTheme.Light;
+    private bool _isRequestedThemeExplicitlySet;
 
     protected Application()
     {
@@ -25,14 +31,11 @@ public partial class Application : Windows.UI.Xaml.Application
 
     public new global::Windows.UI.Xaml.ApplicationTheme RequestedTheme
     {
-        get;
+        get => _requestedTheme;
         set
         {
-            if (field == value)
-                return;
-
-            field = value;
-            OnRequestedThemeChanged();
+            _isRequestedThemeExplicitlySet = true;
+            SetRequestedTheme(value);
         }
     }
 
@@ -42,7 +45,10 @@ public partial class Application : Windows.UI.Xaml.Application
             .HideWindowInWin10(out CoreHwnd);
 
         var dispatcherQueue = DispatcherQueue.GetForCurrentThread();
+        _dispatcherQueue = dispatcherQueue;
         SynchronizationContext.SetSynchronizationContext(new DispatcherQueueSynchronizationContext(dispatcherQueue));
+        ApplySystemRequestedTheme();
+        SubscribeSystemThemeChanges();
 
         // Ensure OnIslandLaunched is calling after ctor of derived class is completed
         dispatcherQueue.TryEnqueue(() =>
@@ -70,4 +76,50 @@ public partial class Application : Windows.UI.Xaml.Application
         window.Activate();
         return Run();
     }
+
+    private void SetRequestedTheme(global::Windows.UI.Xaml.ApplicationTheme theme)
+    {
+        if (_requestedTheme == theme)
+            return;
+
+        _requestedTheme = theme;
+        OnRequestedThemeChanged();
+    }
+
+    private void ApplySystemRequestedTheme()
+    {
+        if (!_isRequestedThemeExplicitlySet)
+            SetRequestedTheme(GetSystemRequestedTheme());
+    }
+
+    private void SubscribeSystemThemeChanges()
+    {
+        _uiSettings = new UISettings();
+        _uiSettings.ColorValuesChanged += UiSettings_ColorValuesChanged;
+    }
+
+    private void UiSettings_ColorValuesChanged(UISettings sender, object args)
+    {
+        if (_isRequestedThemeExplicitlySet)
+            return;
+
+        _dispatcherQueue?.TryEnqueue(ApplySystemRequestedTheme);
+    }
+
+    private static global::Windows.UI.Xaml.ApplicationTheme GetSystemRequestedTheme()
+    {
+        try
+        {
+            var foreground = new UISettings().GetColorValue(UIColorType.Foreground);
+            return IsColorLight(foreground)
+                ? global::Windows.UI.Xaml.ApplicationTheme.Dark
+                : global::Windows.UI.Xaml.ApplicationTheme.Light;
+        }
+        catch
+        {
+            return global::Windows.UI.Xaml.ApplicationTheme.Light;
+        }
+    }
+
+    private static bool IsColorLight(Color color) => 5 * color.G + 2 * color.R + color.B > 8 * 128;
 }
