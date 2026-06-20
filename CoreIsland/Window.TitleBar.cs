@@ -1,4 +1,5 @@
 ﻿using CoreIsland.TitleBar;
+using System.Runtime.InteropServices;
 using Windows.Foundation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -36,8 +37,10 @@ public unsafe partial class Window
     private const uint UINT_MAX = 0xffffffff;
 
     private UIElement? _titleBar;
-    private CaptionButtonsControl? _captionButtons;
+    private ICaptionButtons? _captionButtons;
     private bool _isMaximized;
+    private bool _isTrackingTitleBarMouseLeave;
+    private bool _isTrackingTitleBarNonClientMouseLeave;
     private uint _currentDpi = PInvoke.USER_DEFAULT_SCREEN_DPI;
     private uint _nativeBorderThickness = 1;
 
@@ -67,23 +70,43 @@ public unsafe partial class Window
         UpdateTitleBarWindow();
     }
 
-    internal void SetCaptionButtons(CaptionButtonsControl? captionButtons)
+    public void SetCaptionButtons(ICaptionButtons? captionButtons)
     {
         if (_captionButtons is not null)
         {
-            _captionButtons.SizeChanged -= CaptionButtons_SizeChanged;
-            _captionButtons.Window = null;
+            _captionButtons.Element.SizeChanged -= CaptionButtons_SizeChanged;
         }
 
         _captionButtons = captionButtons;
 
         if (_captionButtons is not null)
         {
-            _captionButtons.SizeChanged += CaptionButtons_SizeChanged;
-            _captionButtons.Window = this;
+            _captionButtons.Element.SizeChanged += CaptionButtons_SizeChanged;
         }
 
         UpdateTitleBarWindow();
+    }
+
+    public bool IsMaximized => PInvoke.IsZoomed(_hwnd);
+
+    public void PostCaptionButtonCommand(CaptionButton button)
+    {
+        int command = button switch
+        {
+            CaptionButton.Minimize => SC_MINIMIZE,
+            CaptionButton.Maximize => IsMaximized ? SC_RESTORE : SC_MAXIMIZE,
+            CaptionButton.Close => SC_CLOSE,
+            _ => 0,
+        };
+
+        if (command == 0)
+            return;
+
+        LPARAM lParam = default;
+        if (button == CaptionButton.Maximize && PInvoke.GetCursorPos(out DrawingPoint point).Value != 0)
+            lParam = new LPARAM(MakeLParam(point.X, point.Y));
+
+        PInvoke.PostMessage(_hwnd, PInvoke.WM_SYSCOMMAND, new WPARAM((nuint)command), lParam);
     }
 
     private void ApplyTitleBarMode()
@@ -120,15 +143,46 @@ public unsafe partial class Window
             case PInvoke.WM_NCHITTEST:
                 return TryHitTestTitleBar(lParam, out var hit) ? hit : new LRESULT(HTCLIENT);
 
+            case PInvoke.WM_MOUSEMOVE:
+                TrackTitleBarMouseLeave(nonClient: false);
+                HandleTitleBarClientMouseMove(lParam);
+                return default;
+
+            case PInvoke.WM_MOUSELEAVE:
+                _isTrackingTitleBarMouseLeave = false;
+                _captionButtons?.LeaveButtons();
+                return default;
+
             case PInvoke.WM_NCMOUSEMOVE:
+                TrackTitleBarMouseLeave(nonClient: true);
                 HandleTitleBarMouseMove(wParam);
                 return PInvoke.SendMessage(_hwnd, msg, wParam, lParam);
+
+            case PInvoke.WM_NCMOUSELEAVE:
+                _isTrackingTitleBarNonClientMouseLeave = false;
+                _captionButtons?.LeaveButtons();
+                return default;
+
+            case PInvoke.WM_CANCELMODE:
+            case PInvoke.WM_CAPTURECHANGED:
+                ResetCaptionButtonPointerState();
+                break;
+
+            case PInvoke.WM_LBUTTONDOWN:
+                if (HandleTitleBarClientButtonDown(lParam))
+                    return default;
+                break;
 
             case PInvoke.WM_NCLBUTTONDOWN:
                 HandleTitleBarButtonDown(wParam);
                 if (IsCaptionButtonHit(wParam))
                     return default;
                 return PInvoke.SendMessage(_hwnd, msg, wParam, lParam);
+
+            case PInvoke.WM_LBUTTONUP:
+                if (HandleTitleBarClientButtonUp(lParam))
+                    return default;
+                break;
 
             case PInvoke.WM_NCLBUTTONDBLCLK:
                 if (IsCaptionButtonHit(wParam))
@@ -243,7 +297,7 @@ public unsafe partial class Window
         }
 
         if (!TryGetElementBoundsInPixels(_titleBar, out var titleBarBounds) &&
-            !TryGetElementBoundsInPixels(_captionButtons, out titleBarBounds))
+            !TryGetElementBoundsInPixels(_captionButtons?.Element, out titleBarBounds))
         {
             PInvoke.SetWindowRgn(_titleBarHwnd, default, true);
             PInvoke.ShowWindow(_titleBarHwnd, SHOW_WINDOW_CMD.SW_HIDE);
@@ -306,7 +360,7 @@ public unsafe partial class Window
         try
         {
             AddElementToRegion(_titleBar, topBorderThickness, ref region);
-            AddElementToRegion(_captionButtons, topBorderThickness, ref region);
+            AddElementToRegion(_captionButtons?.Element, topBorderThickness, ref region);
 
             if (region.IsNull)
             {
@@ -511,9 +565,51 @@ public unsafe partial class Window
         return true;
     }
 
+    private void TrackTitleBarMouseLeave(bool nonClient)
+    {
+        if (_titleBarHwnd.IsNull)
+            return;
+
+        ref bool isTracking = ref (nonClient
+            ? ref _isTrackingTitleBarNonClientMouseLeave
+            : ref _isTrackingTitleBarMouseLeave);
+
+        if (isTracking)
+            return;
+
+        TRACKMOUSEEVENT trackMouseEvent = new()
+        {
+            cbSize = (uint)Marshal.SizeOf<TRACKMOUSEEVENT>(),
+            dwFlags = nonClient ? TME_LEAVE | TME_NONCLIENT : TME_LEAVE,
+            hwndTrack = _titleBarHwnd,
+        };
+
+        if (TrackMouseEvent(ref trackMouseEvent))
+            isTracking = true;
+    }
+
+    private void ResetCaptionButtonPointerState()
+    {
+        _isTrackingTitleBarMouseLeave = false;
+        _isTrackingTitleBarNonClientMouseLeave = false;
+        _captionButtons?.ReleaseButtons();
+        _captionButtons?.LeaveButtons();
+    }
+
     private void HandleTitleBarMouseMove(WPARAM wParam)
     {
         if (_captionButtons is null || !TryCaptionButtonFromHitTest((int)wParam.Value, out var button))
+        {
+            _captionButtons?.LeaveButtons();
+            return;
+        }
+
+        _captionButtons.HoverButton(button);
+    }
+
+    private void HandleTitleBarClientMouseMove(LPARAM lParam)
+    {
+        if (_captionButtons is null || !TryCaptionButtonFromTitleBarClientPoint(lParam, out var button))
         {
             _captionButtons?.LeaveButtons();
             return;
@@ -528,12 +624,36 @@ public unsafe partial class Window
             _captionButtons.PressButton(button);
     }
 
+    private bool HandleTitleBarClientButtonDown(LPARAM lParam)
+    {
+        if (_captionButtons is null || !TryCaptionButtonFromTitleBarClientPoint(lParam, out var button))
+            return false;
+
+        _captionButtons.PressButton(button);
+        return true;
+    }
+
     private void HandleTitleBarButtonUp(WPARAM wParam)
     {
         if (_captionButtons is not null && TryCaptionButtonFromHitTest((int)wParam.Value, out var button))
             _captionButtons.ReleaseButton(button);
         else
             _captionButtons?.ReleaseButtons();
+    }
+
+    private bool HandleTitleBarClientButtonUp(LPARAM lParam)
+    {
+        if (_captionButtons is null)
+            return false;
+
+        if (TryCaptionButtonFromTitleBarClientPoint(lParam, out var button))
+        {
+            _captionButtons.ReleaseButton(button);
+            return true;
+        }
+
+        _captionButtons.ReleaseButtons();
+        return false;
     }
 
     private bool IsCaptionButtonHit(WPARAM wParam) => TryCaptionButtonFromHitTest((int)wParam.Value, out _);
@@ -555,22 +675,54 @@ public unsafe partial class Window
     {
         button = default;
 
-        if (_captionButtons is null || !TryGetElementBoundsInPixels(_captionButtons, out var bounds))
+        if (_captionButtons is null || !TryGetElementBoundsInPixels(_captionButtons.Element, out var bounds))
             return false;
 
-        var rect = bounds.Offset(clientTopLeft.X, clientTopLeft.Y + GetTopBorderThickness());
-        if (!Contains(rect, screenPoint))
+        if (!Contains(bounds.Offset(clientTopLeft.X, clientTopLeft.Y + GetTopBorderThickness()), screenPoint))
             return false;
 
-        var buttonWidth = Math.Max(1, rect.Width / 3);
-        if (screenPoint.x < rect.X + buttonWidth)
+        if (IsElementHit(_captionButtons.MinimizeButtonElement, screenPoint, clientTopLeft))
+        {
             button = CaptionButton.Minimize;
-        else if (screenPoint.x < rect.X + buttonWidth * 2)
-            button = CaptionButton.Maximize;
-        else
-            button = CaptionButton.Close;
+            return true;
+        }
 
-        return true;
+        if (IsElementHit(_captionButtons.MaximizeButtonElement, screenPoint, clientTopLeft))
+        {
+            button = CaptionButton.Maximize;
+            return true;
+        }
+
+        if (IsElementHit(_captionButtons.CloseButtonElement, screenPoint, clientTopLeft))
+        {
+            button = CaptionButton.Close;
+            return true;
+        }
+
+        return false;
+    }
+
+    private bool TryCaptionButtonFromTitleBarClientPoint(LPARAM lParam, out CaptionButton button)
+    {
+        button = default;
+
+        DrawingPoint screenPoint = new(GetXLParam(lParam), GetYLParam(lParam));
+        if (!PInvoke.ClientToScreen(_titleBarHwnd, ref screenPoint))
+            return false;
+
+        if (!TryGetClientRectInScreen(out _, out var clientTopLeft))
+            return false;
+
+        POINT point = new() { x = screenPoint.X, y = screenPoint.Y };
+        return TryHitTestCaptionButtons(point, clientTopLeft, out button);
+    }
+
+    private bool IsElementHit(UIElement element, POINT screenPoint, DrawingPoint clientTopLeft)
+    {
+        if (!TryGetElementBoundsInPixels(element, out var bounds))
+            return false;
+
+        return Contains(bounds.Offset(clientTopLeft.X, clientTopLeft.Y + GetTopBorderThickness()), screenPoint);
     }
 
     private void ApplyAutoHideTaskbarInsets(ref RECT clientRect)
@@ -643,7 +795,25 @@ public unsafe partial class Window
 
     private static int GetYLParam(LPARAM lParam) => unchecked((short)((lParam.Value >> 16) & 0xffff));
 
+    private static nint MakeLParam(int low, int high) => (short)low | ((nint)(short)high << 16);
+
     private static bool IsLightTheme() => Application.Current.RequestedTheme != Windows.UI.Xaml.ApplicationTheme.Dark;
+
+    private const uint TME_LEAVE = 0x00000002;
+    private const uint TME_NONCLIENT = 0x00000010;
+
+    [LibraryImport("user32.dll", SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    private static partial bool TrackMouseEvent(ref TRACKMOUSEEVENT lpEventTrack);
+
+    [StructLayout(LayoutKind.Sequential)]
+    private struct TRACKMOUSEEVENT
+    {
+        public uint cbSize;
+        public uint dwFlags;
+        public HWND hwndTrack;
+        public uint dwHoverTime;
+    }
 
     private readonly record struct PixelRect(int X, int Y, int Width, int Height)
     {

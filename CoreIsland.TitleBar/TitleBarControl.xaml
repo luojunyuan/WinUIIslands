@@ -1,0 +1,116 @@
+﻿<UserControl
+    x:Class="CoreIsland.TitleBar.TitleBarControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:CoreIsland.TitleBar"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    x:Name="Root"
+    Height="40"
+    HorizontalAlignment="Stretch"
+    VerticalAlignment="Top"
+    Background="Transparent"
+    mc:Ignorable="d">
+
+    <Grid x:Name="RootGrid" Background="{Binding Background, ElementName=Root}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" MinWidth="4" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" MinWidth="4" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup x:Name="ActiveStates">
+                <VisualState x:Name="Active" />
+                <VisualState x:Name="NotActive">
+                    <VisualState.Setters>
+                        <Setter Target="TitleTextBlock.Foreground" Value="#8E8E8E" />
+                        <Setter Target="SubtitleTextBlock.Foreground" Value="#8E8E8E" />
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+            <VisualStateGroup x:Name="DisplayModeStates">
+                <VisualState x:Name="Standard" />
+                <VisualState x:Name="Tall">
+                    <VisualState.Setters>
+                        <Setter Target="Root.Height" Value="48" />
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+
+        <Border
+            x:Name="TopBorder"
+            Grid.ColumnSpan="7"
+            Height="1"
+            VerticalAlignment="Top"
+            Background="#1E1E1E" />
+
+        <Viewbox
+            x:Name="IconPresenterHost"
+            Grid.Column="0"
+            Width="16"
+            Height="16"
+            Margin="16,0,0,0"
+            VerticalAlignment="Center"
+            Visibility="Collapsed">
+            <ContentPresenter Content="{Binding Icon, ElementName=Root}" />
+        </Viewbox>
+
+        <StackPanel
+            Grid.Column="1"
+            Margin="16,0,8,0"
+            VerticalAlignment="Center"
+            Orientation="Horizontal">
+            <TextBlock
+                x:Name="TitleTextBlock"
+                FontSize="12"
+                Text="{Binding Title, ElementName=Root}"
+                TextTrimming="CharacterEllipsis"
+                TextWrapping="NoWrap" />
+            <TextBlock
+                x:Name="SubtitleTextBlock"
+                Margin="4,0,0,0"
+                FontSize="12"
+                Opacity="0.72"
+                Text="{Binding Subtitle, ElementName=Root}"
+                TextTrimming="CharacterEllipsis"
+                TextWrapping="NoWrap"
+                Visibility="Collapsed" />
+        </StackPanel>
+
+        <Grid
+            x:Name="DragRegion"
+            Grid.Column="0"
+            Grid.ColumnSpan="6"
+            Background="Transparent" />
+
+        <ContentPresenter
+            x:Name="ContentPresenter"
+            Grid.Column="3"
+            MinWidth="0"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Center"
+            Content="{Binding TitleBarContent, ElementName=Root}"
+            Visibility="Collapsed" />
+
+        <ContentPresenter
+            x:Name="FooterPresenter"
+            Grid.Column="5"
+            Margin="4,0,8,0"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Center"
+            Content="{Binding Footer, ElementName=Root}"
+            Visibility="Collapsed" />
+
+        <local:CaptionButtonsControl
+            x:Name="CaptionButtons"
+            Grid.Column="6"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Top" />
+    </Grid>
+</UserControl>

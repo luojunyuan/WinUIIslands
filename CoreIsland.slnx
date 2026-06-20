@@ -15,4 +15,7 @@
     </Project>
   </Folder>
   <Project Path="CoreIsland/CoreIsland.csproj" />
+  <Project Path="CoreIsland.TitleBar/CoreIsland.TitleBar.csproj">
+    <Platform Solution="Debug|ARM64" Project="ARM64" />
+  </Project>
 </Solution>

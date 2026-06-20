@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Net.NetworkInformation;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using Windows.UI.Xaml.Hosting;
@@ -98,7 +99,7 @@ public unsafe partial class Window
 
     internal HWND Hwnd => _hwnd;
 
-    public Window()
+    public Window(nint hwndParent = default)
     {
         _selfHandle = GCHandle.Alloc(this);
         PInvoke.CreateWindowEx(
@@ -110,7 +111,7 @@ public unsafe partial class Window
             Y: PInvoke.CW_USEDEFAULT,
             nWidth: PInvoke.CW_USEDEFAULT,
             nHeight: PInvoke.CW_USEDEFAULT,
-            hWndParent: default,
+            hWndParent: new(hwndParent),
             hMenu: default,
             hInstance: s_hModule,
             lpParam: (void*)GCHandle.ToIntPtr(_selfHandle));

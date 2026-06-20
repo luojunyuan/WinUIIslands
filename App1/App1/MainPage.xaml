@@ -29,9 +29,6 @@
             x:Name="TitleBar"
             Canvas.ZIndex="1"
             AutoConfigureCustomTitleBar="{x:Bind IsCustomTitleBarEnabled, Mode=OneWay}"
-            IsBackButtonEnabled="True"
-            IsBackButtonVisible="True"
-            IsPaneToggleButtonVisible="True"
             Title="My App"
             Visibility="{x:Bind CustomTitleBarVisibility, Mode=OneWay}"
             Window="{x:Bind HostWindow, Mode=OneWay}" />
