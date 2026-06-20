@@ -43,13 +43,6 @@
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
 
-        <Border
-            x:Name="TopBorder"
-            Grid.ColumnSpan="7"
-            Height="1"
-            VerticalAlignment="Top"
-            Background="#1E1E1E" />
-
         <Viewbox
             x:Name="IconPresenterHost"
             Grid.Column="0"

@@ -1,8 +1,5 @@
-﻿using Microsoft.Win32;
-using Windows.UI;
-using Windows.UI.Xaml;
+﻿using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
 using IslandWindow = CoreIsland.Window;
 
 namespace CoreIsland.TitleBar;
@@ -165,37 +162,6 @@ public sealed partial class TitleBarControl : UserControl
     {
         VisualStateManager.GoToState(this, value ? "Active" : "NotActive", true);
         CaptionButtons.IsWindowActive(value);
-        UpdateTopBorder(value);
-    }
-
-    private void UpdateTopBorder(bool isActive)
-    {
-        TopBorder.Background = new SolidColorBrush(GetTopBorderColor(isActive));
-        TopBorder.Visibility = Visibility.Visible;
-    }
-
-    private static Color GetTopBorderColor(bool isActive)
-    {
-        if (isActive && ShouldShowAccentColorOnTitleBars())
-            return GetDwmAccentColor();
-
-        return !isActive
-            ? Color.FromArgb(0xff, 0x30, 0x30, 0x30)
-            : Color.FromArgb(0xff, 0x1e, 0x1e, 0x1e);
-    }
-
-    private static bool ShouldShowAccentColorOnTitleBars()
-    {
-        return Registry.GetValue(@"HKEY_CURRENT_USER\Software\Microsoft\Windows\DWM", "ColorPrevalence", 0) is int value && value != 0;
-    }
-
-    private static Color GetDwmAccentColor()
-    {
-        var value = Registry.GetValue(@"HKEY_CURRENT_USER\Software\Microsoft\Windows\DWM", "AccentColor", unchecked((int)0xffd77800)) is int color
-            ? unchecked((uint)color)
-            : 0xffd77800u;
-
-        return Color.FromArgb(0xff, (byte)(value & 0xff), (byte)((value >> 8) & 0xff), (byte)((value >> 16) & 0xff));
     }
 
     private void DetachWindow(IslandWindow window)
