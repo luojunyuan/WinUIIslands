@@ -38,7 +38,6 @@
     <file src="buildTransitive\CoreIsland.AppMain.targets" target="buildTransitive\CoreIsland.AppMain.targets" />
 
     <!-- PowerShell helpers (called by MSBuild Exec tasks, not init scripts) -->
-    <file src="buildTransitive\Utils\Prepare-Mux.ps1" target="buildTransitive\Utils\Prepare-Mux.ps1" />
     <file src="buildTransitive\Utils\Trim-MuxPri.ps1" target="buildTransitive\Utils\Trim-MuxPri.ps1" />
     <file src="buildTransitive\Utils\Patch-AppMain.ps1" target="buildTransitive\Utils\Patch-AppMain.ps1" />
   </files>
