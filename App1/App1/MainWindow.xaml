@@ -7,10 +7,4 @@
     xmlns:local="using:App1"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    Title="MainWindow">
-
-    <island:Window.SystemBackdrop>
-        <island:MicaBackdrop />
-    </island:Window.SystemBackdrop>
-
-</island:Window>
+    Title="XamlIslandsCpp" />

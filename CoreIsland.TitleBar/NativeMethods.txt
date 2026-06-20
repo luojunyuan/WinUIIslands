@@ -1,3 +1,0 @@
-PostMessage
-IsZoomed
-WM_SYSCOMMAND

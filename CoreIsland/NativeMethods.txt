@@ -6,6 +6,7 @@ DispatchMessage
 // ---- Application.Windows ----
 SetParent
 PostQuitMessage
+PostMessage
 
 // ---- Window ----
 GetModuleHandle
@@ -13,6 +14,8 @@ RegisterClassEx
 WNDPROC
 CreateWindowEx
 CW_USEDEFAULT
+LoadCursor
+IDC_ARROW
 
 // ---- Window Procedure ----
 WINDOW_LONG_PTR_INDEX
@@ -21,6 +24,7 @@ CREATESTRUCTW
 DefWindowProc
 SIZE_MINIMIZED
 GetClientRect
+GetWindowRect
 SetWindowPos
 SendMessage
 MINMAXINFO
@@ -33,6 +37,26 @@ GetSystemMetricsForDpi
 ClientToScreen
 SetLayeredWindowAttributes
 DwmExtendFrameIntoClientArea
+BeginPaint
+EndPaint
+FillRect
+CreateSolidBrush
+DeleteObject
+MonitorFromWindow
+MONITOR_FROM_FLAGS
+GetMonitorInfo
+MONITORINFO
+GetSystemMenu
+SetMenuItemInfo
+MENUITEMINFOW
+SetMenuDefaultItem
+TrackPopupMenu
+TITLEBARINFOEX
+SetWindowRgn
+CreateRectRgn
+CombineRgn
+GetCursorPos
+DwmGetWindowAttribute
 
 // ---- Window.Properties ----
 SetWindowText

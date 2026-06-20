@@ -26,10 +26,8 @@ namespace App1
         /// <inheritdoc/>
         protected override async void OnIslandLaunched(LaunchActivatedEventArgs e)
         {
-            _mainWindow = new MainWindow()
-            {
-                Content = new MainPage(),
-            };
+            _mainWindow = new MainWindow();
+            _mainWindow.Content = new MainPage(_mainWindow);
             _mainWindow.Activate();
         }
     }

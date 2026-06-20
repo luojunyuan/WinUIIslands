@@ -4,7 +4,6 @@ using Windows.UI.Xaml.Hosting;
 using Windows.Win32;
 using Windows.Win32.Foundation;
 using Windows.Win32.UI.WindowsAndMessaging;
-using WinRT;
 
 namespace CoreIsland;
 
@@ -28,9 +27,6 @@ public partial class Application : Windows.UI.Xaml.Application
     {
         global::Windows.UI.Core.CoreWindow.GetForCurrentThread()
             .HideWindowInWin10(out CoreHwnd);
-
-        var xamlWindowBoundToCoreWindow = global::Windows.UI.Xaml.Window.Current.As<IXamlSourceTransparency>();
-        xamlWindowBoundToCoreWindow.IsBackgroundTransparent = true;
 
         var dispatcherQueue = DispatcherQueue.GetForCurrentThread();
         SynchronizationContext.SetSynchronizationContext(new DispatcherQueueSynchronizationContext(dispatcherQueue));

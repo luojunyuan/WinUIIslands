@@ -6,7 +6,103 @@
     xmlns:islandTitleBar="using:CoreIsland.TitleBar"
     xmlns:local="using:App1"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Loaded="RootPage_Loaded"
     mc:Ignorable="d">
 
-    <Grid />
+    <Page.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.ThemeDictionaries>
+                <ResourceDictionary x:Key="Light">
+                    <SolidColorBrush x:Key="CardBackgroundBrush" Color="#60FFFFFF" />
+                    <SolidColorBrush x:Key="DividerBackgroundBrush" Color="#40000000" />
+                </ResourceDictionary>
+                <ResourceDictionary x:Key="Dark">
+                    <SolidColorBrush x:Key="CardBackgroundBrush" Color="#60000000" />
+                    <SolidColorBrush x:Key="DividerBackgroundBrush" Color="#40FFFFFF" />
+                </ResourceDictionary>
+            </ResourceDictionary.ThemeDictionaries>
+        </ResourceDictionary>
+    </Page.Resources>
+
+    <Grid>
+        <islandTitleBar:TitleBarControl
+            x:Name="TitleBar"
+            Canvas.ZIndex="1"
+            AutoConfigureCustomTitleBar="{x:Bind IsCustomTitleBarEnabled, Mode=OneWay}"
+            IsBackButtonEnabled="True"
+            IsBackButtonVisible="True"
+            IsPaneToggleButtonVisible="True"
+            Title="My App"
+            Visibility="{x:Bind CustomTitleBarVisibility, Mode=OneWay}"
+            Window="{x:Bind HostWindow, Mode=OneWay}" />
+
+        <Border
+            Width="320"
+            Padding="40,32"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Background="{ThemeResource CardBackgroundBrush}"
+            BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+            BorderThickness="1"
+            Canvas.ZIndex="0"
+            CornerRadius="8">
+            <StackPanel Spacing="8">
+                <Grid HorizontalAlignment="Stretch">
+                    <TextBlock VerticalAlignment="Center" Text="Custom titlebar" />
+                    <ToggleSwitch
+                        Margin="0,-4"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
+                        IsOn="{x:Bind IsCustomTitleBarEnabled, Mode=TwoWay}"
+                        Style="{StaticResource ToggleSwitchWithoutText}" />
+                </Grid>
+                <Grid HorizontalAlignment="Stretch">
+                    <TextBlock VerticalAlignment="Center" Text="Theme" />
+                    <ComboBox
+                        MinWidth="140"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
+                        DropDownOpened="ComboBox_DropDownOpened"
+                        SelectedIndex="{x:Bind Theme, Mode=TwoWay}">
+                        <ComboBoxItem Content="Use system setting" />
+                        <ComboBoxItem Content="Light" />
+                        <ComboBoxItem Content="Dark" />
+                    </ComboBox>
+                </Grid>
+                <Grid HorizontalAlignment="Stretch">
+                    <TextBlock VerticalAlignment="Center" Text="Background" />
+                    <ComboBox
+                        MinWidth="140"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
+                        DropDownOpened="ComboBox_DropDownOpened"
+                        SelectedIndex="{x:Bind Backdrop, Mode=TwoWay}">
+                        <ComboBoxItem Content="Solid color" />
+                        <ComboBoxItem Content="Acrylic" />
+                        <ComboBoxItem Content="Mica" IsEnabled="{x:Bind local:MainPage.IsMicaAvailable, Mode=OneWay}" />
+                        <ComboBoxItem Content="Mica Alt" IsEnabled="{x:Bind local:MainPage.IsMicaAvailable, Mode=OneWay}" />
+                    </ComboBox>
+                </Grid>
+                <Rectangle
+                    Height="1"
+                    Margin="-8,4,-8,4"
+                    HorizontalAlignment="Stretch"
+                    Fill="{ThemeResource DividerBackgroundBrush}" />
+                <TextBlock Text="Load string resources" />
+                <TextBlock
+                    x:Name="StringResTextBlock"
+                    HorizontalAlignment="Center" />
+                <TextBlock Text="Custom control from ClassLibrary" />
+                <Border
+                    Padding="12,6"
+                    HorizontalAlignment="Center"
+                    Background="{ThemeResource SystemControlBackgroundChromeMediumLowBrush}"
+                    BorderBrush="{ThemeResource SystemControlForegroundBaseLowBrush}"
+                    BorderThickness="1"
+                    CornerRadius="4">
+                    <TextBlock Text="CoreIsland" />
+                </Border>
+            </StackPanel>
+        </Border>
+    </Grid>
 </Page>

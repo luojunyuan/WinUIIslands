@@ -26,6 +26,7 @@ public unsafe partial class Window
             {
                 cbSize = (uint)sizeof(WNDCLASSEXW),
                 lpfnWndProc = s_wndProc,
+                hCursor = PInvoke.LoadCursor(default, PInvoke.IDC_ARROW),
                 hInstance = (HINSTANCE)s_hModule.DangerousGetHandle(),
                 lpszClassName = pClassName,
             };
@@ -93,6 +94,7 @@ public unsafe partial class Window
     private readonly HWND _xamlHwnd;
     private HWND _hwnd;
     private HWND _titleBarHwnd;
+    private HWND _maximizeButtonHwnd;
 
     internal HWND Hwnd => _hwnd;
 
@@ -127,7 +129,7 @@ public unsafe partial class Window
                        WINDOW_EX_STYLE.WS_EX_NOREDIRECTIONBITMAP | WINDOW_EX_STYLE.WS_EX_NOACTIVATE,
             lpClassName: TitleBarClassName,
             lpWindowName: string.Empty,
-            dwStyle: WINDOW_STYLE.WS_CHILD,
+            dwStyle: WINDOW_STYLE.WS_CHILD | WINDOW_STYLE.WS_MINIMIZEBOX | WINDOW_STYLE.WS_MAXIMIZEBOX,
             X: 0,
             Y: 0,
             nWidth: 0,
@@ -142,6 +144,24 @@ public unsafe partial class Window
 
         PInvoke.SetLayeredWindowAttributes(_titleBarHwnd, new COLORREF(0), 255, LAYERED_WINDOW_ATTRIBUTES_FLAGS.LWA_ALPHA);
 
+        if (WindowsVersion.IsWin11OrNewer)
+        {
+            _maximizeButtonHwnd = PInvoke.CreateWindowEx(
+                dwExStyle: WINDOW_EX_STYLE.WS_EX_NOPARENTNOTIFY,
+                lpClassName: "BUTTON",
+                lpWindowName: string.Empty,
+                dwStyle: WINDOW_STYLE.WS_VISIBLE | WINDOW_STYLE.WS_CHILD | WINDOW_STYLE.WS_DISABLED | (WINDOW_STYLE)0x0000000b,
+                X: 0,
+                Y: 0,
+                nWidth: 0,
+                nHeight: 0,
+                hWndParent: _titleBarHwnd,
+                hMenu: default,
+                hInstance: s_hModule,
+                lpParam: null);
+        }
+
+        UpdateDpi(PInvoke.GetDpiForWindow(_hwnd));
         EnableResizeLayoutSynchronization(_hwnd, true);
     }
 
@@ -162,9 +182,22 @@ public unsafe partial class Window
                 HandleGetMinMaxInfo(lParam);
                 return default;
 
+            case PInvoke.WM_DPICHANGED:
+                UpdateDpi((uint)(wParam.Value >> 16));
+                var suggestedRect = (RECT*)lParam.Value;
+                PInvoke.SetWindowPos(_hwnd, default, suggestedRect->left, suggestedRect->top, suggestedRect->Width, suggestedRect->Height,
+                    SET_WINDOW_POS_FLAGS.SWP_NOZORDER | SET_WINDOW_POS_FLAGS.SWP_NOACTIVATE);
+                return default;
+
             case PInvoke.WM_NCCALCSIZE:
                 if (ExtendsContentIntoTitleBar && TryHandleNcCalcSize(wParam, lParam, out var ncCalcResult))
                     return ncCalcResult;
+                UpdateFrameMargins();
+                break;
+
+            case PInvoke.WM_PAINT:
+                if (TryHandlePaint())
+                    return default;
                 break;
 
             case PInvoke.WM_NCHITTEST:
@@ -172,18 +205,30 @@ public unsafe partial class Window
                     return hitTestResult;
                 break;
 
-            case PInvoke.WM_SIZE when wParam.Value != PInvoke.SIZE_MINIMIZED:
+            case PInvoke.WM_NCRBUTTONUP:
+                if (ExtendsContentIntoTitleBar && wParam.Value == HTCAPTION && TryShowSystemMenu(lParam))
+                    return default;
+                break;
+
+            case PInvoke.WM_GETTITLEBARINFOEX:
+                if (ExtendsContentIntoTitleBar && TryHandleGetTitleBarInfo(lParam))
+                    return new LRESULT(1);
+                break;
+
+            case PInvoke.WM_SIZE:
                 _isMaximized = PInvoke.IsZoomed(_hwnd);
-                PInvoke.GetClientRect(_hwnd, out RECT cr);
-                OnSizeChanged(cr.Width, cr.Height);
-                var topBorderThickness = GetTopBorderThickness();
-                PInvoke.SetWindowPos(_xamlHwnd, default, cr.X, cr.Y + topBorderThickness, cr.Width, cr.Height - topBorderThickness,
-                    SET_WINDOW_POS_FLAGS.SWP_NOZORDER | SET_WINDOW_POS_FLAGS.SWP_NOACTIVATE | SET_WINDOW_POS_FLAGS.SWP_SHOWWINDOW);
-                UpdateTitleBarWindow();
+                if (wParam.Value != PInvoke.SIZE_MINIMIZED)
+                {
+                    PInvoke.GetClientRect(_hwnd, out RECT cr);
+                    OnSizeChanged(cr.Width, cr.Height);
+                    UpdateXamlIslandBounds(cr);
+                    UpdateTitleBarWindow();
 
-                PInvoke.SendMessage(Application.CoreHwnd, PInvoke.WM_SIZE, wParam, lParam);
+                    PInvoke.SendMessage(Application.CoreHwnd, PInvoke.WM_SIZE, wParam, lParam);
 
-                FrameworkAppPrivate.SetSynchronizationWindow(_hwnd);
+                    FrameworkAppPrivate.SetSynchronizationWindow(_hwnd);
+                    RepositionXamlPopups();
+                }
                 return default;
 
             case PInvoke.WM_DESTROY:

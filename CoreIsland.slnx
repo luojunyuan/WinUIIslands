@@ -1,4 +1,4 @@
-<Solution>
+﻿<Solution>
   <Configurations>
     <Platform Name="ARM64" />
     <Platform Name="x64" />
@@ -15,5 +15,4 @@
     </Project>
   </Folder>
   <Project Path="CoreIsland/CoreIsland.csproj" />
-  <Project Path="CoreIsland.TitleBar/CoreIsland.TitleBar.csproj" />
 </Solution>
