@@ -2,11 +2,11 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
     <id>CoreIsland</id>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
     <authors>CoreIsland</authors>
     <license type="expression">MIT</license>
     <readme>README.md</readme>
-    <description>XAML Islands host library for unpackaged .NET 10 WinUI apps. Auto-injects build targets for MUX staging, PRI merging, XBF embedding, entry point patching, and InitializeComponent stubs.</description>
+    <description>XAML Islands host library for unpackaged .NET 10 UWP XAML apps. Includes bundled CoreIsland.TitleBar controls and auto-injects build targets for MUX staging, PRI merging, XBF embedding, entry point patching, and InitializeComponent stubs.</description>
     <tags>xaml-islands winui winui2 mux xbf unpackaged net10 windows aot</tags>
     <repository type="git" url="https://github.com/luojunyuan/CoreIsland" />
     <dependencies>
@@ -21,6 +21,7 @@
   <files>
     <!-- Runtime assembly -->
     <file src="bin\Release\net10.0-windows10.0.26100.0\CoreIsland.dll" target="lib\net10.0-windows10.0.26100\CoreIsland.dll" />
+    <file src="..\CoreIsland.TitleBar\bin\x64\Release\net10.0-windows10.0.26100.0\CoreIsland.TitleBar.dll" target="lib\net10.0-windows10.0.26100\CoreIsland.TitleBar.dll" />
 
     <!-- NuGet README (shown after install) -->
     <file src="readme.txt" target="readme.txt" />
@@ -36,6 +37,8 @@
     <file src="buildTransitive\CoreIsland.Mux.props" target="buildTransitive\CoreIsland.Mux.props" />
     <file src="buildTransitive\CoreIsland.Mux.targets" target="buildTransitive\CoreIsland.Mux.targets" />
     <file src="buildTransitive\CoreIsland.AppMain.targets" target="buildTransitive\CoreIsland.AppMain.targets" />
+    <file src="..\CoreIsland.TitleBar\bin\x64\Release\net10.0-windows10.0.26100.0\CoreIsland.TitleBar\*.xaml" target="buildTransitive\TitleBar\CoreIsland.TitleBar" />
+    <file src="..\CoreIsland.TitleBar\bin\x64\Release\net10.0-windows10.0.26100.0\CoreIsland.TitleBar\*.xbf" target="buildTransitive\TitleBar\CoreIsland.TitleBar" />
 
     <!-- PowerShell helpers (called by MSBuild Exec tasks, not init scripts) -->
     <file src="buildTransitive\Utils\Trim-MuxPri.ps1" target="buildTransitive\Utils\Trim-MuxPri.ps1" />

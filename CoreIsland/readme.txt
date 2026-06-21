@@ -98,7 +98,7 @@ namespace YourApp
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="CoreIsland" Version="1.0.3" />
+    <PackageReference Include="CoreIsland" Version="1.0.2" />
   </ItemGroup>
 </Project>
 ```

@@ -3,4 +3,31 @@
   <Import Project="$(MSBuildThisFileDirectory)CoreIsland.XbfEmbed.targets" Condition="'$(CoreIslandPackaging)' != 'true'" />
   <Import Project="$(MSBuildThisFileDirectory)CoreIsland.Mux.targets" Condition="'$(CoreIslandPackaging)' != 'true'" />
   <Import Project="$(MSBuildThisFileDirectory)CoreIsland.AppMain.targets" />
+
+  <PropertyGroup>
+    <_CoreIslandTitleBarAssetsRoot>$(MSBuildThisFileDirectory)TitleBar\</_CoreIslandTitleBarAssetsRoot>
+  </PropertyGroup>
+
+  <Target Name="CoreIslandIncludeBundledTitleBarXaml"
+          AfterTargets="GetPackagingOutputs"
+          BeforeTargets="_GenerateProjectPriConfigurationFiles"
+          Condition="'$(CoreIslandPackaging)' != 'true' And Exists('$(_CoreIslandTitleBarAssetsRoot)CoreIsland.TitleBar\TitleBarControl.xbf')">
+    <ItemGroup>
+      <_CoreIslandTitleBarXamlAsset Include="$(_CoreIslandTitleBarAssetsRoot)CoreIsland.TitleBar\*.xaml" />
+      <_CoreIslandTitleBarXamlAsset Include="$(_CoreIslandTitleBarAssetsRoot)CoreIsland.TitleBar\*.xbf" />
+    </ItemGroup>
+
+    <MakeDir Directories="$(OutDir)CoreIsland.TitleBar" />
+    <Copy SourceFiles="@(_CoreIslandTitleBarXamlAsset)"
+          DestinationFolder="$(OutDir)CoreIsland.TitleBar"
+          SkipUnchangedFiles="true" />
+
+    <ItemGroup>
+      <PackagingOutputs Include="@(_CoreIslandTitleBarXamlAsset)">
+        <TargetPath>CoreIsland.TitleBar\%(Filename)%(Extension)</TargetPath>
+        <OutputGroup>CoreIslandTitleBarOutputGroup</OutputGroup>
+        <ProjectName>CoreIsland</ProjectName>
+      </PackagingOutputs>
+    </ItemGroup>
+  </Target>
 </Project>

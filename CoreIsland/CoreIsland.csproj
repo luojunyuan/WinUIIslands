@@ -4,6 +4,7 @@
     <TargetPlatformMinVersion>10.0.18362.0</TargetPlatformMinVersion>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <UseUwp>true</UseUwp>
     <UseUwpTools>false</UseUwpTools>
     <IsAotCompatible>true</IsAotCompatible>
