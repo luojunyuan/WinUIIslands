@@ -297,12 +297,13 @@ public unsafe partial class Window
 
         if (!_isMaximized)
         {
-            var resizeHandleHeight = GetResizeHandleHeight();
-            if (screenPoint.y < clientRect.top + resizeHandleHeight)
+            var topResizeHeight = GetTopResizeHeight();
+            if (screenPoint.y < clientRect.top + topResizeHeight)
             {
-                result = screenPoint.x < clientRect.left + resizeHandleHeight
+                var resizeCornerWidth = GetResizeHandleHeight();
+                result = screenPoint.x < clientRect.left + resizeCornerWidth
                     ? new LRESULT(HTTOPLEFT)
-                    : screenPoint.x >= clientRect.right - resizeHandleHeight
+                    : screenPoint.x >= clientRect.right - resizeCornerWidth
                         ? new LRESULT(HTTOPRIGHT)
                         : new LRESULT(HTTOP);
                 return true;
@@ -523,6 +524,9 @@ public unsafe partial class Window
     }
 
     private int GetTopBorderThickness() => ExtendsContentIntoTitleBar && !_isMaximized ? (int)_nativeBorderThickness : 0;
+
+    private int GetTopResizeHeight() =>
+        PInvoke.GetSystemMetricsForDpi(SYSTEM_METRICS_INDEX.SM_CYSIZEFRAME, _currentDpi);
 
     private int GetResizeHandleHeight()
     {
