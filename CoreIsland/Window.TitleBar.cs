@@ -14,6 +14,17 @@ using DrawingPoint = System.Drawing.Point;
 
 namespace CoreIsland;
 
+public delegate int TitleBarHitTestHandler(
+    int screenX,
+    int screenY,
+    int xamlRootScreenX,
+    int xamlRootScreenY);
+
+public delegate bool TitleBarWindowRegionHandler(
+    long titleBarWindowHandle,
+    int xamlRootScreenX,
+    int xamlRootScreenY);
+
 public unsafe partial class Window
 {
     private const int HTNOWHERE = 0;
@@ -37,6 +48,8 @@ public unsafe partial class Window
     private const uint UINT_MAX = 0xffffffff;
 
     private UIElement? _titleBar;
+    private TitleBarHitTestHandler? _titleBarHitTest;
+    private TitleBarWindowRegionHandler? _titleBarWindowRegion;
     private ICaptionButtons? _captionButtons;
     private bool _isMaximized;
     private bool _isTrackingTitleBarMouseLeave;
@@ -57,18 +70,27 @@ public unsafe partial class Window
         }
     }
 
-    public void SetTitleBar(UIElement? titleBar)
+    public void SetTitleBar(UIElement? titleBar) => SetTitleBar(titleBar, null, null);
+
+    public void SetTitleBar(
+        UIElement? titleBar,
+        TitleBarHitTestHandler? hitTest,
+        TitleBarWindowRegionHandler? applyWindowRegion)
     {
         if (_titleBar is FrameworkElement oldElement)
             oldElement.SizeChanged -= TitleBar_SizeChanged;
 
         _titleBar = titleBar;
+        _titleBarHitTest = hitTest;
+        _titleBarWindowRegion = applyWindowRegion;
 
         if (_titleBar is FrameworkElement newElement)
             newElement.SizeChanged += TitleBar_SizeChanged;
 
         UpdateTitleBarWindow();
     }
+
+    public void RefreshTitleBar() => UpdateTitleBarWindow();
 
     public void SetCaptionButtons(ICaptionButtons? captionButtons)
     {
@@ -293,6 +315,29 @@ public unsafe partial class Window
             return true;
         }
 
+        if (_titleBarHitTest is not null &&
+            TryGetXamlRootScreenPosition(out var xamlRootScreenX, out var xamlRootScreenY))
+        {
+            try
+            {
+                var customHit = _titleBarHitTest(
+                    screenPoint.x,
+                    screenPoint.y,
+                    xamlRootScreenX,
+                    xamlRootScreenY);
+
+                if (customHit != HTNOWHERE)
+                {
+                    result = new LRESULT(customHit);
+                    return true;
+                }
+            }
+            catch
+            {
+                // Fall back to CoreIsland's default titlebar hit testing.
+            }
+        }
+
         if (!TryGetElementBoundsInPixels(_titleBar, out var titleBarRect))
         {
             result = new LRESULT(HTCLIENT);
@@ -373,6 +418,25 @@ public unsafe partial class Window
 
     private void ApplyTitleBarWindowRegion(int topBorderThickness)
     {
+        if (_titleBarWindowRegion is not null &&
+            TryGetXamlRootScreenPosition(out var xamlRootScreenX, out var xamlRootScreenY))
+        {
+            try
+            {
+                if (_titleBarWindowRegion(
+                    (long)_titleBarHwnd.Value,
+                    xamlRootScreenX,
+                    xamlRootScreenY))
+                {
+                    return;
+                }
+            }
+            catch
+            {
+                // Fall back to CoreIsland's default rectangular region.
+            }
+        }
+
         HRGN region = HRGN.Null;
         bool ownsRegion = true;
 
@@ -442,6 +506,19 @@ public unsafe partial class Window
             (int)Math.Floor(logicalBounds.Y * scale),
             (int)Math.Ceiling(logicalBounds.Width * scale),
             (int)Math.Ceiling(logicalBounds.Height * scale));
+        return true;
+    }
+
+    private bool TryGetXamlRootScreenPosition(out int x, out int y)
+    {
+        x = 0;
+        y = 0;
+
+        if (_xamlHwnd.IsNull || !PInvoke.GetWindowRect(_xamlHwnd, out var xamlWindowRect))
+            return false;
+
+        x = xamlWindowRect.left;
+        y = xamlWindowRect.top;
         return true;
     }
 
