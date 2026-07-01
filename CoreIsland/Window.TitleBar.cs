@@ -451,6 +451,7 @@ public unsafe partial class Window
                     xamlRootScreenY))
                 {
                     AddCaptionButtonsToCurrentTitleBarWindowRegion(topBorderThickness);
+                    CombineTopResizeStripIntoWindowRegion();
                     return;
                 }
             }
@@ -467,6 +468,7 @@ public unsafe partial class Window
         {
             AddElementToRegion(_titleBar, topBorderThickness, ref region);
             AddElementToRegion(_captionButtons?.Element, topBorderThickness, ref region);
+            AddTopResizeStripToRegion(ref region);
 
             if (region.IsNull)
             {
@@ -550,6 +552,72 @@ public unsafe partial class Window
         PInvoke.DeleteObject(elementRegion);
     }
 
+    // Claim a full-width strip along the very top of the title bar window so the top edge is
+    // grabbable for resizing everywhere, not just over the drag area. Without this, pixels the
+    // title bar region does not cover fall through to the XAML island, which reports HTCLIENT and
+    // swallows the resize. The band height matches the HTTOP band in TryHitTestTitleBar.
+    private HRGN CreateTopResizeStripRegion()
+    {
+        if (_isMaximized)
+            return HRGN.Null;
+
+        var height = GetTopResizeHeight();
+        if (height <= 0 || !PInvoke.GetClientRect(_titleBarHwnd, out var rect) || rect.Width <= 0)
+            return HRGN.Null;
+
+        return PInvoke.CreateRectRgn(0, 0, rect.Width, height);
+    }
+
+    private void AddTopResizeStripToRegion(ref HRGN region)
+    {
+        var strip = CreateTopResizeStripRegion();
+        if (strip.IsNull)
+            return;
+
+        if (region.IsNull)
+        {
+            region = strip;
+            return;
+        }
+
+        PInvoke.CombineRgn(region, region, strip, RGN_COMBINE_MODE.RGN_OR);
+        PInvoke.DeleteObject(strip);
+    }
+
+    private void CombineTopResizeStripIntoWindowRegion()
+    {
+        var strip = CreateTopResizeStripRegion();
+        if (strip.IsNull)
+            return;
+
+        HRGN currentRegion = HRGN.Null;
+        bool ownsCurrentRegion = true;
+
+        try
+        {
+            currentRegion = PInvoke.CreateRectRgn(0, 0, 0, 0);
+            if (currentRegion.IsNull)
+                return;
+
+            // GetWindowRgn returns 0 when the window has no region (whole window is hit-testable),
+            // in which case there is nothing to extend.
+            if (PInvoke.GetWindowRgn(_titleBarHwnd, currentRegion) == 0)
+                return;
+
+            PInvoke.CombineRgn(currentRegion, currentRegion, strip, RGN_COMBINE_MODE.RGN_OR);
+
+            if (PInvoke.SetWindowRgn(_titleBarHwnd, currentRegion, true) != 0)
+                ownsCurrentRegion = false;
+        }
+        finally
+        {
+            if (ownsCurrentRegion && !currentRegion.IsNull)
+                PInvoke.DeleteObject(currentRegion);
+            if (!strip.IsNull)
+                PInvoke.DeleteObject(strip);
+        }
+    }
+
     private bool TryGetElementBoundsInPixels(UIElement? element, out PixelRect bounds)
     {
         bounds = default;
@@ -594,8 +662,11 @@ public unsafe partial class Window
 
     private int GetTopBorderThickness() => ExtendsContentIntoTitleBar && !_isMaximized ? (int)_nativeBorderThickness : 0;
 
+    // Match the effective grab depth of the left/right/bottom edges (sizing frame + padded border)
+    // so the top resizes with the same feel instead of the thinner bare-frame band.
     private int GetTopResizeHeight() =>
-        PInvoke.GetSystemMetricsForDpi(SYSTEM_METRICS_INDEX.SM_CYSIZEFRAME, _currentDpi);
+        PInvoke.GetSystemMetricsForDpi(SYSTEM_METRICS_INDEX.SM_CYSIZEFRAME, _currentDpi) +
+        PInvoke.GetSystemMetricsForDpi(SYSTEM_METRICS_INDEX.SM_CXPADDEDBORDER, _currentDpi);
 
     private int GetResizeHandleHeight()
     {
