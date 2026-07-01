@@ -131,6 +131,8 @@ public unsafe partial class Window
 
     internal void OnApplicationRequestedThemeChanged()
     {
+        ApplyXamlRootRequestedTheme();
+
         if (_hwnd.IsNull)
             return;
 

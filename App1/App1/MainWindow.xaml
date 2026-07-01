@@ -24,7 +24,7 @@
                 x:Name="WindowingTitleBar"
                 IsBackButtonVisible="True"
                 AutoRefreshDragRegions="True"
-                Title="XamlIslandsCSharp">
+                Title="Xaml Islands CSharp">
                 <controls:TitleBar.IconSource>
                     <muxc:SymbolIconSource Symbol="Home" />
                 </controls:TitleBar.IconSource>

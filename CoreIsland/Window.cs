@@ -176,6 +176,7 @@ public unsafe partial class Window
     private void InitializeContentRoot()
     {
         _defaultCaptionButtons.Window = this;
+        ApplyXamlRootRequestedTheme();
 
         Canvas.SetZIndex(_contentPresenter, 0);
         Canvas.SetZIndex(_defaultCaptionButtons, 1);
@@ -183,6 +184,13 @@ public unsafe partial class Window
         _contentRoot.Children.Add(_contentPresenter);
         _contentRoot.Children.Add(_defaultCaptionButtons);
         _xamlHost.Content = _contentRoot;
+    }
+
+    private void ApplyXamlRootRequestedTheme()
+    {
+        _contentRoot.RequestedTheme = Application.Current.RequestedTheme == Windows.UI.Xaml.ApplicationTheme.Dark
+            ? Windows.UI.Xaml.ElementTheme.Dark
+            : Windows.UI.Xaml.ElementTheme.Light;
     }
 
     private IFrameworkApplicationPrivate FrameworkAppPrivate { get; } = Windows.UI.Xaml.Application.Current.As<IFrameworkApplicationPrivate>();

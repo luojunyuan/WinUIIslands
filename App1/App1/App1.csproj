@@ -15,14 +15,13 @@
   <PropertyGroup>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <CoreIslandPackaging>false</CoreIslandPackaging>
-    <RestoreAdditionalProjectSources>C:\Users\kimika\source\repos\luojunyuan\Islands.UI.Xaml\artifacts\packages\;$(RestoreAdditionalProjectSources)</RestoreAdditionalProjectSources>
 
 	  <allowunsafeblocks>true</allowunsafeblocks>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\CoreIsland\CoreIsland.csproj" />
-    <PackageReference Include="Islands.UI.Xaml" Version="0.1.0" />
+    <PackageReference Include="Islands.UI.Xaml" Version="0.1.1" />
     <PackageReference Include="Microsoft.UI.Xaml" Version="2.8.7" />
     <PackageReference Include="CommunityToolkit.Uwp.Controls.SettingsControls" Version="8.2.251219" />
   </ItemGroup>
