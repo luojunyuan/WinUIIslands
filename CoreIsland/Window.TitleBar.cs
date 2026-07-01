@@ -50,6 +50,7 @@ public unsafe partial class Window
     private UIElement? _titleBar;
     private TitleBarHitTestHandler? _titleBarHitTest;
     private TitleBarWindowRegionHandler? _titleBarWindowRegion;
+    private ICaptionButtons? _customCaptionButtons;
     private ICaptionButtons? _captionButtons;
     private bool _isMaximized;
     private bool _isTrackingTitleBarMouseLeave;
@@ -94,6 +95,22 @@ public unsafe partial class Window
 
     public void SetCaptionButtons(ICaptionButtons? captionButtons)
     {
+        _customCaptionButtons = captionButtons;
+        UpdateCaptionButtons();
+        UpdateTitleBarWindow();
+    }
+
+    private void UpdateCaptionButtons()
+    {
+        var captionButtons = ExtendsContentIntoTitleBar
+            ? _customCaptionButtons ?? _defaultCaptionButtons
+            : null;
+
+        SetActiveCaptionButtons(captionButtons);
+    }
+
+    private void SetActiveCaptionButtons(ICaptionButtons? captionButtons)
+    {
         if (_captionButtons is not null)
         {
             _captionButtons.Element.SizeChanged -= CaptionButtons_SizeChanged;
@@ -106,7 +123,8 @@ public unsafe partial class Window
             _captionButtons.Element.SizeChanged += CaptionButtons_SizeChanged;
         }
 
-        UpdateTitleBarWindow();
+        _defaultCaptionButtons.Visibility =
+            ReferenceEquals(_captionButtons, _defaultCaptionButtons) ? Visibility.Visible : Visibility.Collapsed;
     }
 
     public bool IsMaximized => PInvoke.IsZoomed(_hwnd);
@@ -161,6 +179,8 @@ public unsafe partial class Window
                 PInvoke.ShowWindow(_titleBarHwnd, SHOW_WINDOW_CMD.SW_HIDE);
             }
         }
+
+        UpdateCaptionButtons();
 
         UpdateFrameMargins();
 
@@ -429,6 +449,7 @@ public unsafe partial class Window
                     xamlRootScreenX,
                     xamlRootScreenY))
                 {
+                    AddCaptionButtonsToCurrentTitleBarWindowRegion(topBorderThickness);
                     return;
                 }
             }
@@ -462,6 +483,53 @@ public unsafe partial class Window
         }
     }
 
+    private void AddCaptionButtonsToCurrentTitleBarWindowRegion(int topBorderThickness)
+    {
+        if (_captionButtons is null || !TryGetElementBoundsInPixels(_captionButtons.Element, out var bounds))
+            return;
+
+        HRGN currentRegion = HRGN.Null;
+        HRGN captionRegion = HRGN.Null;
+        bool ownsCurrentRegion = true;
+
+        try
+        {
+            currentRegion = PInvoke.CreateRectRgn(0, 0, 0, 0);
+            if (currentRegion.IsNull)
+                return;
+
+            captionRegion = PInvoke.CreateRectRgn(
+                bounds.X,
+                topBorderThickness + bounds.Y,
+                bounds.X + bounds.Width,
+                topBorderThickness + bounds.Y + bounds.Height);
+            if (captionRegion.IsNull)
+                return;
+
+            if (PInvoke.GetWindowRgn(_titleBarHwnd, currentRegion) == 0)
+            {
+                PInvoke.DeleteObject(currentRegion);
+                currentRegion = captionRegion;
+                captionRegion = HRGN.Null;
+            }
+            else
+            {
+                PInvoke.CombineRgn(currentRegion, currentRegion, captionRegion, RGN_COMBINE_MODE.RGN_OR);
+            }
+
+            if (PInvoke.SetWindowRgn(_titleBarHwnd, currentRegion, true) != 0)
+                ownsCurrentRegion = false;
+        }
+        finally
+        {
+            if (ownsCurrentRegion && !currentRegion.IsNull)
+                PInvoke.DeleteObject(currentRegion);
+
+            if (!captionRegion.IsNull)
+                PInvoke.DeleteObject(captionRegion);
+        }
+    }
+
     private void AddElementToRegion(UIElement? element, int topBorderThickness, ref HRGN region)
     {
         if (!TryGetElementBoundsInPixels(element, out var bounds))
@@ -485,7 +553,7 @@ public unsafe partial class Window
     {
         bounds = default;
 
-        if (element is not FrameworkElement frameworkElement || Content is null)
+        if (element is not FrameworkElement frameworkElement)
             return false;
 
         var logicalBounds = new Rect(0, 0, frameworkElement.ActualWidth, frameworkElement.ActualHeight);
@@ -494,7 +562,7 @@ public unsafe partial class Window
 
         try
         {
-            logicalBounds = frameworkElement.TransformToVisual(Content).TransformBounds(logicalBounds);
+            logicalBounds = frameworkElement.TransformToVisual(_contentRoot).TransformBounds(logicalBounds);
         }
         catch
         {

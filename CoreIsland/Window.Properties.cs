@@ -70,9 +70,9 @@ public partial class Window
         }
     }
 
-    public UIElement Content
+    public UIElement? Content
     {
-        get => _xamlHost.Content;
-        set => _xamlHost.Content = value;
+        get => _contentPresenter.Content as UIElement;
+        set => _contentPresenter.Content = value;
     }
 }

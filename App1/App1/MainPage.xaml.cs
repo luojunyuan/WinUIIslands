@@ -48,6 +48,9 @@ public sealed partial class MainPage : Page, INotifyPropertyChanged
                 return;
 
             _isCustomTitleBarEnabled = value;
+            if (HostWindow is MainWindow mainWindow)
+                mainWindow.IsCustomTitleBarEnabled = value;
+
             OnPropertyChanged();
             OnPropertyChanged(nameof(CustomTitleBarVisibility));
         }
@@ -103,7 +106,9 @@ public sealed partial class MainPage : Page, INotifyPropertyChanged
     private void RootPage_Loaded(object sender, RoutedEventArgs e)
     {
         HostWindow ??= CoreIsland.Application.Current.MainWindow;
-        TitleBar.Window = HostWindow;
+        if (HostWindow is MainWindow mainWindow)
+            _isCustomTitleBarEnabled = mainWindow.IsCustomTitleBarEnabled;
+
         ApplyTheme();
         ApplyBackdrop();
         SkipToggleSwitchAnimations(this);

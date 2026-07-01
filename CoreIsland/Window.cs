@@ -2,6 +2,8 @@
 using System.Net.NetworkInformation;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using CoreIsland.TitleBar;
+using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Hosting;
 using Windows.Win32;
 using Windows.Win32.Foundation;
@@ -91,6 +93,9 @@ public unsafe partial class Window
 public unsafe partial class Window
 {
     private readonly DesktopWindowXamlSource _xamlHost = new();
+    private readonly Grid _contentRoot = new();
+    private readonly ContentPresenter _contentPresenter = new();
+    private readonly CaptionButtonsControl _defaultCaptionButtons = new();
     private readonly GCHandle _selfHandle;
     private readonly HWND _xamlHwnd;
     private HWND _hwnd;
@@ -125,6 +130,7 @@ public unsafe partial class Window
         var nativeSource = _xamlHost.As<IDesktopWindowXamlSourceNative2>();
         nativeSource.AttachToWindow(_hwnd);
         nativeSource.GetWindowHandle(out _xamlHwnd);
+        InitializeContentRoot();
 
         PInvoke.CreateWindowEx(
             dwExStyle: WINDOW_EX_STYLE.WS_EX_LAYERED | WINDOW_EX_STYLE.WS_EX_NOPARENTNOTIFY |
@@ -167,6 +173,18 @@ public unsafe partial class Window
         EnableResizeLayoutSynchronization(_hwnd, true);
     }
 
+    private void InitializeContentRoot()
+    {
+        _defaultCaptionButtons.Window = this;
+
+        Canvas.SetZIndex(_contentPresenter, 0);
+        Canvas.SetZIndex(_defaultCaptionButtons, 1);
+
+        _contentRoot.Children.Add(_contentPresenter);
+        _contentRoot.Children.Add(_defaultCaptionButtons);
+        _xamlHost.Content = _contentRoot;
+    }
+
     private IFrameworkApplicationPrivate FrameworkAppPrivate { get; } = Windows.UI.Xaml.Application.Current.As<IFrameworkApplicationPrivate>();
 
     private LRESULT WndProc(uint msg, WPARAM wParam, LPARAM lParam)
@@ -176,6 +194,7 @@ public unsafe partial class Window
             case PInvoke.WM_ACTIVATE:
                 var isActive = (wParam.Value & 0xffff) != 0;
                 OnActivated(isActive);
+                _captionButtons?.IsWindowActive(isActive);
                 if (isActive)
                     Application.Current.OnWindowActivated(this);
                 return default;

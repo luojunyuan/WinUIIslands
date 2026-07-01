@@ -53,6 +53,7 @@ SetMenuDefaultItem
 TrackPopupMenu
 TITLEBARINFOEX
 SetWindowRgn
+GetWindowRgn
 CreateRectRgn
 CombineRgn
 GetCursorPos

@@ -2,9 +2,46 @@
     x:Class="App1.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="using:Islands.UI.Xaml.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:island="using:CoreIsland"
-    xmlns:local="using:App1"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
     mc:Ignorable="d"
-    Title="XamlIslandsCpp" />
+    Title="XamlIslandsCpp">
+
+    <Grid x:Name="RootGrid">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Grid
+            x:Name="CustomTitleBarHost"
+            Grid.Row="0"
+            Canvas.ZIndex="1">
+            <controls:TitleBar
+                x:Name="WindowingTitleBar"
+                IsBackButtonVisible="True"
+                AutoRefreshDragRegions="True"
+                Title="XamlIslandsCSharp">
+                <controls:TitleBar.IconSource>
+                    <muxc:SymbolIconSource Symbol="Home" />
+                </controls:TitleBar.IconSource>
+
+                <controls:TitleBar.Content>
+                    <TextBox />
+                </controls:TitleBar.Content>
+
+                <controls:TitleBar.RightHeader>
+                    <Button Content="後ろにっw" />
+                </controls:TitleBar.RightHeader>
+            </controls:TitleBar>
+        </Grid>
+
+        <ContentPresenter
+            x:Name="ContentHost"
+            Grid.Row="1"
+            Canvas.ZIndex="0" />
+    </Grid>
+</island:Window>
