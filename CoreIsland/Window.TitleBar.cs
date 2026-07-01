@@ -9,6 +9,7 @@ using Windows.Win32.Foundation;
 using Windows.Win32.Graphics.Dwm;
 using Windows.Win32.Graphics.Gdi;
 using Windows.Win32.UI.Controls;
+using Windows.Win32.UI.Input.KeyboardAndMouse;
 using Windows.Win32.UI.WindowsAndMessaging;
 using DrawingPoint = System.Drawing.Point;
 
@@ -776,6 +777,8 @@ public unsafe partial class Window
 
     private void HandleTitleBarMouseMove(WPARAM wParam)
     {
+        ClearStalePressedCaptionButton();
+
         if (_captionButtons is null || !TryCaptionButtonFromHitTest((int)wParam.Value, out var button))
         {
             _captionButtons?.LeaveButtons();
@@ -787,6 +790,8 @@ public unsafe partial class Window
 
     private void HandleTitleBarClientMouseMove(LPARAM lParam)
     {
+        ClearStalePressedCaptionButton();
+
         if (_captionButtons is null || !TryCaptionButtonFromTitleBarClientPoint(lParam, out var button))
         {
             _captionButtons?.LeaveButtons();
@@ -795,6 +800,20 @@ public unsafe partial class Window
 
         _captionButtons.HoverButton(button);
     }
+
+    // When the mouse is released outside the title bar window, we never receive the
+    // button-up message, so the pressed caption button stays latched. Detect that the
+    // physical left button is no longer down on the next move and clear the stale state.
+    private void ClearStalePressedCaptionButton()
+    {
+        if (_captionButtons is null || IsLeftButtonDown())
+            return;
+
+        _captionButtons.ReleaseButtons();
+    }
+
+    private static bool IsLeftButtonDown() =>
+        (PInvoke.GetKeyState((int)VIRTUAL_KEY.VK_LBUTTON) & 0x8000) != 0;
 
     private void HandleTitleBarButtonDown(WPARAM wParam)
     {

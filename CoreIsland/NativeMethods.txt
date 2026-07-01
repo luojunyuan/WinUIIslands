@@ -57,6 +57,8 @@ GetWindowRgn
 CreateRectRgn
 CombineRgn
 GetCursorPos
+GetKeyState
+VIRTUAL_KEY
 DwmGetWindowAttribute
 
 // ---- Window.Properties ----
