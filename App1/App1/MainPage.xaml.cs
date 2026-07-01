@@ -168,12 +168,10 @@ public sealed partial class MainPage : Page, INotifyPropertyChanged
 
         if (IsMicaAvailable && Backdrop != 0)
         {
-            Microsoft.UI.Xaml.Controls.BackdropMaterial.SetApplyToRootOrPageBackground(this, true);
             Background = null;
             return;
         }
 
-        Microsoft.UI.Xaml.Controls.BackdropMaterial.SetApplyToRootOrPageBackground(this, false);
         Color backgroundColor = lightTheme ? Color.FromArgb(255, 243, 243, 243) : Color.FromArgb(255, 32, 32, 32);
 
         if (Backdrop == 1)

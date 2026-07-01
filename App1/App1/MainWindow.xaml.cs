@@ -21,11 +21,6 @@ public sealed partial class MainWindow : CoreIsland.Window
             WindowHandle = (long)WindowNative.GetWindowHandle(this),
         };
 
-        Activated += MainWindow_Activated;
-        SizeChanged += MainWindow_SizeChanged;
-        WindowingTitleBar.SizeChanged += WindowingTitleBar_SizeChanged;
-        WindowingTitleBar.LayoutUpdated += WindowingTitleBar_LayoutUpdated;
-
         ApplyCustomTitleBarState();
     }
 
@@ -60,9 +55,6 @@ public sealed partial class MainWindow : CoreIsland.Window
 
             ExtendsContentIntoTitleBar = true;
             SetTitleBar(WindowingTitleBar, _titleBarAdapter.HitTest, _titleBarAdapter.ApplyTitleBarWindowRegion);
-
-            WindowingTitleBar.RecomputeDragRegions();
-            RefreshTitleBar();
             return;
         }
 
@@ -71,34 +63,5 @@ public sealed partial class MainWindow : CoreIsland.Window
 
         SetTitleBar(null);
         ExtendsContentIntoTitleBar = false;
-    }
-
-    private void MainWindow_Activated(object sender, CoreIsland.WindowActivatedEventArgs e)
-    {
-        _titleBarAdapter.NotifyWindowActivated(e.IsActive);
-    }
-
-    private void MainWindow_SizeChanged(object sender, CoreIsland.WindowSizeChangedEventArgs e)
-    {
-        RefreshTitleBar();
-    }
-
-    private void WindowingTitleBar_SizeChanged(object sender, SizeChangedEventArgs e)
-    {
-        RecomputeTitleBarRegions();
-    }
-
-    private void WindowingTitleBar_LayoutUpdated(object? sender, object e)
-    {
-        RecomputeTitleBarRegions();
-    }
-
-    private void RecomputeTitleBarRegions()
-    {
-        if (!IsCustomTitleBarEnabled)
-            return;
-
-        WindowingTitleBar.RecomputeDragRegions();
-        RefreshTitleBar();
     }
 }

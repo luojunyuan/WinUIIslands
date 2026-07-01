@@ -91,8 +91,6 @@ public unsafe partial class Window
         UpdateTitleBarWindow();
     }
 
-    public void RefreshTitleBar() => UpdateTitleBarWindow();
-
     public void SetCaptionButtons(ICaptionButtons? captionButtons)
     {
         _customCaptionButtons = captionButtons;
