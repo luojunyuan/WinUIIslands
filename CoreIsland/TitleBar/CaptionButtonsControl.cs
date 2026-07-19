@@ -1,22 +1,21 @@
-﻿using Windows.UI;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Automation;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Markup;
-using Windows.UI.Xaml.Media;
+using WinRT;
 using IslandWindow = CoreIsland.Window;
 
 namespace CoreIsland.TitleBar;
 
-internal sealed partial class CaptionButtonsControl : UserControl, ICaptionButtons
+internal sealed partial class CaptionButtonsControl : Control
 {
-    private static readonly SolidColorBrush TransparentBrush = new(Colors.Transparent);
+    private const string XamlResourceName = "CoreIsland.TitleBar.CaptionButtonsControl.xaml";
 
-    private readonly Button _minimizeButton;
-    private readonly Button _maximizeButton;
-    private readonly Button _closeButton;
-    private readonly ResourceDictionary _captionButtonResources;
+    private readonly ResourceDictionary _resources;
+    private Button? _minimizeButton;
+    private Button? _maximizeButton;
+    private Button? _closeButton;
 
     private CaptionButton? _pressedButton;
     private bool _allInNormal = true;
@@ -25,76 +24,62 @@ internal sealed partial class CaptionButtonsControl : UserControl, ICaptionButto
 
     public CaptionButtonsControl()
     {
-        HorizontalAlignment = HorizontalAlignment.Right;
-        VerticalAlignment = VerticalAlignment.Top;
-        Background = TransparentBrush;
-        Visibility = Visibility.Collapsed;
+        _resources = LoadResources();
+        Resources.MergedDictionaries.Add(_resources);
+        Style = (Style)_resources["CaptionButtonsControlStyle"];
+    }
 
-        _captionButtonResources = (ResourceDictionary)XamlReader.Load(CaptionButtonResourcesXaml);
-        Resources.MergedDictionaries.Add(_captionButtonResources);
+    protected override void OnApplyTemplate()
+    {
+        _minimizeButton?.Click -= MinimizeButton_Click;
+        _maximizeButton?.Click -= MaximizeButton_Click;
+        _closeButton?.Click -= CloseButton_Click;
 
-        _minimizeButton = CreateButton("Minimize", "CaptionButtonStyle", "\uE921");
-        _maximizeButton = CreateButton("Maximize", "CaptionButtonStyle", "\uE922");
-        _closeButton = CreateButton("Close", "CloseCaptionButtonStyle", "\uE8BB");
+        base.OnApplyTemplate();
+
+        _minimizeButton = GetButton("MinimizeButton");
+        _maximizeButton = GetButton("MaximizeButton");
+        _closeButton = GetButton("CloseButton");
 
         _minimizeButton.Click += MinimizeButton_Click;
         _maximizeButton.Click += MaximizeButton_Click;
         _closeButton.Click += CloseButton_Click;
 
-        Content = new StackPanel
-        {
-            Orientation = Orientation.Horizontal,
-            Children =
-            {
-                _minimizeButton,
-                _maximizeButton,
-                _closeButton,
-            },
-        };
-
         ApplyNormalState();
     }
 
-    public IslandWindow? Window { get; set; }
+    internal IslandWindow? Window { get; set; }
 
-    public FrameworkElement Element => this;
-
-    public FrameworkElement MinimizeButtonElement => _minimizeButton;
-
-    public FrameworkElement MaximizeButtonElement => _maximizeButton;
-
-    public FrameworkElement CloseButtonElement => _closeButton;
-
-    public void HoverButton(CaptionButton button)
+    internal void HoverButton(CaptionButton button)
     {
         if (_pressedButton is CaptionButton pressedButton)
         {
             bool hoveringOnPressedButton = pressedButton == button;
             _allInNormal = !hoveringOnPressedButton;
-            GoToButtonState(_minimizeButton, hoveringOnPressedButton && button == CaptionButton.Minimize ? "Pressed" : "Normal");
-            GoToButtonState(_maximizeButton, hoveringOnPressedButton && button == CaptionButton.Maximize ? "Pressed" : "Normal");
-            GoToButtonState(_closeButton, hoveringOnPressedButton && button == CaptionButton.Close ? "Pressed" : "Normal");
+            GoToButtonState(MinimizeButton, hoveringOnPressedButton && button == CaptionButton.Minimize ? "Pressed" : "Normal");
+            GoToButtonState(MaximizeButton, hoveringOnPressedButton && button == CaptionButton.Maximize ? "Pressed" : "Normal");
+            GoToButtonState(CloseButton, hoveringOnPressedButton && button == CaptionButton.Close ? "Pressed" : "Normal");
             return;
         }
 
         _allInNormal = false;
         var activeState = _isWindowActive ? "Normal" : "NotActive";
-        GoToButtonState(_minimizeButton, button == CaptionButton.Minimize ? "PointerOver" : activeState);
-        GoToButtonState(_maximizeButton, button == CaptionButton.Maximize ? "PointerOver" : activeState);
-        GoToButtonState(_closeButton, button == CaptionButton.Close ? "PointerOver" : activeState);
+        GoToButtonState(MinimizeButton, button == CaptionButton.Minimize ? "PointerOver" : activeState);
+        GoToButtonState(MaximizeButton, button == CaptionButton.Maximize ? "PointerOver" : activeState);
+        GoToButtonState(CloseButton, button == CaptionButton.Close ? "PointerOver" : activeState);
     }
 
-    public void PressButton(CaptionButton button)
+    internal void PressButton(CaptionButton button)
     {
         _allInNormal = false;
         _pressedButton = button;
 
-        GoToButtonState(_minimizeButton, button == CaptionButton.Minimize ? "Pressed" : "Normal");
-        GoToButtonState(_maximizeButton, button == CaptionButton.Maximize ? "Pressed" : "Normal");
-        GoToButtonState(_closeButton, button == CaptionButton.Close ? "Pressed" : "Normal");
+        GoToButtonState(MinimizeButton, button == CaptionButton.Minimize ? "Pressed" : "Normal");
+        GoToButtonState(MaximizeButton, button == CaptionButton.Maximize ? "Pressed" : "Normal");
+        GoToButtonState(CloseButton, button == CaptionButton.Close ? "Pressed" : "Normal");
     }
 
-    public void ReleaseButton(CaptionButton button)
+    internal void ReleaseButton(CaptionButton button)
     {
         bool clicked = _pressedButton == button;
 
@@ -104,12 +89,12 @@ internal sealed partial class CaptionButtonsControl : UserControl, ICaptionButto
         _pressedButton = null;
         _allInNormal = clicked;
 
-        GoToButtonState(_minimizeButton, !clicked && button == CaptionButton.Minimize ? "PointerOver" : "Normal");
-        GoToButtonState(_maximizeButton, !clicked && button == CaptionButton.Maximize ? "PointerOver" : "Normal");
-        GoToButtonState(_closeButton, !clicked && button == CaptionButton.Close ? "PointerOver" : "Normal");
+        GoToButtonState(MinimizeButton, !clicked && button == CaptionButton.Minimize ? "PointerOver" : "Normal");
+        GoToButtonState(MaximizeButton, !clicked && button == CaptionButton.Maximize ? "PointerOver" : "Normal");
+        GoToButtonState(CloseButton, !clicked && button == CaptionButton.Close ? "PointerOver" : "Normal");
     }
 
-    public void ReleaseButtons()
+    internal void ReleaseButtons()
     {
         if (_pressedButton is null)
             return;
@@ -118,35 +103,35 @@ internal sealed partial class CaptionButtonsControl : UserControl, ICaptionButto
         LeaveButtons();
     }
 
-    public void LeaveButtons()
+    internal void LeaveButtons()
     {
         if (_allInNormal)
             return;
 
         _allInNormal = true;
         var activeState = _isWindowActive ? "Normal" : "NotActive";
-        GoToButtonState(_minimizeButton, activeState);
-        GoToButtonState(_maximizeButton, activeState);
-        GoToButtonState(_closeButton, activeState);
+        GoToButtonState(MinimizeButton, activeState);
+        GoToButtonState(MaximizeButton, activeState);
+        GoToButtonState(CloseButton, activeState);
     }
 
-    public void IsWindowMaximized(bool value) => IsWindowMaximized(value, false);
+    internal void IsWindowMaximized(bool value) => IsWindowMaximized(value, false);
 
     private void IsWindowMaximized(bool value, bool fromDispatcher)
     {
         if (_isWindowMaximized == value)
             return;
 
-        if (!fromDispatcher && _maximizeButton.Dispatcher.HasThreadAccess is false)
+        if (!fromDispatcher && MaximizeButton.Dispatcher.HasThreadAccess is false)
         {
             _ = Dispatcher.RunAsync(CoreDispatcherPriority.Low, () => IsWindowMaximized(value, true));
             return;
         }
 
-        if (VisualStateManager.GoToState(_maximizeButton, value ? "WindowStateMaximized" : "WindowStateNormal", false))
+        if (VisualStateManager.GoToState(MaximizeButton, value ? "WindowStateMaximized" : "WindowStateNormal", false))
         {
             _isWindowMaximized = value;
-            AutomationProperties.SetName(_maximizeButton, value ? "Restore" : "Maximize");
+            AutomationProperties.SetName(MaximizeButton, value ? "Restore" : "Maximize");
         }
         else if (!fromDispatcher)
         {
@@ -154,14 +139,14 @@ internal sealed partial class CaptionButtonsControl : UserControl, ICaptionButto
         }
     }
 
-    public void IsWindowActive(bool value)
+    internal void IsWindowActive(bool value)
     {
         _isWindowActive = value;
 
         var activeState = value ? "Normal" : "NotActive";
-        GoToButtonState(_minimizeButton, activeState);
-        GoToButtonState(_maximizeButton, activeState);
-        GoToButtonState(_closeButton, activeState);
+        GoToButtonState(MinimizeButton, activeState);
+        GoToButtonState(MaximizeButton, activeState);
+        GoToButtonState(CloseButton, activeState);
     }
 
     private void MinimizeButton_Click(object sender, RoutedEventArgs e) => Window?.PostCaptionButtonCommand(CaptionButton.Minimize);
@@ -170,25 +155,68 @@ internal sealed partial class CaptionButtonsControl : UserControl, ICaptionButto
 
     private void CloseButton_Click(object sender, RoutedEventArgs e) => Window?.PostCaptionButtonCommand(CaptionButton.Close);
 
-    private Button CreateButton(string automationName, string styleKey, string glyph)
+    internal Button MinimizeButton
     {
-        var button = new Button
+        get
         {
-            Style = (Style)_captionButtonResources[styleKey],
-            IsTabStop = false,
-        };
+            EnsureTemplateParts();
+            return _minimizeButton!;
+        }
+    }
 
-        button.Resources["CaptionButtonGlyph"] = glyph;
-        AutomationProperties.SetName(button, automationName);
-        return button;
+    internal Button MaximizeButton
+    {
+        get
+        {
+            EnsureTemplateParts();
+            return _maximizeButton!;
+        }
+    }
+
+    internal Button CloseButton
+    {
+        get
+        {
+            EnsureTemplateParts();
+            return _closeButton!;
+        }
+    }
+
+    private void EnsureTemplateParts()
+    {
+        if (_minimizeButton is not null && _maximizeButton is not null && _closeButton is not null)
+            return;
+
+        ApplyTemplate();
+
+        if (_minimizeButton is null || _maximizeButton is null || _closeButton is null)
+            throw new InvalidOperationException("The caption buttons template has not been applied.");
+    }
+
+    private static ResourceDictionary LoadResources()
+    {
+        using var stream = typeof(CaptionButtonsControl).Assembly.GetManifestResourceStream(XamlResourceName)
+            ?? throw new InvalidOperationException($"Embedded caption buttons resource '{XamlResourceName}' was not found.");
+        using var reader = new StreamReader(stream);
+        return (ResourceDictionary)XamlReader.Load(reader.ReadToEnd());
+    }
+
+    private Button GetButton(string name)
+    {
+        var part = GetTemplateChild(name)
+            ?? throw new InvalidOperationException($"Caption button '{name}' was not found in the embedded XAML.");
+
+        // NativeAOT can keep dynamically loaded template parts projected as DependencyObject.
+        // Query the WinRT object for Button when the normal managed cast cannot recover the class.
+        return part as Button ?? part.As<Button>();
     }
 
     private void ApplyNormalState()
     {
         var activeState = _isWindowActive ? "Normal" : "NotActive";
-        GoToButtonState(_minimizeButton, activeState);
-        GoToButtonState(_maximizeButton, activeState);
-        GoToButtonState(_closeButton, activeState);
+        GoToButtonState(MinimizeButton, activeState);
+        GoToButtonState(MaximizeButton, activeState);
+        GoToButtonState(CloseButton, activeState);
     }
 
     private static void GoToButtonState(Button button, string state) => VisualStateManager.GoToState(button, state, false);

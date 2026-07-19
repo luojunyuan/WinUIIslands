@@ -1,8 +1,4 @@
-﻿namespace CoreIsland.TitleBar;
-
-internal sealed partial class CaptionButtonsControl
-{
-    private const string CaptionButtonResourcesXaml = """
+﻿<!-- Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. -->
 <ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
@@ -164,6 +160,45 @@ internal sealed partial class CaptionButtonsControl
             </Setter.Value>
         </Setter>
     </Style>
+
+    <Style x:Key="CaptionButtonsControlStyle" TargetType="Control">
+        <Setter Property="HorizontalAlignment" Value="Right" />
+        <Setter Property="VerticalAlignment" Value="Top" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Visibility" Value="Collapsed" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Control">
+                    <StackPanel
+                        Background="{TemplateBinding Background}"
+                        Orientation="Horizontal">
+                        <Button
+                            x:Name="MinimizeButton"
+                            AutomationProperties.Name="Minimize"
+                            Style="{StaticResource CaptionButtonStyle}">
+                            <Button.Resources>
+                                <x:String x:Key="CaptionButtonGlyph">&#xE921;</x:String>
+                            </Button.Resources>
+                        </Button>
+                        <Button
+                            x:Name="MaximizeButton"
+                            AutomationProperties.Name="Maximize"
+                            Style="{StaticResource CaptionButtonStyle}">
+                            <Button.Resources>
+                                <x:String x:Key="CaptionButtonGlyph">&#xE922;</x:String>
+                            </Button.Resources>
+                        </Button>
+                        <Button
+                            x:Name="CloseButton"
+                            AutomationProperties.Name="Close"
+                            Style="{StaticResource CloseCaptionButtonStyle}">
+                            <Button.Resources>
+                                <x:String x:Key="CaptionButtonGlyph">&#xE8BB;</x:String>
+                            </Button.Resources>
+                        </Button>
+                    </StackPanel>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 </ResourceDictionary>
-""";
-}

@@ -52,8 +52,7 @@ public unsafe partial class Window
     private UIElement? _titleBar;
     private TitleBarHitTestHandler? _titleBarHitTest;
     private TitleBarWindowRegionHandler? _titleBarWindowRegion;
-    private ICaptionButtons? _customCaptionButtons;
-    private ICaptionButtons? _captionButtons;
+    private CaptionButtonsControl? _captionButtons;
     private bool _isMaximized;
     private bool _isTrackingTitleBarMouseLeave;
     private bool _isTrackingTitleBarNonClientMouseLeave;
@@ -105,38 +104,30 @@ public unsafe partial class Window
         UpdateTitleBarWindow();
     }
 
-    public void SetCaptionButtons(ICaptionButtons? captionButtons)
-    {
-        _customCaptionButtons = captionButtons;
-        UpdateCaptionButtons();
-        UpdateTitleBarWindow();
-    }
-
     private void UpdateCaptionButtons()
     {
         var captionButtons = ExtendsContentIntoTitleBar
-            ? _customCaptionButtons ?? _defaultCaptionButtons
+            ? _defaultCaptionButtons
             : null;
 
         SetActiveCaptionButtons(captionButtons);
     }
 
-    private void SetActiveCaptionButtons(ICaptionButtons? captionButtons)
+    private void SetActiveCaptionButtons(CaptionButtonsControl? captionButtons)
     {
         if (_captionButtons is not null)
         {
-            _captionButtons.Element.SizeChanged -= CaptionButtons_SizeChanged;
+            _captionButtons.SizeChanged -= CaptionButtons_SizeChanged;
         }
 
         _captionButtons = captionButtons;
 
         if (_captionButtons is not null)
         {
-            _captionButtons.Element.SizeChanged += CaptionButtons_SizeChanged;
+            _captionButtons.SizeChanged += CaptionButtons_SizeChanged;
         }
 
-        _defaultCaptionButtons.Visibility =
-            ReferenceEquals(_captionButtons, _defaultCaptionButtons) ? Visibility.Visible : Visibility.Collapsed;
+        _defaultCaptionButtons.Visibility = _captionButtons is null ? Visibility.Collapsed : Visibility.Visible;
 
         (_titleBar as CoreIslandTitleBar)?.RefreshWindowInsets();
     }
@@ -146,7 +137,7 @@ public unsafe partial class Window
         if (_captionButtons is null)
             return (0, 0);
 
-        var element = _captionButtons.Element;
+        var element = _captionButtons;
         var width = element.ActualWidth > 0
             ? element.ActualWidth
             : element.DesiredSize.Width > 0
@@ -181,7 +172,7 @@ public unsafe partial class Window
             SET_WINDOW_POS_FLAGS.SWP_FRAMECHANGED);
     }
 
-    public void PostCaptionButtonCommand(CaptionButton button)
+    internal void PostCaptionButtonCommand(CaptionButton button)
     {
         int command = button switch
         {
@@ -419,7 +410,7 @@ public unsafe partial class Window
         }
 
         if (!TryGetElementBoundsInPixels(_titleBar, out var titleBarBounds) &&
-            !TryGetElementBoundsInPixels(_captionButtons?.Element, out titleBarBounds))
+            !TryGetElementBoundsInPixels(_captionButtons, out titleBarBounds))
         {
             PInvoke.SetWindowRgn(_titleBarHwnd, default, true);
             PInvoke.ShowWindow(_titleBarHwnd, SHOW_WINDOW_CMD.SW_HIDE);
@@ -467,7 +458,7 @@ public unsafe partial class Window
         if (_maximizeButtonHwnd.IsNull || _captionButtons is null)
             return;
 
-        if (!TryGetElementBoundsInPixels(_captionButtons.MaximizeButtonElement, out var bounds))
+        if (!TryGetElementBoundsInPixels(_captionButtons.MaximizeButton, out var bounds))
             return;
 
         PInvoke.SetWindowPos(_maximizeButtonHwnd, default, bounds.X, GetTopBorderThickness() + bounds.Y, bounds.Width, bounds.Height,
@@ -503,7 +494,7 @@ public unsafe partial class Window
         try
         {
             AddElementToRegion(_titleBar, topBorderThickness, ref region);
-            AddElementToRegion(_captionButtons?.Element, topBorderThickness, ref region);
+            AddElementToRegion(_captionButtons, topBorderThickness, ref region);
             AddTopResizeStripToRegion(ref region);
 
             if (region.IsNull)
@@ -524,7 +515,7 @@ public unsafe partial class Window
 
     private void AddCaptionButtonsToCurrentTitleBarWindowRegion(int topBorderThickness)
     {
-        if (_captionButtons is null || !TryGetElementBoundsInPixels(_captionButtons.Element, out var bounds))
+        if (_captionButtons is null || !TryGetElementBoundsInPixels(_captionButtons, out var bounds))
             return;
 
         HRGN currentRegion = HRGN.Null;
@@ -979,25 +970,25 @@ public unsafe partial class Window
     {
         button = default;
 
-        if (_captionButtons is null || !TryGetElementBoundsInPixels(_captionButtons.Element, out var bounds))
+        if (_captionButtons is null || !TryGetElementBoundsInPixels(_captionButtons, out var bounds))
             return false;
 
         if (!Contains(bounds.Offset(clientTopLeft.X, clientTopLeft.Y + GetTopBorderThickness()), screenPoint))
             return false;
 
-        if (IsElementHit(_captionButtons.MinimizeButtonElement, screenPoint, clientTopLeft))
+        if (IsElementHit(_captionButtons.MinimizeButton, screenPoint, clientTopLeft))
         {
             button = CaptionButton.Minimize;
             return true;
         }
 
-        if (IsElementHit(_captionButtons.MaximizeButtonElement, screenPoint, clientTopLeft))
+        if (IsElementHit(_captionButtons.MaximizeButton, screenPoint, clientTopLeft))
         {
             button = CaptionButton.Maximize;
             return true;
         }
 
-        if (IsElementHit(_captionButtons.CloseButtonElement, screenPoint, clientTopLeft))
+        if (IsElementHit(_captionButtons.CloseButton, screenPoint, clientTopLeft))
         {
             button = CaptionButton.Close;
             return true;
