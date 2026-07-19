@@ -38,7 +38,7 @@ The measurements above were taken from the generated template on Windows 11 ARM6
 Install the template package:
 
 ```powershell
-dotnet new install WinUIIslands.Templates::1.1.0
+dotnet new install WinUIIslands.Templates@1.1.0
 ```
 
 Create an application:

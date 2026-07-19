@@ -7,7 +7,7 @@ Measured on Windows 11 ARM64, the generated NativeAOT starter uses 3 runtime fil
 The fastest way to start is the project template:
 
 ```powershell
-dotnet new install WinUIIslands.Templates::1.1.0
+dotnet new install WinUIIslands.Templates@1.1.0
 dotnet new winuiislands -n HelloIslands
 ```
 
