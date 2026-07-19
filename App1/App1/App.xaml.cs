@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 using System.Threading.Tasks;
-using CoreIsland.Windowing;
+using WinUIIslands.Windowing;
 using Windows.ApplicationModel.Activation;
 using Windows.UI;
 using Windows.UI.Xaml;
@@ -14,7 +14,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace App1
 {
-    public sealed partial class App : CoreIsland.Application
+    public sealed partial class App : WinUIIslands.Application
     {
         private MainWindow? _mainWindow;
 

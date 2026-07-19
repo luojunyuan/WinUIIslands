@@ -1,0 +1,58 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256">
+  <defs>
+    <linearGradient id="backDepth" x1="38" y1="38" x2="205" y2="209" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0057B8" />
+      <stop offset="1" stop-color="#15318E" />
+    </linearGradient>
+    <linearGradient id="backFace" x1="42" y1="31" x2="198" y2="198" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#3DE1F2" />
+      <stop offset="0.48" stop-color="#168BE7" />
+      <stop offset="1" stop-color="#3154CF" />
+    </linearGradient>
+    <linearGradient id="frontDepth" x1="53" y1="44" x2="216" y2="213" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#5524B5" />
+      <stop offset="1" stop-color="#202C9A" />
+    </linearGradient>
+    <linearGradient id="frontFace" x1="55" y1="37" x2="213" y2="201" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#A47CFF" />
+      <stop offset="0.45" stop-color="#6657ED" />
+      <stop offset="1" stop-color="#1F92E8" />
+    </linearGradient>
+    <linearGradient id="islandDepth" x1="105" y1="111" x2="169" y2="172" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#1674C7" />
+      <stop offset="1" stop-color="#4934B8" />
+    </linearGradient>
+    <linearGradient id="islandFace" x1="104" y1="104" x2="166" y2="163" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#F4FCFF" />
+      <stop offset="0.34" stop-color="#A7F2F8" />
+      <stop offset="1" stop-color="#61C9F3" />
+    </linearGradient>
+    <linearGradient id="islandSheen" x1="109" y1="107" x2="149" y2="148" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.9" />
+      <stop offset="1" stop-color="#FFFFFF" stop-opacity="0" />
+    </linearGradient>
+    <filter id="markShadow" x="4" y="5" width="248" height="247" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="6" stdDeviation="7" flood-color="#081B52" flood-opacity="0.2" />
+    </filter>
+    <filter id="islandShadow" x="76" y="83" width="111" height="110" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="6" stdDeviation="5" flood-color="#18216B" flood-opacity="0.24" />
+    </filter>
+  </defs>
+
+  <g filter="url(#markShadow)">
+    <path d="M50 36H76C84 36 90 42 90 50V129C90 141 97 148 110 148H196C204 148 210 154 210 162V188C210 196 204 202 196 202H50C42 202 36 196 36 188V50C36 42 42 36 50 36Z" fill="url(#backDepth)" />
+    <path d="M50 28H76C84 28 90 34 90 42V121C90 133 97 140 110 140H196C204 140 210 146 210 154V180C210 188 204 194 196 194H50C42 194 36 188 36 180V42C36 34 42 28 50 28Z" fill="url(#backFace)" />
+    <path d="M50 30H76C82 30 87 35 87 42" fill="none" stroke="#C2FAFF" stroke-width="4" stroke-linecap="round" opacity="0.74" />
+
+    <path d="M60 44H206C214 44 220 50 220 58V196C220 204 214 210 206 210H180C172 210 166 204 166 196V117C166 105 159 98 146 98H60C52 98 46 92 46 84V58C46 50 52 44 60 44Z" fill="url(#frontDepth)" />
+    <path d="M60 36H206C214 36 220 42 220 50V188C220 196 214 202 206 202H180C172 202 166 196 166 188V109C166 97 159 90 146 90H60C52 90 46 84 46 76V50C46 42 52 36 60 36Z" fill="url(#frontFace)" />
+    <path d="M61 39H205C211 39 216 44 216 50" fill="none" stroke="#DFCFFF" stroke-width="4" stroke-linecap="round" opacity="0.7" />
+  </g>
+
+  <g filter="url(#islandShadow)">
+    <rect x="97" y="107" width="72" height="66" rx="20" fill="url(#islandDepth)" />
+    <rect x="97" y="99" width="72" height="66" rx="20" fill="url(#islandFace)" />
+    <path d="M111 103H148C157 103 164 110 164 119" fill="none" stroke="url(#islandSheen)" stroke-width="5" stroke-linecap="round" />
+  </g>
+</svg>

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using CoreIsland;
+using WinUIIslands;
 using Windows.ApplicationModel.Resources;
 using Windows.UI;
 using Windows.UI.ViewManagement;
@@ -28,7 +28,7 @@ public sealed partial class MainPage : Page, INotifyPropertyChanged
         Initialize();
     }
 
-    public MainPage(CoreIsland.Window hostWindow)
+    public MainPage(WinUIIslands.Window hostWindow)
     {
         HostWindow = hostWindow;
         InitializeComponent();
@@ -37,7 +37,7 @@ public sealed partial class MainPage : Page, INotifyPropertyChanged
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
-    public CoreIsland.Window? HostWindow { get; private set; }
+    public WinUIIslands.Window? HostWindow { get; private set; }
 
     public bool IsCustomTitleBarEnabled
     {
@@ -105,7 +105,7 @@ public sealed partial class MainPage : Page, INotifyPropertyChanged
 
     private void RootPage_Loaded(object sender, RoutedEventArgs e)
     {
-        HostWindow ??= CoreIsland.Application.Current.MainWindow;
+        HostWindow ??= WinUIIslands.Application.Current.MainWindow;
         if (HostWindow is MainWindow mainWindow)
             _isCustomTitleBarEnabled = mainWindow.IsCustomTitleBarEnabled;
 
@@ -194,7 +194,7 @@ public sealed partial class MainPage : Page, INotifyPropertyChanged
     {
         try
         {
-            CoreIsland.Application.Current.RequestedTheme = theme == ElementTheme.Dark
+            WinUIIslands.Application.Current.RequestedTheme = theme == ElementTheme.Dark
                 ? ApplicationTheme.Dark
                 : ApplicationTheme.Light;
         }

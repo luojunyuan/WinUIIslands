@@ -1,0 +1,6 @@
+﻿<Project>
+  <!-- Import XbfEmbed + Mux + AppMain targets; consumed by the auto-import convention build/{PackageId}.targets -->
+  <Import Project="$(MSBuildThisFileDirectory)WinUIIslands.XbfEmbed.targets" Condition="'$(WinUIIslandsPackaging)' != 'true'" />
+  <Import Project="$(MSBuildThisFileDirectory)WinUIIslands.Mux.targets" Condition="'$(WinUIIslandsPackaging)' != 'true'" />
+  <Import Project="$(MSBuildThisFileDirectory)WinUIIslands.AppMain.targets" />
+</Project>

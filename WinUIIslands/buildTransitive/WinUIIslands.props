@@ -1,0 +1,5 @@
+﻿<Project>
+  <!-- Import XbfEmbed + Mux props; consumed by the auto-import convention build/{PackageId}.props -->
+  <Import Project="$(MSBuildThisFileDirectory)WinUIIslands.XbfEmbed.props" Condition="'$(WinUIIslandsPackaging)' != 'true'" />
+  <Import Project="$(MSBuildThisFileDirectory)WinUIIslands.Mux.props" Condition="'$(WinUIIslandsPackaging)' != 'true'" />
+</Project>

@@ -2,7 +2,7 @@
 
 namespace App1;
 
-public sealed partial class MainWindow : CoreIsland.Window
+public sealed partial class MainWindow : WinUIIslands.Window
 {
     private bool _isCustomTitleBarEnabled = true;
 

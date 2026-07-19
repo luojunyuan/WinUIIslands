@@ -1,8 +1,0 @@
-﻿<Project>
-  <!-- ==================== CoreIsland XAML patches ==================== -->
-  <Target Name="CoreIsland_PatchAppMain"
-          AfterTargets="MarkupCompilePass1"
-          BeforeTargets="CoreCompile">
-    <Exec Command="powershell -NoProfile -ExecutionPolicy Bypass -File &quot;$(MSBuildThisFileDirectory)Utils\Patch-AppMain.ps1&quot; -FilePath &quot;$(IntermediateOutputPath)App.g.i.cs&quot;" />
-  </Target>
-</Project>

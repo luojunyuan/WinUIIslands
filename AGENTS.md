@@ -1,8 +1,8 @@
-﻿# CoreIsland - AI Agent Reference
+﻿# WinUIIslands - AI Agent Reference
 
 XAML Islands host library for unpackaged .NET 10 desktop apps.
 
-- **CoreIsland** - library providing `CoreIsland.Application` + `CoreIsland.Window`.
+- **WinUIIslands** - library providing `WinUIIslands.Application` + `WinUIIslands.Window`.
 - **App1** - sample/demo app.
 
 ## UWP XAML, NOT WinUI 3
@@ -13,10 +13,10 @@ MUXC (WinUI 2, the `Microsoft.UI.Xaml` NuGet package) is an **extension controls
 
 ## Build
 
-`CoreIsland` itself is a class library. Building it directly with `dotnet build` is fine:
+`WinUIIslands` itself is a class library. Building it directly with `dotnet build` is fine:
 
 ```powershell
-dotnet build CoreIsland\CoreIsland.csproj
+dotnet build WinUIIslands\WinUIIslands.csproj
 ```
 
 Projects that contain XAML files, such as `App1`, must be built with the Visual Studio MSBuild toolchain. Their XAML compilation depends on Visual Studio's UWP XAML build tasks, so plain `dotnet build` is not the right validation path for those projects.

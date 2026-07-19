@@ -88,7 +88,7 @@
                     BorderBrush="{ThemeResource SystemControlForegroundBaseLowBrush}"
                     BorderThickness="1"
                     CornerRadius="4">
-                    <TextBlock Text="CoreIsland" />
+                    <TextBlock Text="WinUIIslands" />
                 </Border>
             </StackPanel>
         </Border>

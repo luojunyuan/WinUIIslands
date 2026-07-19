@@ -1,0 +1,45 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <!-- Template packages MUST set PackageType to Template -->
+    <PackageType>Template</PackageType>
+    <PackageId>WinUIIslands.Templates</PackageId>
+    <Version>1.1.0</Version>
+    <Authors>WinUIIslands</Authors>
+    <Description>dotnet new templates for unpackaged .NET 10 WinUI 2 desktop apps powered by WinUIIslands.</Description>
+    <PackageTags>dotnet-new;templates;winuiislands;xaml-islands;winui2;nativeaot</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageIcon>icon.png</PackageIcon>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageProjectUrl>https://github.com/luojunyuan/WinUIIslands</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/luojunyuan/WinUIIslands</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+
+    <!-- Template packages shouldn't include build output -->
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+    <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
+
+    <!-- Required for content-only packages -->
+    <TargetFramework>net10.0</TargetFramework>
+    <NoDefaultExcludes>true</NoDefaultExcludes>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!--
+      Pack all template files. Physical structure:
+        content\WinUIIslandsApp\...  →  content\WinUIIslandsApp\... (in nupkg)
+      The template engine scans content/ for .template.config/template.json.
+    -->
+    <Content Include="content\**\*"
+             Exclude="content\**\bin\**;content\**\obj\**"
+             Pack="true"
+             PackagePath="content\" />
+
+    <None Include="..\assets\WinUIIslands.png" Pack="true" PackagePath="icon.png" />
+    <None Include="..\README.md" Pack="true" PackagePath="README.md" />
+
+    <!-- Suppress compiling anything (this is a content-only package) -->
+    <Compile Remove="**\*" />
+  </ItemGroup>
+
+</Project>

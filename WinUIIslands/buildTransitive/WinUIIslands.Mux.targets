@@ -1,0 +1,44 @@
+﻿<Project>
+  <PropertyGroup>
+    <_WinUIIslandsMuxArch Condition="'$(Platform)' == 'x64'">x64</_WinUIIslandsMuxArch>
+    <_WinUIIslandsMuxArch Condition="'$(Platform)' == 'ARM64' Or '$(Platform)' == 'arm64'">arm64</_WinUIIslandsMuxArch>
+    <_WinUIIslandsMuxArch Condition="'$(Platform)' == 'x86'">x86</_WinUIIslandsMuxArch>
+  </PropertyGroup>
+
+  <!-- WinUI 2 is a required dependency, so always prepare its native runtime and PRI. -->
+  <Target Name="WinUIIslands_PrepareMux"
+          BeforeTargets="_GenerateProjectPriConfigurationFiles"
+          Condition="'$(_WinUIIslandsMuxArch)' != ''">
+    <Exec Condition="Exists('$(PkgMicrosoft_UI_Xaml)\tools\AppX\$(_WinUIIslandsMuxArch)\Release') And !Exists('$(IntermediateOutputPath)mux\Microsoft.UI.Xaml.dll')"
+          Command="powershell -NoProfile -Command $tmp='$(IntermediateOutputPath)mux';$root='$(PkgMicrosoft_UI_Xaml)';$arch='$(_WinUIIslandsMuxArch)';$appx=@(dir &quot;$root\tools\AppX\$arch\Release\Microsoft.UI.Xaml.*.appx&quot; -ea 0);if($appx.Count -gt 0){$selected=$appx[$appx.Count-1];if(Test-Path $tmp){Remove-Item $tmp -Recurse -Force};$null=mkdir $tmp -Force;cp $selected.FullName $tmp\mux.zip -Force;Add-Type -AssemblyName System.IO.Compression.FileSystem;[System.IO.Compression.ZipFile]::ExtractToDirectory((Join-Path (Resolve-Path $tmp) 'mux.zip'),(Resolve-Path $tmp))}" />
+
+    <!-- Strip obsolete XBF variants and retain the Windows 10 1903+ resources. -->
+    <Exec Condition="Exists('$(IntermediateOutputPath)mux\resources.pri') And !Exists('$(IntermediateOutputPath)mux\Microsoft.UI.Xaml.pri')"
+          Command="powershell -NoProfile -ExecutionPolicy Bypass -File &quot;$(MSBuildThisFileDirectory)Utils\Trim-MuxPri.ps1&quot; -InputPri &quot;$(IntermediateOutputPath)mux\resources.pri&quot; -OutputPri &quot;$(IntermediateOutputPath)mux\Microsoft.UI.Xaml.pri&quot;" />
+
+    <ItemGroup>
+      <_PriFile Include="$(IntermediateOutputPath)mux\Microsoft.UI.Xaml.pri"
+                Condition="Exists('$(IntermediateOutputPath)mux\Microsoft.UI.Xaml.pri')" />
+      <_PriFile Include="$(IntermediateOutputPath)mux\resources.pri"
+                Condition="!Exists('$(IntermediateOutputPath)mux\Microsoft.UI.Xaml.pri') And Exists('$(IntermediateOutputPath)mux\resources.pri')" />
+    </ItemGroup>
+  </Target>
+
+  <Target Name="WinUIIslands_StageMuxRuntime"
+          AfterTargets="Build"
+          DependsOnTargets="WinUIIslands_PrepareMux">
+    <Copy SourceFiles="$(IntermediateOutputPath)mux\Microsoft.UI.Xaml.dll"
+          DestinationFolder="$(OutputPath)"
+          SkipUnchangedFiles="true"
+          Condition="Exists('$(IntermediateOutputPath)mux\Microsoft.UI.Xaml.dll')" />
+  </Target>
+
+  <Target Name="WinUIIslands_CopyMuxToPublish"
+          AfterTargets="Publish"
+          DependsOnTargets="WinUIIslands_PrepareMux">
+    <Copy SourceFiles="$(IntermediateOutputPath)mux\Microsoft.UI.Xaml.dll"
+          DestinationFolder="$(PublishDir)"
+          SkipUnchangedFiles="true"
+          Condition="Exists('$(IntermediateOutputPath)mux\Microsoft.UI.Xaml.dll')" />
+  </Target>
+</Project>
