@@ -213,8 +213,13 @@ public partial class TitleBar : Control
         DetachTemplateHandlers();
         base.OnApplyTemplate();
 
-        _leftPaddingColumn = GetTemplateChild("LeftPaddingColumn") as ColumnDefinition;
-        _rightPaddingColumn = GetTemplateChild("RightPaddingColumn") as ColumnDefinition;
+        // NativeAOT can project non-FrameworkElement template parts returned by GetTemplateChild
+        // as DependencyObject, so direct ColumnDefinition casts that work under JIT fail. Access
+        // the columns through the Grid's typed collection to preserve their projected type.
+        var layoutRoot = GetTemplateChild("PART_LayoutRoot") as Grid;
+        var columnDefinitions = layoutRoot?.ColumnDefinitions;
+        _leftPaddingColumn = columnDefinitions is { Count: > 1 } ? columnDefinitions[0] : null;
+        _rightPaddingColumn = columnDefinitions is { Count: > 1 } ? columnDefinitions[columnDefinitions.Count - 1] : null;
         _backButton = GetTemplateChild(BackButtonPartName) as Button;
         _paneToggleButton = GetTemplateChild(PaneToggleButtonPartName) as Button;
         _iconViewbox = GetTemplateChild(IconViewboxPartName) as FrameworkElement;
