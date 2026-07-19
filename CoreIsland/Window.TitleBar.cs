@@ -11,6 +11,7 @@ using Windows.Win32.Graphics.Gdi;
 using Windows.Win32.UI.Controls;
 using Windows.Win32.UI.Input.KeyboardAndMouse;
 using Windows.Win32.UI.WindowsAndMessaging;
+using CoreIslandTitleBar = CoreIsland.Controls.TitleBar;
 using DrawingPoint = System.Drawing.Point;
 
 namespace CoreIsland;
@@ -79,12 +80,24 @@ public unsafe partial class Window
         TitleBarHitTestHandler? hitTest,
         TitleBarWindowRegionHandler? applyWindowRegion)
     {
+        if (_titleBar is CoreIslandTitleBar oldTitleBar && !ReferenceEquals(oldTitleBar, titleBar))
+            oldTitleBar.DetachWindow(this);
+
         if (_titleBar is FrameworkElement oldElement)
             oldElement.SizeChanged -= TitleBar_SizeChanged;
 
         _titleBar = titleBar;
+        var coreIslandTitleBar = titleBar as CoreIslandTitleBar;
+
+        if (coreIslandTitleBar is not null)
+        {
+            hitTest ??= coreIslandTitleBar.HitTest;
+            applyWindowRegion ??= coreIslandTitleBar.ApplyTitleBarWindowRegion;
+        }
+
         _titleBarHitTest = hitTest;
         _titleBarWindowRegion = applyWindowRegion;
+        coreIslandTitleBar?.AttachWindow(this);
 
         if (_titleBar is FrameworkElement newElement)
             newElement.SizeChanged += TitleBar_SizeChanged;
@@ -124,7 +137,26 @@ public unsafe partial class Window
 
         _defaultCaptionButtons.Visibility =
             ReferenceEquals(_captionButtons, _defaultCaptionButtons) ? Visibility.Visible : Visibility.Collapsed;
+
+        (_titleBar as CoreIslandTitleBar)?.RefreshWindowInsets();
     }
+
+    internal (double Left, double Right) GetTitleBarInsets()
+    {
+        if (_captionButtons is null)
+            return (0, 0);
+
+        var element = _captionButtons.Element;
+        var width = element.ActualWidth > 0
+            ? element.ActualWidth
+            : element.DesiredSize.Width > 0
+                ? element.DesiredSize.Width
+                : double.IsNaN(element.Width) ? 0 : element.Width;
+
+        return (0, width);
+    }
+
+    internal void RefreshTitleBarWindow() => UpdateTitleBarWindow();
 
     public bool IsMaximized => PInvoke.IsZoomed(_hwnd);
 
@@ -196,7 +228,11 @@ public unsafe partial class Window
 
     private void TitleBar_SizeChanged(object sender, SizeChangedEventArgs e) => UpdateTitleBarWindow();
 
-    private void CaptionButtons_SizeChanged(object sender, SizeChangedEventArgs e) => UpdateTitleBarWindow();
+    private void CaptionButtons_SizeChanged(object sender, SizeChangedEventArgs e)
+    {
+        (_titleBar as CoreIslandTitleBar)?.RefreshWindowInsets();
+        UpdateTitleBarWindow();
+    }
 
     private LRESULT TitleBarWndProc(uint msg, WPARAM wParam, LPARAM lParam)
     {
