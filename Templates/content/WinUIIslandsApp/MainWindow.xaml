@@ -1,10 +1,10 @@
-﻿<island:Window
+<island:Window
     x:Class="WinUIIslandsApp.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="using:WinUIIslands.Controls"
     xmlns:island="using:WinUIIslands"
-    Title="WinUI Islands">
+    Title="WinUI Islands App">
 
     <Grid>
         <Grid.RowDefinitions>
@@ -31,6 +31,7 @@
                 Opacity="0.7"
                 Text=".NET 10 · WinUI 2 · NativeAOT" />
             <Button
+                x:Name="TestButton"
                 HorizontalAlignment="Center"
                 Click="Button_Click"
                 Content="Click me" />

@@ -1,4 +1,5 @@
-﻿using Windows.ApplicationModel.Activation;
+using Windows.ApplicationModel.Activation;
+
 namespace WinUIIslandsApp;
 
 public sealed partial class App : WinUIIslands.Application

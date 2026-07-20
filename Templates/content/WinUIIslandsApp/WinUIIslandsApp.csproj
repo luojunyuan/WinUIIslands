@@ -19,6 +19,8 @@
 
   <ItemGroup>
     <PackageReference Include="WinUIIslands" Version="1.1.0" />
+    <!-- If you need WebView2, remove ExcludeAssets="All". -->
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.4078.44" ExcludeAssets="All" />
   </ItemGroup>
 
 </Project>
