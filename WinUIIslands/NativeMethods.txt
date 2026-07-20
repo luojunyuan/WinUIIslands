@@ -62,9 +62,6 @@ VIRTUAL_KEY
 DwmGetWindowAttribute
 TrackMouseEvent
 
-// ---- Shell / OS version ----
-RtlGetVersion
-
 // ---- Window.Properties ----
 SetWindowText
 
