@@ -41,8 +41,6 @@ dotnet build .\HelloIslands.csproj -c Debug -r win-x64
 .\bin\x64\Debug\net10.0-windows10.0.26100.0\HelloIslands.exe
 ```
 
-> Use `ARM64` or `x86` instead of `x64` when appropriate.
-
 Publish a self-contained NativeAOT build:
 
 ```powershell
