@@ -856,12 +856,14 @@ public unsafe partial class Window
 
         TRACKMOUSEEVENT trackMouseEvent = new()
         {
-            cbSize = (uint)Marshal.SizeOf<TRACKMOUSEEVENT>(),
-            dwFlags = nonClient ? TME_LEAVE | TME_NONCLIENT : TME_LEAVE,
+            cbSize = (uint)sizeof(TRACKMOUSEEVENT),
+            dwFlags = nonClient
+                ? TRACKMOUSEEVENT_FLAGS.TME_LEAVE | TRACKMOUSEEVENT_FLAGS.TME_NONCLIENT
+                : TRACKMOUSEEVENT_FLAGS.TME_LEAVE,
             hwndTrack = _titleBarHwnd,
         };
 
-        if (TrackMouseEvent(ref trackMouseEvent))
+        if (PInvoke.TrackMouseEvent(ref trackMouseEvent))
             isTracking = true;
     }
 
@@ -1093,22 +1095,6 @@ public unsafe partial class Window
     private static nint MakeLParam(int low, int high) => (short)low | ((nint)(short)high << 16);
 
     private static bool IsLightTheme() => Application.Current.RequestedTheme != Windows.UI.Xaml.ApplicationTheme.Dark;
-
-    private const uint TME_LEAVE = 0x00000002;
-    private const uint TME_NONCLIENT = 0x00000010;
-
-    [LibraryImport("user32.dll", SetLastError = true)]
-    [return: MarshalAs(UnmanagedType.Bool)]
-    private static partial bool TrackMouseEvent(ref TRACKMOUSEEVENT lpEventTrack);
-
-    [StructLayout(LayoutKind.Sequential)]
-    private struct TRACKMOUSEEVENT
-    {
-        public uint cbSize;
-        public uint dwFlags;
-        public HWND hwndTrack;
-        public uint dwHoverTime;
-    }
 
     private readonly record struct PixelRect(int X, int Y, int Width, int Height)
     {

@@ -45,6 +45,7 @@ internal static partial class ShellAppBar
         cbSize = (uint)sizeof(APPBARDATA),
     };
 
+    // APPBARDATA is architecture-specific in Win32 metadata, so CsWin32 cannot generate it for this AnyCPU library.
     [LibraryImport("shell32.dll")]
     private static partial nuint SHAppBarMessage(uint dwMessage, ref APPBARDATA pData);
 

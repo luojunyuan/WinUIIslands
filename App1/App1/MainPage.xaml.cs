@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Runtime.InteropServices;
 using WinUIIslands;
 using Windows.ApplicationModel.Resources;
 using Windows.UI;
@@ -35,7 +34,7 @@ public sealed partial class MainPage : Page
 
     public WinUIIslands.Window? HostWindow { get; private set; }
 
-    public static bool IsMicaAvailable => QueryWindowsBuildNumber() >= 22621;
+    public static bool IsMicaAvailable => OperatingSystem.IsWindowsVersionAtLeast(10, 0, 22621);
 
     private void Initialize()
     {
@@ -246,26 +245,4 @@ public sealed partial class MainPage : Page
         }
     }
 
-    private static unsafe uint QueryWindowsBuildNumber()
-    {
-        RTL_OSVERSIONINFOW version = new()
-        {
-            dwOSVersionInfoSize = (uint)sizeof(RTL_OSVERSIONINFOW),
-        };
-
-        return RtlGetVersion(ref version) >= 0 ? version.dwBuildNumber : 0;
-    }
-
-    [LibraryImport("ntdll.dll")]
-    private static partial int RtlGetVersion(ref RTL_OSVERSIONINFOW version);
-
-    private unsafe struct RTL_OSVERSIONINFOW
-    {
-        public uint dwOSVersionInfoSize;
-        public uint dwMajorVersion;
-        public uint dwMinorVersion;
-        public uint dwBuildNumber;
-        public uint dwPlatformId;
-        public fixed char szCSDVersion[128];
-    }
 }

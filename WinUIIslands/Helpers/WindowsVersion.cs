@@ -1,8 +1,8 @@
-﻿using System.Runtime.InteropServices;
+﻿using Windows.Win32.System.SystemInformation;
 
 namespace WinUIIslands;
 
-internal static partial class WindowsVersion
+internal static class WindowsVersion
 {
     private static readonly uint s_build = QueryBuildNumber();
 
@@ -12,24 +12,11 @@ internal static partial class WindowsVersion
 
     private static unsafe uint QueryBuildNumber()
     {
-        RTL_OSVERSIONINFOW version = new()
+        OSVERSIONINFOW version = new()
         {
-            dwOSVersionInfoSize = (uint)sizeof(RTL_OSVERSIONINFOW),
+            dwOSVersionInfoSize = (uint)sizeof(OSVERSIONINFOW),
         };
 
-        return RtlGetVersion(ref version) >= 0 ? version.dwBuildNumber : 0;
-    }
-
-    [LibraryImport("ntdll.dll")]
-    private static partial int RtlGetVersion(ref RTL_OSVERSIONINFOW version);
-
-    private unsafe struct RTL_OSVERSIONINFOW
-    {
-        public uint dwOSVersionInfoSize;
-        public uint dwMajorVersion;
-        public uint dwMinorVersion;
-        public uint dwBuildNumber;
-        public uint dwPlatformId;
-        public fixed char szCSDVersion[128];
+        return Windows.Wdk.PInvoke.RtlGetVersion(ref version) >= 0 ? version.dwBuildNumber : 0;
     }
 }
