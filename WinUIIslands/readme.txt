@@ -1,4 +1,4 @@
-﻿# WinUIIslands 1.1.0
+﻿# WinUIIslands 1.1.1
 
 Build unpackaged .NET 10 desktop applications with UWP XAML, WinUI 2.8.7 controls and NativeAOT deployment.
 
@@ -7,7 +7,7 @@ Measured on Windows 11 ARM64, the generated NativeAOT starter uses 3 runtime fil
 The fastest way to start is the project template:
 
 ```powershell
-dotnet new install WinUIIslands.Templates@1.1.0
+dotnet new install WinUIIslands.Templates@1.1.2
 dotnet new winuiislands -n HelloIslands
 ```
 
