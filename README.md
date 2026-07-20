@@ -13,9 +13,9 @@ WinUI Islands brings UWP XAML and WinUI 2 controls to unpackaged .NET 10 desktop
 - Deployment size: 14.83 MiB across 3 files with ARM64 NativeAOT, versus 129.45 MiB across 198 files with self-contained JIT.
 - Runtime memory: About 9.2 MiB idle private working set.
 - Cold start: Faster than WinUI 3.
-- Fast fixes: Build our own framework for quickly fix issues (There is no window-resize flickering in WinUIIslands).
+- Fast fixes: Build our own framework for quickly fix issues (There is no window-resize flickering issue in WinUIIslands).
 - WinUI 3-aligned APIs: Closely follows WinUI 3 API design for easy migration from UWP or WinUI 3.
-- MSIC: No MSIX required. Custom `TitleBar`, Mica/Acrylic, and anything you want.
+- MISC: No MSIX required. Custom `TitleBar`, Mica/Acrylic, and anything you want.
 
 ## Quick start with the template
 

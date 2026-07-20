@@ -7,48 +7,48 @@
 
     <ResourceDictionary.ThemeDictionaries>
       <ResourceDictionary x:Key="Default">
-        <StaticResource x:Key="TitleBarForegroundBrush" ResourceKey="TextFillColorPrimaryBrush" />
-        <StaticResource x:Key="TitleBarDeactivatedForegroundBrush" ResourceKey="TextFillColorTertiaryBrush" />
-        <StaticResource x:Key="TitleBarSubtitleForegroundBrush" ResourceKey="TextFillColorSecondaryBrush" />
-        <StaticResource x:Key="TitleBarSubtitleDeactivatedForegroundBrush" ResourceKey="TextFillColorTertiaryBrush" />
-        <StaticResource x:Key="TitleBarBackButtonBackground" ResourceKey="SubtleFillColorTransparentBrush" />
-        <StaticResource x:Key="TitleBarBackButtonBackgroundPointerOver" ResourceKey="SubtleFillColorSecondaryBrush" />
-        <StaticResource x:Key="TitleBarBackButtonBackgroundPressed" ResourceKey="SubtleFillColorTertiaryBrush" />
-        <StaticResource x:Key="TitleBarBackButtonBackgroundDisabled" ResourceKey="ControlFillColorDisabledBrush" />
-        <StaticResource x:Key="TitleBarBackButtonForeground" ResourceKey="TextFillColorPrimaryBrush" />
-        <StaticResource x:Key="TitleBarBackButtonForegroundPointerOver" ResourceKey="TextFillColorPrimaryBrush" />
-        <StaticResource x:Key="TitleBarBackButtonForegroundPressed" ResourceKey="TextFillColorSecondaryBrush" />
-        <StaticResource x:Key="TitleBarBackButtonForegroundDisabled" ResourceKey="TextFillColorDisabledBrush" />
-        <StaticResource x:Key="TitleBarPaneToggleButtonBackground" ResourceKey="SubtleFillColorTransparentBrush" />
-        <StaticResource x:Key="TitleBarPaneToggleButtonBackgroundPointerOver" ResourceKey="SubtleFillColorSecondaryBrush" />
-        <StaticResource x:Key="TitleBarPaneToggleButtonBackgroundPressed" ResourceKey="SubtleFillColorTertiaryBrush" />
-        <StaticResource x:Key="TitleBarPaneToggleButtonBackgroundDisabled" ResourceKey="ControlFillColorDisabledBrush" />
-        <StaticResource x:Key="TitleBarPaneToggleButtonForeground" ResourceKey="TextFillColorPrimaryBrush" />
-        <StaticResource x:Key="TitleBarPaneToggleButtonForegroundPointerOver" ResourceKey="TextFillColorPrimaryBrush" />
-        <StaticResource x:Key="TitleBarPaneToggleButtonForegroundPressed" ResourceKey="TextFillColorSecondaryBrush" />
-        <StaticResource x:Key="TitleBarPaneToggleButtonForegroundDisabled" ResourceKey="TextFillColorDisabledBrush" />
+        <SolidColorBrush x:Key="TitleBarForegroundBrush" Color="{ThemeResource TextFillColorPrimary}" />
+        <SolidColorBrush x:Key="TitleBarDeactivatedForegroundBrush" Color="{ThemeResource TextFillColorTertiary}" />
+        <SolidColorBrush x:Key="TitleBarSubtitleForegroundBrush" Color="{ThemeResource TextFillColorSecondary}" />
+        <SolidColorBrush x:Key="TitleBarSubtitleDeactivatedForegroundBrush" Color="{ThemeResource TextFillColorTertiary}" />
+        <SolidColorBrush x:Key="TitleBarBackButtonBackground" Color="{ThemeResource SubtleFillColorTransparent}" />
+        <SolidColorBrush x:Key="TitleBarBackButtonBackgroundPointerOver" Color="{ThemeResource SubtleFillColorSecondary}" />
+        <SolidColorBrush x:Key="TitleBarBackButtonBackgroundPressed" Color="{ThemeResource SubtleFillColorTertiary}" />
+        <SolidColorBrush x:Key="TitleBarBackButtonBackgroundDisabled" Color="{ThemeResource ControlFillColorDisabled}" />
+        <SolidColorBrush x:Key="TitleBarBackButtonForeground" Color="{ThemeResource TextFillColorPrimary}" />
+        <SolidColorBrush x:Key="TitleBarBackButtonForegroundPointerOver" Color="{ThemeResource TextFillColorPrimary}" />
+        <SolidColorBrush x:Key="TitleBarBackButtonForegroundPressed" Color="{ThemeResource TextFillColorSecondary}" />
+        <SolidColorBrush x:Key="TitleBarBackButtonForegroundDisabled" Color="{ThemeResource TextFillColorDisabled}" />
+        <SolidColorBrush x:Key="TitleBarPaneToggleButtonBackground" Color="{ThemeResource SubtleFillColorTransparent}" />
+        <SolidColorBrush x:Key="TitleBarPaneToggleButtonBackgroundPointerOver" Color="{ThemeResource SubtleFillColorSecondary}" />
+        <SolidColorBrush x:Key="TitleBarPaneToggleButtonBackgroundPressed" Color="{ThemeResource SubtleFillColorTertiary}" />
+        <SolidColorBrush x:Key="TitleBarPaneToggleButtonBackgroundDisabled" Color="{ThemeResource ControlFillColorDisabled}" />
+        <SolidColorBrush x:Key="TitleBarPaneToggleButtonForeground" Color="{ThemeResource TextFillColorPrimary}" />
+        <SolidColorBrush x:Key="TitleBarPaneToggleButtonForegroundPointerOver" Color="{ThemeResource TextFillColorPrimary}" />
+        <SolidColorBrush x:Key="TitleBarPaneToggleButtonForegroundPressed" Color="{ThemeResource TextFillColorSecondary}" />
+        <SolidColorBrush x:Key="TitleBarPaneToggleButtonForegroundDisabled" Color="{ThemeResource TextFillColorDisabled}" />
       </ResourceDictionary>
       <ResourceDictionary x:Key="Light">
-        <StaticResource x:Key="TitleBarForegroundBrush" ResourceKey="TextFillColorPrimaryBrush" />
-        <StaticResource x:Key="TitleBarDeactivatedForegroundBrush" ResourceKey="TextFillColorTertiaryBrush" />
-        <StaticResource x:Key="TitleBarSubtitleForegroundBrush" ResourceKey="TextFillColorSecondaryBrush" />
-        <StaticResource x:Key="TitleBarSubtitleDeactivatedForegroundBrush" ResourceKey="TextFillColorTertiaryBrush" />
-        <StaticResource x:Key="TitleBarBackButtonBackground" ResourceKey="SubtleFillColorTransparentBrush" />
-        <StaticResource x:Key="TitleBarBackButtonBackgroundPointerOver" ResourceKey="SubtleFillColorSecondaryBrush" />
-        <StaticResource x:Key="TitleBarBackButtonBackgroundPressed" ResourceKey="SubtleFillColorTertiaryBrush" />
-        <StaticResource x:Key="TitleBarBackButtonBackgroundDisabled" ResourceKey="ControlFillColorDisabledBrush" />
-        <StaticResource x:Key="TitleBarBackButtonForeground" ResourceKey="TextFillColorPrimaryBrush" />
-        <StaticResource x:Key="TitleBarBackButtonForegroundPointerOver" ResourceKey="TextFillColorPrimaryBrush" />
-        <StaticResource x:Key="TitleBarBackButtonForegroundPressed" ResourceKey="TextFillColorSecondaryBrush" />
-        <StaticResource x:Key="TitleBarBackButtonForegroundDisabled" ResourceKey="TextFillColorDisabledBrush" />
-        <StaticResource x:Key="TitleBarPaneToggleButtonBackground" ResourceKey="SubtleFillColorTransparentBrush" />
-        <StaticResource x:Key="TitleBarPaneToggleButtonBackgroundPointerOver" ResourceKey="SubtleFillColorSecondaryBrush" />
-        <StaticResource x:Key="TitleBarPaneToggleButtonBackgroundPressed" ResourceKey="SubtleFillColorTertiaryBrush" />
-        <StaticResource x:Key="TitleBarPaneToggleButtonBackgroundDisabled" ResourceKey="ControlFillColorDisabledBrush" />
-        <StaticResource x:Key="TitleBarPaneToggleButtonForeground" ResourceKey="TextFillColorPrimaryBrush" />
-        <StaticResource x:Key="TitleBarPaneToggleButtonForegroundPointerOver" ResourceKey="TextFillColorPrimaryBrush" />
-        <StaticResource x:Key="TitleBarPaneToggleButtonForegroundPressed" ResourceKey="TextFillColorSecondaryBrush" />
-        <StaticResource x:Key="TitleBarPaneToggleButtonForegroundDisabled" ResourceKey="TextFillColorDisabledBrush" />
+        <SolidColorBrush x:Key="TitleBarForegroundBrush" Color="{ThemeResource TextFillColorPrimary}" />
+        <SolidColorBrush x:Key="TitleBarDeactivatedForegroundBrush" Color="{ThemeResource TextFillColorTertiary}" />
+        <SolidColorBrush x:Key="TitleBarSubtitleForegroundBrush" Color="{ThemeResource TextFillColorSecondary}" />
+        <SolidColorBrush x:Key="TitleBarSubtitleDeactivatedForegroundBrush" Color="{ThemeResource TextFillColorTertiary}" />
+        <SolidColorBrush x:Key="TitleBarBackButtonBackground" Color="{ThemeResource SubtleFillColorTransparent}" />
+        <SolidColorBrush x:Key="TitleBarBackButtonBackgroundPointerOver" Color="{ThemeResource SubtleFillColorSecondary}" />
+        <SolidColorBrush x:Key="TitleBarBackButtonBackgroundPressed" Color="{ThemeResource SubtleFillColorTertiary}" />
+        <SolidColorBrush x:Key="TitleBarBackButtonBackgroundDisabled" Color="{ThemeResource ControlFillColorDisabled}" />
+        <SolidColorBrush x:Key="TitleBarBackButtonForeground" Color="{ThemeResource TextFillColorPrimary}" />
+        <SolidColorBrush x:Key="TitleBarBackButtonForegroundPointerOver" Color="{ThemeResource TextFillColorPrimary}" />
+        <SolidColorBrush x:Key="TitleBarBackButtonForegroundPressed" Color="{ThemeResource TextFillColorSecondary}" />
+        <SolidColorBrush x:Key="TitleBarBackButtonForegroundDisabled" Color="{ThemeResource TextFillColorDisabled}" />
+        <SolidColorBrush x:Key="TitleBarPaneToggleButtonBackground" Color="{ThemeResource SubtleFillColorTransparent}" />
+        <SolidColorBrush x:Key="TitleBarPaneToggleButtonBackgroundPointerOver" Color="{ThemeResource SubtleFillColorSecondary}" />
+        <SolidColorBrush x:Key="TitleBarPaneToggleButtonBackgroundPressed" Color="{ThemeResource SubtleFillColorTertiary}" />
+        <SolidColorBrush x:Key="TitleBarPaneToggleButtonBackgroundDisabled" Color="{ThemeResource ControlFillColorDisabled}" />
+        <SolidColorBrush x:Key="TitleBarPaneToggleButtonForeground" Color="{ThemeResource TextFillColorPrimary}" />
+        <SolidColorBrush x:Key="TitleBarPaneToggleButtonForegroundPointerOver" Color="{ThemeResource TextFillColorPrimary}" />
+        <SolidColorBrush x:Key="TitleBarPaneToggleButtonForegroundPressed" Color="{ThemeResource TextFillColorSecondary}" />
+        <SolidColorBrush x:Key="TitleBarPaneToggleButtonForegroundDisabled" Color="{ThemeResource TextFillColorDisabled}" />
       </ResourceDictionary>
       <ResourceDictionary x:Key="HighContrast">
         <StaticResource x:Key="TitleBarForegroundBrush" ResourceKey="SystemControlForegroundBaseHighBrush" />
