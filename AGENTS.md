@@ -19,16 +19,11 @@ MUXC (WinUI 2, the `Microsoft.UI.Xaml` NuGet package) is an **extension controls
 dotnet build WinUIIslands\WinUIIslands.csproj
 ```
 
-Projects that contain XAML files, such as `App1`, must be built with the Visual Studio MSBuild toolchain. Their XAML compilation depends on Visual Studio's UWP XAML build tasks, so plain `dotnet build` is not the right validation path for those projects.
-
-Build XAML projects from a Visual Studio Developer Command Prompt, or invoke the Visual Studio MSBuild executable directly. Always specify a concrete platform (`x86`, `x64`, or `ARM64`); `Any CPU` does not work with UWP SDK dependencies such as VCLibs/UCRT.
+Projects that contain XAML files, such as `App1`, use `ModernUwp.CLI.BuildTools` with the .NET CLI. Always specify a concrete runtime (`win-x86`, `win-x64`, or `win-arm64`); `Any CPU` does not work with UWP SDK dependencies such as VCLibs/UCRT.
 
 ```powershell
-# From a Visual Studio Developer Command Prompt
-msbuild App1\App1\App1.csproj /restore /m /p:Configuration=Debug /p:Platform=x64
-
-# Or invoke VS MSBuild directly
-& "C:\Program Files\Microsoft Visual Studio\18\Professional\MSBuild\Current\Bin\MSBuild.exe" App1\App1\App1.csproj /restore /m /p:Configuration=Debug /p:Platform=x64
+dotnet build App1\App1\App1.csproj -c Debug -r win-x64
+dotnet publish App1\App1\App1.csproj -c Release -r win-x64
 ```
 
 ## File Encoding

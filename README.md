@@ -6,6 +6,8 @@
 
 WinUI Islands brings UWP XAML and WinUI 2 controls to unpackaged .NET 10 desktop applications. It provides a native Win32 window host, XAML Islands startup, custom title bars, backdrop support, AppWindow-style APIs and a NativeAOT-compatible build pipeline. Support Windows 10 version 1903 (build 18362) and later.
 
+`WinUIIslands` includes `ModernUwp.CLI.BuildTools` transitively, so application projects build and publish with the .NET CLI without requiring Visual Studio.
+
 ![WinUIIslands App1](https://raw.githubusercontent.com/luojunyuan/WinUIIslands/master/docs/images/app1.png)
 
 ## Why WinUI Islands
@@ -32,10 +34,10 @@ dotnet new winuiislands -n HelloIslands
 cd HelloIslands
 ```
 
-XAML projects must be built with Visual Studio MSBuild because they use the Windows UWP XAML compiler. From a Visual Studio Developer PowerShell or Developer Command Prompt:
+Build the XAML project with the .NET CLI:
 
 ```powershell
-msbuild .\HelloIslands.csproj /restore /m /p:Configuration=Debug /p:Platform=x64
+dotnet build .\HelloIslands.csproj -c Debug -r win-x64
 .\bin\x64\Debug\net10.0-windows10.0.26100.0\HelloIslands.exe
 ```
 
@@ -44,10 +46,7 @@ msbuild .\HelloIslands.csproj /restore /m /p:Configuration=Debug /p:Platform=x64
 Publish a self-contained NativeAOT build:
 
 ```powershell
-msbuild .\HelloIslands.csproj /t:Publish /restore /m `
-  /p:Configuration=Release `
-  /p:Platform=x64 `
-  /p:RuntimeIdentifier=win-x64
+dotnet publish .\HelloIslands.csproj -c Release -r win-x64
 ```
 
 The application is written to:
@@ -60,7 +59,7 @@ bin\x64\Release\net10.0-windows10.0.26100.0\win-x64\publish\
 
 ```powershell
 dotnet build .\WinUIIslands\WinUIIslands.csproj
-msbuild .\App1\App1\App1.csproj /restore /m /p:Configuration=Debug /p:Platform=x64
+dotnet build .\App1\App1\App1.csproj -c Debug -r win-x64
 ```
 
 ## License
