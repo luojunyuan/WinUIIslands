@@ -4,7 +4,7 @@
     <!-- Template packages MUST set PackageType to Template -->
     <PackageType>Template</PackageType>
     <PackageId>WinUIIslands.Templates</PackageId>
-    <Version>1.1.0</Version>
+    <Version>1.1.1</Version>
     <Authors>WinUIIslands</Authors>
     <Description>dotnet new templates for unpackaged .NET 10 WinUI 2 desktop apps powered by WinUIIslands.</Description>
     <PackageTags>dotnet-new;templates;winuiislands;xaml-islands;winui2;nativeaot</PackageTags>
