@@ -10,6 +10,15 @@
     </ItemGroup>
   </Target>
 
+  <!-- XBF 已嵌入 PRI，不再将生成的 XAML/XBF 作为松散文件复制到输出目录 -->
+  <Target Name="WinUIIslands_RemoveEmbeddedXamlFromCopyLocal"
+          AfterTargets="AddProcessedXamlFilesToCopyLocal"
+          Condition="'$(DisableEmbeddedXbf)' != 'true'">
+    <ItemGroup>
+      <_AllChildProjectItemsWithTargetPath Remove="@(_ProcessedXamlFilesToCopyLocalWithTargetPath)" />
+    </ItemGroup>
+  </Target>
+
   <!-- 将引用的 PRI 合并进 resources.pri -->
   <Target Name="ComputeInputPriFiles" BeforeTargets="_GenerateProjectPriConfigurationFiles">
     <ItemGroup>
