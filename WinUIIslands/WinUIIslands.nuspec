@@ -42,8 +42,10 @@
     <file src="buildTransitive\WinUIIslands.Mux.targets" target="buildTransitive\WinUIIslands.Mux.targets" />
     <file src="buildTransitive\WinUIIslands.AppMain.targets" target="buildTransitive\WinUIIslands.AppMain.targets" />
 
-    <!-- PowerShell helpers (called by MSBuild Exec tasks, not init scripts) -->
-    <file src="buildTransitive\Utils\Trim-MuxPri.ps1" target="buildTransitive\Utils\Trim-MuxPri.ps1" />
+    <!-- Pre-trimmed WinUI 2 resources, shared by every consumer architecture -->
+    <file src="buildTransitive\Mux\Microsoft.UI.Xaml.pri" target="buildTransitive\Mux\Microsoft.UI.Xaml.pri" />
+
+    <!-- PowerShell helper (called by an MSBuild Exec task, not an init script) -->
     <file src="buildTransitive\Utils\Patch-AppMain.ps1" target="buildTransitive\Utils\Patch-AppMain.ps1" />
   </files>
 </package>

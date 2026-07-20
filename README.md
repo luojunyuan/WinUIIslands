@@ -22,7 +22,7 @@ WinUI Islands brings UWP XAML and WinUI 2 controls to unpackaged .NET 10 desktop
 Install the template package:
 
 ```powershell
-dotnet new install WinUIIslands.Templates@1.1.1
+dotnet new install WinUIIslands.Templates
 ```
 
 Create an application:

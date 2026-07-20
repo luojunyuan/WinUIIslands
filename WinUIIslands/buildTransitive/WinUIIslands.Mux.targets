@@ -12,15 +12,9 @@
     <Exec Condition="Exists('$(PkgMicrosoft_UI_Xaml)\tools\AppX\$(_WinUIIslandsMuxArch)\Release') And !Exists('$(IntermediateOutputPath)mux\Microsoft.UI.Xaml.dll')"
           Command="powershell -NoProfile -Command $tmp='$(IntermediateOutputPath)mux';$root='$(PkgMicrosoft_UI_Xaml)';$arch='$(_WinUIIslandsMuxArch)';$appx=@(dir &quot;$root\tools\AppX\$arch\Release\Microsoft.UI.Xaml.*.appx&quot; -ea 0);if($appx.Count -gt 0){$selected=$appx[$appx.Count-1];if(Test-Path $tmp){Remove-Item $tmp -Recurse -Force};$null=mkdir $tmp -Force;cp $selected.FullName $tmp\mux.zip -Force;Add-Type -AssemblyName System.IO.Compression.FileSystem;[System.IO.Compression.ZipFile]::ExtractToDirectory((Join-Path (Resolve-Path $tmp) 'mux.zip'),(Resolve-Path $tmp))}" />
 
-    <!-- Strip obsolete XBF variants and retain the Windows 10 1903+ resources. -->
-    <Exec Condition="Exists('$(IntermediateOutputPath)mux\resources.pri') And !Exists('$(IntermediateOutputPath)mux\Microsoft.UI.Xaml.pri')"
-          Command="powershell -NoProfile -ExecutionPolicy Bypass -File &quot;$(MSBuildThisFileDirectory)Utils\Trim-MuxPri.ps1&quot; -InputPri &quot;$(IntermediateOutputPath)mux\resources.pri&quot; -OutputPri &quot;$(IntermediateOutputPath)mux\Microsoft.UI.Xaml.pri&quot;" />
-
     <ItemGroup>
-      <_PriFile Include="$(IntermediateOutputPath)mux\Microsoft.UI.Xaml.pri"
-                Condition="Exists('$(IntermediateOutputPath)mux\Microsoft.UI.Xaml.pri')" />
-      <_PriFile Include="$(IntermediateOutputPath)mux\resources.pri"
-                Condition="!Exists('$(IntermediateOutputPath)mux\Microsoft.UI.Xaml.pri') And Exists('$(IntermediateOutputPath)mux\resources.pri')" />
+      <!-- The architecture-independent, trimmed PRI is shipped with WinUIIslands. -->
+      <_PriFile Include="$(MSBuildThisFileDirectory)Mux\Microsoft.UI.Xaml.pri" />
     </ItemGroup>
   </Target>
 
