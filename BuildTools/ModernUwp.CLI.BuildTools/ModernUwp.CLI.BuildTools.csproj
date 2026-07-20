@@ -1,0 +1,49 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <PackageId>ModernUwp.CLI.BuildTools</PackageId>
+    <Version>0.1.0</Version>
+    <Authors>ModernUwp.CLI.BuildTools contributors</Authors>
+    <Description>CLI build support for modern .NET UWP XAML applications.</Description>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/luojunyuan/WinUIIslands</PackageProjectUrl>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/luojunyuan/WinUIIslands</RepositoryUrl>
+    <PackageTags>uwp;xaml;msbuild;build-tools;dotnet</PackageTags>
+    <DevelopmentDependency>true</DevelopmentDependency>
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+    <SuppressDependenciesWhenPacking>false</SuppressDependenciesWhenPacking>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <NoWarn>$(NoWarn);NU1702;NU5128</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ModernUwp.XamlHost\ModernUwp.XamlHost.csproj"
+                      ReferenceOutputAssembly="false"
+                      PrivateAssets="all" />
+    <PackageReference Include="Microsoft.Windows.SDK.BuildTools"
+                      Version="10.0.26100.4654"
+                      PrivateAssets="contentfiles;analyzers;build;buildtransitive" />
+    <PackageReference Include="Microsoft.Windows.SDK.BuildTools.MSIX"
+                      Version="1.7.20250806.1"
+                      PrivateAssets="contentfiles;analyzers;build;buildtransitive" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="build\**\*"
+          Pack="true"
+          PackagePath="build\%(RecursiveDir)%(Filename)%(Extension)" />
+    <None Include="..\ModernUwp.XamlHost\bin\$(Configuration)\net472\ModernUwp.XamlHost.exe"
+          Pack="true"
+          PackagePath="tools\net472\ModernUwp.XamlHost.exe" />
+    <None Include="..\ModernUwp.XamlHost\App.config"
+          Pack="true"
+          PackagePath="tools\net472\ModernUwp.XamlHost.exe.config" />
+    <None Include="README.md"
+          Pack="true"
+          PackagePath="README.md" />
+  </ItemGroup>
+
+</Project>
+

@@ -1,0 +1,20 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <_ModernUwpBeforeCommonActive Condition="'$(MSBuildRuntimeType)' == 'Core' AND
+                                                   '$(BuildingInsideVisualStudio)' != 'true' AND
+                                                   '$(UseUwp)' == 'true'">true</_ModernUwpBeforeCommonActive>
+    <_ModernUwpWindowsSdkBuildToolsPackageRoot>$(NuGetPackageRoot)\microsoft.windows.sdk.buildtools\10.0.26100.4654\</_ModernUwpWindowsSdkBuildToolsPackageRoot>
+    <_ModernUwpMsixBuildToolsPackageRoot>$(NuGetPackageRoot)\microsoft.windows.sdk.buildtools.msix\1.7.20250806.1\</_ModernUwpMsixBuildToolsPackageRoot>
+    <_OriginalCustomBeforeMicrosoftCommonTargetsFromMsixProps Condition="'$(_ModernUwpBeforeCommonActive)' == 'true'">$(_ModernUwpOriginalCustomBeforeMicrosoftCommonTargets)</_OriginalCustomBeforeMicrosoftCommonTargetsFromMsixProps>
+  </PropertyGroup>
+
+  <Import Project="$(_ModernUwpWindowsSdkBuildToolsPackageRoot)build\Microsoft.Windows.SDK.BuildTools.props"
+          Condition="'$(_ModernUwpBeforeCommonActive)' == 'true'" />
+  <Import Project="$(_ModernUwpMsixBuildToolsPackageRoot)build\Microsoft.Windows.SDK.BuildTools.MSIX.BeforeCommon.props"
+          Condition="'$(_ModernUwpBeforeCommonActive)' == 'true'" />
+  <Import Project="$(_ModernUwpOriginalCustomBeforeMicrosoftCommonTargets)"
+          Condition="'$(_ModernUwpBeforeCommonActive)' != 'true' AND
+                     '$(_ModernUwpOriginalCustomBeforeMicrosoftCommonTargets)' != '' AND
+                     Exists('$(_ModernUwpOriginalCustomBeforeMicrosoftCommonTargets)')" />
+</Project>
+

@@ -1,0 +1,11 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <_ModernUwpBuildToolsActive Condition="'$(MSBuildRuntimeType)' == 'Core' AND
+                                               '$(BuildingInsideVisualStudio)' != 'true' AND
+                                               '$(UseUwp)' == 'true'">true</_ModernUwpBuildToolsActive>
+  </PropertyGroup>
+
+  <Import Project="$(MSBuildThisFileDirectory)ModernUwp.CLI.BuildTools.Core.targets"
+          Condition="'$(_ModernUwpBuildToolsActive)' == 'true'" />
+</Project>
+

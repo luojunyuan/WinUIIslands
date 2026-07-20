@@ -1,0 +1,16 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Condition="'$(MSBuildRuntimeType)' == 'Core' AND '$(BuildingInsideVisualStudio)' != 'true'">
+    <_ModernUwpPlatformFromRuntimeIdentifier Condition="'$(RuntimeIdentifier)' == 'win-x86'">x86</_ModernUwpPlatformFromRuntimeIdentifier>
+    <_ModernUwpPlatformFromRuntimeIdentifier Condition="'$(RuntimeIdentifier)' == 'win-x64'">x64</_ModernUwpPlatformFromRuntimeIdentifier>
+    <_ModernUwpPlatformFromRuntimeIdentifier Condition="'$(RuntimeIdentifier)' == 'win-arm64'">arm64</_ModernUwpPlatformFromRuntimeIdentifier>
+    <Platform Condition="'$(_ModernUwpPlatformFromRuntimeIdentifier)' != '' AND ('$(Platform)' == '' OR '$(Platform)' == 'AnyCPU' OR '$(Platform)' == 'Any CPU')">$(_ModernUwpPlatformFromRuntimeIdentifier)</Platform>
+    <PlatformTarget Condition="'$(_ModernUwpPlatformFromRuntimeIdentifier)' != '' AND ('$(PlatformTarget)' == '' OR '$(PlatformTarget)' == 'AnyCPU' OR '$(PlatformTarget)' == 'Any CPU')">$(_ModernUwpPlatformFromRuntimeIdentifier)</PlatformTarget>
+    <PlatformTarget Condition="'$(RuntimeIdentifier)' == '' AND ('$(PlatformTarget)' == '' OR '$(PlatformTarget)' == 'AnyCPU' OR '$(PlatformTarget)' == 'Any CPU') AND ('$(Platform)' == 'x86' OR '$(Platform)' == 'x64' OR '$(Platform)' == 'arm64')">$(Platform)</PlatformTarget>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <_ModernUwpOriginalCustomBeforeMicrosoftCommonTargets>$(CustomBeforeMicrosoftCommonTargets)</_ModernUwpOriginalCustomBeforeMicrosoftCommonTargets>
+    <CustomBeforeMicrosoftCommonTargets>$(MSBuildThisFileDirectory)ModernUwp.CLI.BuildTools.BeforeCommon.props</CustomBeforeMicrosoftCommonTargets>
+  </PropertyGroup>
+</Project>
+

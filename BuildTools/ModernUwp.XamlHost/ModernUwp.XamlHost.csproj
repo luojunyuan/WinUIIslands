@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net472</TargetFramework>
+    <AssemblyName>ModernUwp.XamlHost</AssemblyName>
+    <RootNamespace>ModernUwp.XamlHost</RootNamespace>
+    <LangVersion>latest</LangVersion>
+    <PreferNativeArm64>true</PreferNativeArm64>
+    <AutoGenerateBindingRedirects>false</AutoGenerateBindingRedirects>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="Microsoft.Build" Private="false" />
+    <Reference Include="Microsoft.Build.Framework" Private="false" />
+    <Reference Include="Microsoft.Build.Utilities.v4.0" Private="false" />
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />
+  </ItemGroup>
+</Project>
+

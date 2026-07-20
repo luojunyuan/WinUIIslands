@@ -1,4 +1,4 @@
-<Solution>
+﻿<Solution>
   <Configurations>
     <Platform Name="ARM64" />
     <Platform Name="x64" />
@@ -13,6 +13,10 @@
       <Platform Solution="*|x64" Project="x64" />
       <Platform Solution="*|x86" Project="x86" />
     </Project>
+  </Folder>
+  <Folder Name="/BuildTools/">
+    <Project Path="BuildTools/ModernUwp.CLI.BuildTools/ModernUwp.CLI.BuildTools.csproj" />
+    <Project Path="BuildTools/ModernUwp.XamlHost/ModernUwp.XamlHost.csproj" />
   </Folder>
   <Project Path="Templates/WinUIIslands.Templates.csproj" />
   <Project Path="WinUIIslands/WinUIIslands.csproj" />

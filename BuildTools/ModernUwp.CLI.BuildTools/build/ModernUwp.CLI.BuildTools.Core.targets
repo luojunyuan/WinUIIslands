@@ -1,0 +1,203 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(NuGetPackageRoot)\microsoft.windows.sdk.buildtools.msix\1.7.20250806.1\build\Microsoft.Windows.SDK.BuildTools.MSIX.targets" />
+
+  <PropertyGroup>
+    <ModernUwpBuildToolsActive>true</ModernUwpBuildToolsActive>
+    <ModernUwpBuildToolsVersion>0.1.0</ModernUwpBuildToolsVersion>
+    <UseUwpTools>true</UseUwpTools>
+    <WindowsAppContainer>true</WindowsAppContainer>
+    <DefaultXamlRuntime>UAP</DefaultXamlRuntime>
+    <EnableCsWinRTXamlCompilerGeneration>true</EnableCsWinRTXamlCompilerGeneration>
+    <ReduceGeneratedXamlTypeStaticInitializers>true</ReduceGeneratedXamlTypeStaticInitializers>
+    <EnableRequiredAndInitOnlyFeatureSupport>true</EnableRequiredAndInitOnlyFeatureSupport>
+    <DisableXamlRootsLogGeneration>true</DisableXamlRootsLogGeneration>
+    <EnableTypeInfoReflection>false</EnableTypeInfoReflection>
+    <UseLowTrustEntryPoint>true</UseLowTrustEntryPoint>
+    <SDKIdentifier Condition="'$(SDKIdentifier)' == ''">Windows</SDKIdentifier>
+    <SDKVersion Condition="'$(SDKVersion)' == ''">10.0</SDKVersion>
+    <RootNamespace Condition="'$(RootNamespace)' == ''">$(MSBuildProjectName)</RootNamespace>
+    <PriIndexNameOverridden Condition="'$(OutputType)' == 'WinExe'">true</PriIndexNameOverridden>
+    <PriIndexNameOverride Condition="'$(OutputType)' == 'WinExe'"></PriIndexNameOverride>
+    <PriIndexName Condition="'$(OutputType)' == 'WinExe'"></PriIndexName>
+    <IncludeCustomOutputGroupForPackaging>true</IncludeCustomOutputGroupForPackaging>
+    <DisableEmbeddedXbf>false</DisableEmbeddedXbf>
+
+    <_ModernUwpTargetPlatformVersion Condition="'$(EffectiveTargetPlatformVersion)' != ''">$(EffectiveTargetPlatformVersion)</_ModernUwpTargetPlatformVersion>
+    <_ModernUwpTargetPlatformVersion Condition="'$(_ModernUwpTargetPlatformVersion)' == ''">$(TargetPlatformVersion)</_ModernUwpTargetPlatformVersion>
+    <_ModernUwpWindowsSdkRoot Condition="'$(_ModernUwpWindowsSdkRoot)' == ''">$([MSBuild]::GetRegistryValueFromView('HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows Kits\Installed Roots', 'KitsRoot10', null, RegistryView.Registry32, RegistryView.Default))</_ModernUwpWindowsSdkRoot>
+    <_ModernUwpXamlCompilerDirectory>$(_ModernUwpWindowsSdkRoot)bin\$(_ModernUwpTargetPlatformVersion)\XamlCompiler\</_ModernUwpXamlCompilerDirectory>
+    <XamlCompilerTaskPath Condition="'$(XamlCompilerTaskPath)' == ''">$(_ModernUwpXamlCompilerDirectory)Microsoft.Windows.UI.Xaml.Build.Tasks.dll</XamlCompilerTaskPath>
+    <_ModernUwpXamlHostPath>$([MSBuild]::NormalizePath('$(MSBuildThisFileDirectory)', '..', 'tools', 'net472', 'ModernUwp.XamlHost.exe'))</_ModernUwpXamlHostPath>
+    <_ModernUwpXamlGeneratedOutputPath>$([MSBuild]::NormalizeDirectory('$(MSBuildProjectDirectory)', '$(IntermediateOutputPath)'))</_ModernUwpXamlGeneratedOutputPath>
+    <_ModernUwpXamlHostStateDirectory>$([MSBuild]::NormalizeDirectory('$(_ModernUwpXamlGeneratedOutputPath)', 'ModernUwp.XamlHost'))</_ModernUwpXamlHostStateDirectory>
+    <_ModernUwpXamlSavedStateFile>$(_ModernUwpXamlGeneratedOutputPath)XamlSaveStateFile.xml</_ModernUwpXamlSavedStateFile>
+    <_ModernUwpXamlIntermediateAssembly>$(_ModernUwpXamlGeneratedOutputPath)intermediatexaml\$(TargetName)$(TargetExt)</_ModernUwpXamlIntermediateAssembly>
+    <_ModernUwpXamlHostAuditFile>$(_ModernUwpXamlHostStateDirectory)xaml-host.audit.log</_ModernUwpXamlHostAuditFile>
+    <_ModernUwpPass1RequestFile>$(_ModernUwpXamlHostStateDirectory)pass1.request</_ModernUwpPass1RequestFile>
+    <_ModernUwpPass2RequestFile>$(_ModernUwpXamlHostStateDirectory)pass2.request</_ModernUwpPass2RequestFile>
+    <_ModernUwpPass1CodeFile>$(_ModernUwpXamlHostStateDirectory)pass1.code</_ModernUwpPass1CodeFile>
+    <_ModernUwpPass1XamlFile>$(_ModernUwpXamlHostStateDirectory)pass1.xaml</_ModernUwpPass1XamlFile>
+    <_ModernUwpPass1XbfFile>$(_ModernUwpXamlHostStateDirectory)pass1.xbf</_ModernUwpPass1XbfFile>
+    <_ModernUwpPass2CodeFile>$(_ModernUwpXamlHostStateDirectory)pass2.code</_ModernUwpPass2CodeFile>
+    <_ModernUwpPass2XamlFile>$(_ModernUwpXamlHostStateDirectory)pass2.xaml</_ModernUwpPass2XamlFile>
+    <_ModernUwpPass2XbfFile>$(_ModernUwpXamlHostStateDirectory)pass2.xbf</_ModernUwpPass2XbfFile>
+
+    <PrepareResourcesDependsOn>
+      _ModernUwpMarkupCompilePass1;
+      XamlPreCompile;
+      _ModernUwpMarkupCompilePass2;
+      $(PrepareResourcesDependsOn)
+    </PrepareResourcesDependsOn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ApplicationDefinition Include="App.xaml"
+                           Condition="'@(ApplicationDefinition)' == '' AND Exists('$(MSBuildProjectDirectory)\App.xaml')">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <XamlRuntime>UAP</XamlRuntime>
+    </ApplicationDefinition>
+    <Page Include="**\*.xaml"
+          Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder);@(ApplicationDefinition);@(Page)">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <XamlRuntime>UAP</XamlRuntime>
+    </Page>
+    <None Remove="@(ApplicationDefinition);@(Page)" />
+    <Content Include="Assets\**\*.*"
+             Exclude="@(Content)"
+             Condition="'$(EnableMsixTooling)' == 'true'" />
+    <XamlIntermediateAssembly Include="$(_ModernUwpXamlIntermediateAssembly)" />
+  </ItemGroup>
+
+  <Target Name="_ModernUwpValidateBuild"
+          BeforeTargets="PrepareForBuild"
+          DependsOnTargets="_GetProjectArchitecture">
+    <PropertyGroup>
+      <_ModernUwpPlatformFromRuntimeIdentifier Condition="'$(RuntimeIdentifier)' == 'win-x86'">x86</_ModernUwpPlatformFromRuntimeIdentifier>
+      <_ModernUwpPlatformFromRuntimeIdentifier Condition="'$(RuntimeIdentifier)' == 'win-x64'">x64</_ModernUwpPlatformFromRuntimeIdentifier>
+      <_ModernUwpPlatformFromRuntimeIdentifier Condition="'$(RuntimeIdentifier)' == 'win-arm64'">arm64</_ModernUwpPlatformFromRuntimeIdentifier>
+    </PropertyGroup>
+    <Error Condition="'$(Configuration)' != 'Debug'"
+           Text="ModernUwp.CLI.BuildTools 0.1.0 POC only supports Configuration=Debug." />
+    <Error Condition="'$(RuntimeIdentifier)' != '' AND '$(_ModernUwpPlatformFromRuntimeIdentifier)' == ''"
+           Text="ModernUwp.CLI.BuildTools 0.1.0 supports RuntimeIdentifier win-x86, win-x64, or win-arm64." />
+    <Error Condition="'$(_ModernUwpPlatformFromRuntimeIdentifier)' != '' AND ('$(Platform)' != '$(_ModernUwpPlatformFromRuntimeIdentifier)' OR '$(PlatformTarget)' != '$(_ModernUwpPlatformFromRuntimeIdentifier)')"
+           Text="RuntimeIdentifier '$(RuntimeIdentifier)' requires Platform and PlatformTarget '$(_ModernUwpPlatformFromRuntimeIdentifier)'." />
+    <Error Condition="'$(OutputType)' != 'WinExe'"
+           Text="ModernUwp.CLI.BuildTools 0.1.0 POC only supports UWP WinExe projects." />
+    <Error Condition="'$(_ModernUwpTargetPlatformVersion)' == '' OR !$([MSBuild]::VersionGreaterThanOrEquals('$(_ModernUwpTargetPlatformVersion)', '10.0.26100.0'))"
+           Text="ModernUwp.CLI.BuildTools requires Windows SDK 10.0.26100.0 or newer." />
+    <Error Condition="!Exists('$(_ModernUwpXamlHostPath)')"
+           Text="Cannot find ModernUwp.XamlHost at '$(_ModernUwpXamlHostPath)'." />
+    <Error Condition="!Exists('$(XamlCompilerTaskPath)')"
+           Text="Cannot find the Windows SDK XAML compiler at '$(XamlCompilerTaskPath)'. Install Windows SDK $(_ModernUwpTargetPlatformVersion)." />
+    <Message Importance="High"
+             Text="ModernUwp.CLI.BuildTools $(ModernUwpBuildToolsVersion): Core MSBuild XAML pipeline enabled for $(RuntimeIdentifier)." />
+  </Target>
+
+  <Target Name="_ModernUwpCollectXamlHostInputs"
+          DependsOnTargets="ResolveReferences;_ModernUwpValidateBuild">
+    <MakeDir Directories="$(_ModernUwpXamlHostStateDirectory);$(_ModernUwpXamlGeneratedOutputPath)intermediatexaml" />
+    <ItemGroup>
+      <_ModernUwpXamlHostCommonLine Include="taskAssembly|$(XamlCompilerTaskPath)" />
+      <_ModernUwpXamlHostCommonLine Include="projectPath|$(MSBuildProjectFullPath)" />
+      <_ModernUwpXamlHostCommonLine Include="outputPath|$(_ModernUwpXamlGeneratedOutputPath)" />
+      <_ModernUwpXamlHostCommonLine Include="rootNamespace|$(RootNamespace)" />
+      <_ModernUwpXamlHostCommonLine Include="projectName|$(MSBuildProjectName)" />
+      <_ModernUwpXamlHostCommonLine Include="outputType|$(OutputType)" />
+      <_ModernUwpXamlHostCommonLine Include="priIndexName|$(PriIndexName)" />
+      <_ModernUwpXamlHostCommonLine Include="targetPlatformMinVersion|$(TargetPlatformMinVersion)" />
+      <_ModernUwpXamlHostCommonLine Include="windowsSdkPath|$(_ModernUwpWindowsSdkRoot)" />
+      <_ModernUwpXamlHostCommonLine Include="platformXmlDir|$(_ModernUwpWindowsSdkRoot)Platforms\UAP\$(_ModernUwpTargetPlatformVersion)\" />
+      <_ModernUwpXamlHostCommonLine Include="savedStateFile|$(_ModernUwpXamlSavedStateFile)" />
+      <_ModernUwpXamlHostCommonLine Include="xamlResourceMapName|$(XamlResourceMapName)" />
+      <_ModernUwpXamlHostCommonLine Include="xamlComponentResourceLocation|$(XamlComponentResourceLocation)" />
+      <_ModernUwpXamlHostCommonLine Include="auditFile|$(_ModernUwpXamlHostAuditFile)" />
+      <_ModernUwpXamlHostCommonLine Include="fingerprintIgnorePath|$(_ModernUwpWindowsSdkRoot)" />
+      <_ModernUwpXamlHostCommonLine Include="reference|%(ReferencePath.FullPath)"
+                                    Condition="Exists('%(ReferencePath.FullPath)')" />
+      <_ModernUwpXamlHostCommonLine Include="referenceAssemblyPath|%(ReferenceAssemblyPaths.FullPath)"
+                                    Condition="Exists('%(ReferenceAssemblyPaths.FullPath)')" />
+      <_ModernUwpXamlHostCommonLine Include="page|%(Page.Identity)|%(Page.Link)|%(Page.FullPath)"
+                                    Condition="'%(Page.ExcludedFromBuild)' != 'true'" />
+      <_ModernUwpXamlHostCommonLine Include="application|%(ApplicationDefinition.Identity)|%(ApplicationDefinition.Link)|%(ApplicationDefinition.FullPath)"
+                                    Condition="'%(ApplicationDefinition.ExcludedFromBuild)' != 'true'" />
+    </ItemGroup>
+  </Target>
+
+  <Target Name="_ModernUwpMarkupCompilePass1"
+          DependsOnTargets="_ModernUwpCollectXamlHostInputs"
+          Condition="'@(Page)' != '' OR '@(ApplicationDefinition)' != ''">
+    <ItemGroup>
+      <_ModernUwpPass1RequestLine Include="@(_ModernUwpXamlHostCommonLine)" />
+      <_ModernUwpPass1RequestLine Include="pass|1" />
+      <_ModernUwpPass1RequestLine Include="resultCodeFile|$(_ModernUwpPass1CodeFile)" />
+      <_ModernUwpPass1RequestLine Include="resultXamlFile|$(_ModernUwpPass1XamlFile)" />
+      <_ModernUwpPass1RequestLine Include="resultXbfFile|$(_ModernUwpPass1XbfFile)" />
+    </ItemGroup>
+    <WriteLinesToFile File="$(_ModernUwpPass1RequestFile)"
+                      Lines="@(_ModernUwpPass1RequestLine)"
+                      Overwrite="true"
+                      Encoding="UTF-8" />
+    <Exec Command="&quot;$(_ModernUwpXamlHostPath)&quot; &quot;$(_ModernUwpPass1RequestFile)&quot;"
+          WorkingDirectory="$(MSBuildProjectDirectory)" />
+    <ReadLinesFromFile File="$(_ModernUwpPass1CodeFile)">
+      <Output TaskParameter="Lines" ItemName="_ModernUwpPass1GeneratedCode" />
+    </ReadLinesFromFile>
+    <ItemGroup>
+      <Compile Include="@(_ModernUwpPass1GeneratedCode)" />
+      <FileWrites Include="@(_ModernUwpPass1GeneratedCode);$(_ModernUwpPass1RequestFile);$(_ModernUwpPass1CodeFile);$(_ModernUwpPass1XamlFile);$(_ModernUwpPass1XbfFile);$(_ModernUwpXamlSavedStateFile)" />
+    </ItemGroup>
+    <Message Importance="High" Text="ModernUwp.CLI.BuildTools Pass1 generated @(_ModernUwpPass1GeneratedCode)." />
+  </Target>
+
+  <Target Name="_ModernUwpMarkupCompilePass2"
+          DependsOnTargets="_ModernUwpMarkupCompilePass1;XamlPreCompile"
+          Condition="'@(Page)' != '' OR '@(ApplicationDefinition)' != ''">
+    <Error Condition="!Exists('$(_ModernUwpXamlIntermediateAssembly)')"
+           Text="XamlPreCompile did not create '$(_ModernUwpXamlIntermediateAssembly)'." />
+    <ItemGroup>
+      <_ModernUwpPass2RequestLine Include="@(_ModernUwpXamlHostCommonLine)" />
+      <_ModernUwpPass2RequestLine Include="pass|2" />
+      <_ModernUwpPass2RequestLine Include="localAssembly|$(_ModernUwpXamlIntermediateAssembly)" />
+      <_ModernUwpPass2RequestLine Include="resultCodeFile|$(_ModernUwpPass2CodeFile)" />
+      <_ModernUwpPass2RequestLine Include="resultXamlFile|$(_ModernUwpPass2XamlFile)" />
+      <_ModernUwpPass2RequestLine Include="resultXbfFile|$(_ModernUwpPass2XbfFile)" />
+    </ItemGroup>
+    <WriteLinesToFile File="$(_ModernUwpPass2RequestFile)"
+                      Lines="@(_ModernUwpPass2RequestLine)"
+                      Overwrite="true"
+                      Encoding="UTF-8" />
+    <Exec Command="&quot;$(_ModernUwpXamlHostPath)&quot; &quot;$(_ModernUwpPass2RequestFile)&quot;"
+          WorkingDirectory="$(MSBuildProjectDirectory)" />
+    <ReadLinesFromFile File="$(_ModernUwpPass2CodeFile)">
+      <Output TaskParameter="Lines" ItemName="_ModernUwpPass2GeneratedCode" />
+    </ReadLinesFromFile>
+    <ReadLinesFromFile File="$(_ModernUwpPass2XamlFile)">
+      <Output TaskParameter="Lines" ItemName="_ModernUwpPass2GeneratedXaml" />
+    </ReadLinesFromFile>
+    <ReadLinesFromFile File="$(_ModernUwpPass2XbfFile)">
+      <Output TaskParameter="Lines" ItemName="_ModernUwpPass2GeneratedXbf" />
+    </ReadLinesFromFile>
+    <ItemGroup>
+      <Compile Include="@(_ModernUwpPass2GeneratedCode)" Exclude="@(_ModernUwpPass1GeneratedCode)" />
+      <FileWrites Include="@(_ModernUwpPass2GeneratedCode);@(_ModernUwpPass2GeneratedXaml);@(_ModernUwpPass2GeneratedXbf);$(_ModernUwpPass2RequestFile);$(_ModernUwpPass2CodeFile);$(_ModernUwpPass2XamlFile);$(_ModernUwpPass2XbfFile);$(_ModernUwpXamlHostAuditFile);$(_ModernUwpXamlHostStateDirectory)pass1.proj;$(_ModernUwpXamlHostStateDirectory)pass2.proj" />
+    </ItemGroup>
+    <Message Importance="High" Text="ModernUwp.CLI.BuildTools Pass2 generated @(_ModernUwpPass2GeneratedXbf)." />
+  </Target>
+
+  <Target Name="CustomOutputGroupForPackaging"
+          DependsOnTargets="_ModernUwpMarkupCompilePass2"
+          Returns="@(_ModernUwpCustomOutputGroupForPackagingOutput)">
+    <ReadLinesFromFile File="$(_ModernUwpPass2XbfFile)">
+      <Output TaskParameter="Lines" ItemName="_ModernUwpXbfForPackaging" />
+    </ReadLinesFromFile>
+    <AssignTargetPath Files="@(_ModernUwpXbfForPackaging)"
+                      RootFolder="$(_ModernUwpXamlGeneratedOutputPath)">
+      <Output TaskParameter="AssignedFiles" ItemName="_ModernUwpCustomOutputGroupForPackagingOutput" />
+    </AssignTargetPath>
+  </Target>
+
+</Project>
+
