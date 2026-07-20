@@ -12,5 +12,5 @@ public sealed partial class MainWindow : WinUIIslands.Window
     }
 
     private void Button_Click(object sender, RoutedEventArgs e) =>
-        Title = Title == "WinUIIslands" ? "It works!" : "WinUIIslands";
+        Title = Title == "WinUI Islands" ? "It works!" : "WinUI Islands";
 }

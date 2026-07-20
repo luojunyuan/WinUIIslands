@@ -23,7 +23,8 @@
     <PackageReference Include="Microsoft.UI.Xaml" Version="2.8.7" />
   </ItemGroup>
   <ItemGroup>
-    <Page Remove="Controls\TitleBar.xaml;Controls\TitleBar_themeresources.xaml;TitleBar\CaptionButtonsControl.xaml" />
-    <EmbeddedResource Include="Controls\TitleBar.xaml;Controls\TitleBar_themeresources.xaml;TitleBar\CaptionButtonsControl.xaml" />
+    <EmbeddedResource Include="Controls\TitleBar.xaml" />
+    <EmbeddedResource Include="Controls\TitleBar_themeresources.xaml" />
+    <EmbeddedResource Include="TitleBar\CaptionButtonsControl.xaml" />
   </ItemGroup>
 </Project>

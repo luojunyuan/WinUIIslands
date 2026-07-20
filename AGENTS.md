@@ -21,7 +21,7 @@ dotnet build WinUIIslands\WinUIIslands.csproj
 
 Projects that contain XAML files, such as `App1`, must be built with the Visual Studio MSBuild toolchain. Their XAML compilation depends on Visual Studio's UWP XAML build tasks, so plain `dotnet build` is not the right validation path for those projects.
 
-Build XAML projects from a Visual Studio Developer Command Prompt, or invoke the Visual Studio MSBuild executable directly. Always specify a concrete platform (`x86`, `x64`, `ARM`, or `ARM64`); `Any CPU` does not work with UWP SDK dependencies such as VCLibs/UCRT.
+Build XAML projects from a Visual Studio Developer Command Prompt, or invoke the Visual Studio MSBuild executable directly. Always specify a concrete platform (`x86`, `x64`, or `ARM64`); `Any CPU` does not work with UWP SDK dependencies such as VCLibs/UCRT.
 
 ```powershell
 # From a Visual Studio Developer Command Prompt

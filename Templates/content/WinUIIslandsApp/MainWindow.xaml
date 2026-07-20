@@ -4,7 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="using:WinUIIslands.Controls"
     xmlns:island="using:WinUIIslands"
-    Title="WinUIIslands">
+    Title="WinUI Islands">
 
     <Grid>
         <Grid.RowDefinitions>
@@ -15,7 +15,7 @@
         <controls:TitleBar
             x:Name="AppTitleBar"
             AutoRefreshDragRegions="True"
-            Title="WinUIIslands" />
+            Title="WinUI Islands" />
 
         <StackPanel
             Grid.Row="1"
@@ -25,7 +25,7 @@
             <TextBlock
                 HorizontalAlignment="Center"
                 Style="{StaticResource TitleTextBlockStyle}"
-                Text="Hello, WinUIIslands!" />
+                Text="Hello, WinUI Islands!" />
             <TextBlock
                 HorizontalAlignment="Center"
                 Opacity="0.7"

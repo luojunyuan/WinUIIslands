@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
@@ -19,8 +19,6 @@
 
   <ItemGroup>
     <PackageReference Include="WinUIIslands" Version="1.1.0" />
-    <!-- WinUI 2 exposes an optional WebView2 control; the starter app does not use it. -->
-    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.4078.44" ExcludeAssets="All" />
   </ItemGroup>
 
 </Project>

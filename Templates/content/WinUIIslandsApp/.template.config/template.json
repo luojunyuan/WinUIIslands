@@ -3,11 +3,11 @@
   "author": "WinUIIslands",
   "classifications": ["WinUI", "Desktop", "XAML Islands"],
   "identity": "WinUIIslands.App",
-  "name": "WinUIIslands Application",
+  "name": "WinUI Islands Application",
   "description": "An unpackaged .NET 10 WinUI 2 desktop application with NativeAOT support.",
   "shortName": "winuiislands",
   "sourceName": "WinUIIslandsApp",
-  "defaultName": "WinUIIslandsApp1",
+  "defaultName": "IslandsApp1",
   "preferNameDirectory": true,
   "icon": "icon.png",
   "tags": {
