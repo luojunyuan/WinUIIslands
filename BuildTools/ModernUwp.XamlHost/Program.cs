@@ -32,13 +32,11 @@ namespace ModernUwp.XamlHost
                 string projectPath = WriteInternalProject(request);
                 try
                 {
-                    Console.WriteLine("[ModernUwp.XamlHost] Pass {0}: {1}", request.Pass, request.TaskAssembly);
-
                     BuildParameters parameters = new BuildParameters
                     {
                         EnableNodeReuse = false,
                         MaxNodeCount = 1,
-                        Loggers = new ILogger[] { new ConsoleLogger(LoggerVerbosity.Normal) }
+                        Loggers = new ILogger[] { new ConsoleLogger(LoggerVerbosity.Quiet) }
                     };
 
                     BuildRequestData buildRequest = new BuildRequestData(

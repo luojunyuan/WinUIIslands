@@ -1,11 +1,16 @@
 ﻿# ModernUwp.CLI.BuildTools
 
-NuGet build tools for building modern .NET UWP XAML applications with Core MSBuild.
+NuGet build tools for building modern .NET UWP XAML applications with `dotnet build` and `dotnet publish`, without requiring Visual Studio.
 
 ```xml
 <PackageReference Include="ModernUwp.CLI.BuildTools"
-                  Version="0.1.0"
+                  Version="1.0.0"
                   PrivateAssets="all" />
 ```
 
-Version 0.1.0 supports Debug `WinExe` builds for `win-x86`, `win-x64`, and `win-arm64`.
+Build and publish `WinExe` projects for `win-x86`, `win-x64`, and `win-arm64`:
+
+```powershell
+dotnet build -c Debug -r win-x64
+dotnet publish -c Release -r win-x64
+```

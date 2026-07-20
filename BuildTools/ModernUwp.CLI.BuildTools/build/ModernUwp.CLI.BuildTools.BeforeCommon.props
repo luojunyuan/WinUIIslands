@@ -2,7 +2,9 @@
   <PropertyGroup>
     <_ModernUwpBeforeCommonActive Condition="'$(MSBuildRuntimeType)' == 'Core' AND
                                                    '$(BuildingInsideVisualStudio)' != 'true' AND
-                                                   '$(UseUwp)' == 'true'">true</_ModernUwpBeforeCommonActive>
+                                                   '$(UseUwp)' == 'true' AND
+                                                   '$(UseUwpTools)' != 'false' AND
+                                                   '$(OutputType)' == 'WinExe'">true</_ModernUwpBeforeCommonActive>
     <_ModernUwpWindowsSdkBuildToolsPackageRoot>$(NuGetPackageRoot)\microsoft.windows.sdk.buildtools\10.0.26100.4654\</_ModernUwpWindowsSdkBuildToolsPackageRoot>
     <_ModernUwpMsixBuildToolsPackageRoot>$(NuGetPackageRoot)\microsoft.windows.sdk.buildtools.msix\1.7.20250806.1\</_ModernUwpMsixBuildToolsPackageRoot>
     <_OriginalCustomBeforeMicrosoftCommonTargetsFromMsixProps Condition="'$(_ModernUwpBeforeCommonActive)' == 'true'">$(_ModernUwpOriginalCustomBeforeMicrosoftCommonTargets)</_OriginalCustomBeforeMicrosoftCommonTargetsFromMsixProps>

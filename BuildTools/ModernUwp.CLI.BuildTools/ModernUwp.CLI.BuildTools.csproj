@@ -2,7 +2,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <PackageId>ModernUwp.CLI.BuildTools</PackageId>
-    <Version>0.1.0</Version>
+    <Version>1.0.0</Version>
     <Authors>ModernUwp.CLI.BuildTools contributors</Authors>
     <Description>CLI build support for modern .NET UWP XAML applications.</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
@@ -33,7 +33,7 @@
   <ItemGroup>
     <None Include="build\**\*"
           Pack="true"
-          PackagePath="build\%(RecursiveDir)%(Filename)%(Extension)" />
+          PackagePath="buildTransitive\%(RecursiveDir)%(Filename)%(Extension)" />
     <None Include="..\ModernUwp.XamlHost\bin\$(Configuration)\net472\ModernUwp.XamlHost.exe"
           Pack="true"
           PackagePath="tools\net472\ModernUwp.XamlHost.exe" />

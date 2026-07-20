@@ -3,7 +3,6 @@
 
   <PropertyGroup>
     <ModernUwpBuildToolsActive>true</ModernUwpBuildToolsActive>
-    <ModernUwpBuildToolsVersion>0.1.0</ModernUwpBuildToolsVersion>
     <UseUwpTools>true</UseUwpTools>
     <WindowsAppContainer>true</WindowsAppContainer>
     <DefaultXamlRuntime>UAP</DefaultXamlRuntime>
@@ -71,29 +70,27 @@
   </ItemGroup>
 
   <Target Name="_ModernUwpValidateBuild"
-          BeforeTargets="PrepareForBuild"
+          BeforeTargets="ResolveSDKReferences;PrepareForBuild"
           DependsOnTargets="_GetProjectArchitecture">
     <PropertyGroup>
       <_ModernUwpPlatformFromRuntimeIdentifier Condition="'$(RuntimeIdentifier)' == 'win-x86'">x86</_ModernUwpPlatformFromRuntimeIdentifier>
       <_ModernUwpPlatformFromRuntimeIdentifier Condition="'$(RuntimeIdentifier)' == 'win-x64'">x64</_ModernUwpPlatformFromRuntimeIdentifier>
       <_ModernUwpPlatformFromRuntimeIdentifier Condition="'$(RuntimeIdentifier)' == 'win-arm64'">arm64</_ModernUwpPlatformFromRuntimeIdentifier>
     </PropertyGroup>
-    <Error Condition="'$(Configuration)' != 'Debug'"
-           Text="ModernUwp.CLI.BuildTools 0.1.0 POC only supports Configuration=Debug." />
+    <Error Condition="'$(RuntimeIdentifier)' == '' AND
+                      ('$(Platform)' == '' OR '$(Platform)' == 'AnyCPU' OR '$(Platform)' == 'Any CPU') AND
+                      ('$(PlatformTarget)' == '' OR '$(PlatformTarget)' == 'AnyCPU' OR '$(PlatformTarget)' == 'Any CPU')"
+           Text="Packaged .NET applications with an app host exe cannot be ProcessorArchitecture neutral. Please specify a RuntimeIdentifier or a Platform other than AnyCPU." />
     <Error Condition="'$(RuntimeIdentifier)' != '' AND '$(_ModernUwpPlatformFromRuntimeIdentifier)' == ''"
-           Text="ModernUwp.CLI.BuildTools 0.1.0 supports RuntimeIdentifier win-x86, win-x64, or win-arm64." />
+           Text="ModernUwp.CLI.BuildTools supports RuntimeIdentifier win-x86, win-x64, or win-arm64." />
     <Error Condition="'$(_ModernUwpPlatformFromRuntimeIdentifier)' != '' AND ('$(Platform)' != '$(_ModernUwpPlatformFromRuntimeIdentifier)' OR '$(PlatformTarget)' != '$(_ModernUwpPlatformFromRuntimeIdentifier)')"
            Text="RuntimeIdentifier '$(RuntimeIdentifier)' requires Platform and PlatformTarget '$(_ModernUwpPlatformFromRuntimeIdentifier)'." />
-    <Error Condition="'$(OutputType)' != 'WinExe'"
-           Text="ModernUwp.CLI.BuildTools 0.1.0 POC only supports UWP WinExe projects." />
     <Error Condition="'$(_ModernUwpTargetPlatformVersion)' == '' OR !$([MSBuild]::VersionGreaterThanOrEquals('$(_ModernUwpTargetPlatformVersion)', '10.0.26100.0'))"
            Text="ModernUwp.CLI.BuildTools requires Windows SDK 10.0.26100.0 or newer." />
     <Error Condition="!Exists('$(_ModernUwpXamlHostPath)')"
            Text="Cannot find ModernUwp.XamlHost at '$(_ModernUwpXamlHostPath)'." />
     <Error Condition="!Exists('$(XamlCompilerTaskPath)')"
            Text="Cannot find the Windows SDK XAML compiler at '$(XamlCompilerTaskPath)'. Install Windows SDK $(_ModernUwpTargetPlatformVersion)." />
-    <Message Importance="High"
-             Text="ModernUwp.CLI.BuildTools $(ModernUwpBuildToolsVersion): Core MSBuild XAML pipeline enabled for $(RuntimeIdentifier)." />
   </Target>
 
   <Target Name="_ModernUwpCollectXamlHostInputs"
@@ -149,7 +146,6 @@
       <Compile Include="@(_ModernUwpPass1GeneratedCode)" />
       <FileWrites Include="@(_ModernUwpPass1GeneratedCode);$(_ModernUwpPass1RequestFile);$(_ModernUwpPass1CodeFile);$(_ModernUwpPass1XamlFile);$(_ModernUwpPass1XbfFile);$(_ModernUwpXamlSavedStateFile)" />
     </ItemGroup>
-    <Message Importance="High" Text="ModernUwp.CLI.BuildTools Pass1 generated @(_ModernUwpPass1GeneratedCode)." />
   </Target>
 
   <Target Name="_ModernUwpMarkupCompilePass2"
@@ -184,7 +180,6 @@
       <Compile Include="@(_ModernUwpPass2GeneratedCode)" Exclude="@(_ModernUwpPass1GeneratedCode)" />
       <FileWrites Include="@(_ModernUwpPass2GeneratedCode);@(_ModernUwpPass2GeneratedXaml);@(_ModernUwpPass2GeneratedXbf);$(_ModernUwpPass2RequestFile);$(_ModernUwpPass2CodeFile);$(_ModernUwpPass2XamlFile);$(_ModernUwpPass2XbfFile);$(_ModernUwpXamlHostAuditFile);$(_ModernUwpXamlHostStateDirectory)pass1.proj;$(_ModernUwpXamlHostStateDirectory)pass2.proj" />
     </ItemGroup>
-    <Message Importance="High" Text="ModernUwp.CLI.BuildTools Pass2 generated @(_ModernUwpPass2GeneratedXbf)." />
   </Target>
 
   <Target Name="CustomOutputGroupForPackaging"

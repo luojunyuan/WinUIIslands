@@ -2,7 +2,9 @@
   <PropertyGroup>
     <_ModernUwpBuildToolsActive Condition="'$(MSBuildRuntimeType)' == 'Core' AND
                                                '$(BuildingInsideVisualStudio)' != 'true' AND
-                                               '$(UseUwp)' == 'true'">true</_ModernUwpBuildToolsActive>
+                                               '$(UseUwp)' == 'true' AND
+                                               '$(UseUwpTools)' != 'false' AND
+                                               '$(OutputType)' == 'WinExe'">true</_ModernUwpBuildToolsActive>
   </PropertyGroup>
 
   <Import Project="$(MSBuildThisFileDirectory)ModernUwp.CLI.BuildTools.Core.targets"
