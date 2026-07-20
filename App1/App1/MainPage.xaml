@@ -41,7 +41,7 @@
                         Margin="0,-4"
                         HorizontalAlignment="Right"
                         VerticalAlignment="Center"
-                        IsOn="{x:Bind IsCustomTitleBarEnabled, Mode=TwoWay}"
+                        IsOn="{x:Bind ViewModel.IsCustomTitleBarEnabled, Mode=TwoWay}"
                         Style="{StaticResource ToggleSwitchWithoutText}" />
                 </Grid>
                 <Grid HorizontalAlignment="Stretch">
@@ -51,7 +51,7 @@
                         HorizontalAlignment="Right"
                         VerticalAlignment="Center"
                         DropDownOpened="ComboBox_DropDownOpened"
-                        SelectedIndex="{x:Bind Theme, Mode=TwoWay}">
+                        SelectedIndex="{x:Bind ViewModel.Theme, Mode=TwoWay}">
                         <ComboBoxItem Content="Use system setting" />
                         <ComboBoxItem Content="Light" />
                         <ComboBoxItem Content="Dark" />
@@ -64,11 +64,11 @@
                         HorizontalAlignment="Right"
                         VerticalAlignment="Center"
                         DropDownOpened="ComboBox_DropDownOpened"
-                        SelectedIndex="{x:Bind Backdrop, Mode=TwoWay}">
+                        SelectedIndex="{x:Bind ViewModel.Backdrop, Mode=TwoWay}">
                         <ComboBoxItem Content="Solid color" />
                         <ComboBoxItem Content="Acrylic" />
-                        <ComboBoxItem Content="Mica" IsEnabled="{x:Bind local:MainPage.IsMicaAvailable, Mode=OneWay}" />
-                        <ComboBoxItem Content="Mica Alt" IsEnabled="{x:Bind local:MainPage.IsMicaAvailable, Mode=OneWay}" />
+                        <ComboBoxItem Content="Mica" IsEnabled="{x:Bind local:MainPage.IsMicaAvailable, Mode=OneTime}" />
+                        <ComboBoxItem Content="Mica Alt" IsEnabled="{x:Bind local:MainPage.IsMicaAvailable, Mode=OneTime}" />
                     </ComboBox>
                 </Grid>
                 <Rectangle

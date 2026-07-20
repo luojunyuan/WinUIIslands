@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using WinUIIslands;
 using Windows.ApplicationModel.Resources;
@@ -15,12 +14,10 @@ using Windows.UI.Xaml.Media.Animation;
 
 namespace App1;
 
-public sealed partial class MainPage : Page, INotifyPropertyChanged
+public sealed partial class MainPage : Page
 {
     private readonly UISettings _uiSettings = new();
-    private bool _isCustomTitleBarEnabled = true;
-    private int _theme;
-    private int _backdrop = IsMicaAvailable ? 2 : 0;
+    public MainPageViewModel ViewModel { get; } = new();
 
     public MainPage()
     {
@@ -31,72 +28,18 @@ public sealed partial class MainPage : Page, INotifyPropertyChanged
     public MainPage(WinUIIslands.Window hostWindow)
     {
         HostWindow = hostWindow;
+        ViewModel.HostWindow = hostWindow;
         InitializeComponent();
         Initialize();
     }
 
-    public event PropertyChangedEventHandler? PropertyChanged;
-
     public WinUIIslands.Window? HostWindow { get; private set; }
-
-    public bool IsCustomTitleBarEnabled
-    {
-        get => _isCustomTitleBarEnabled;
-        set
-        {
-            if (_isCustomTitleBarEnabled == value)
-                return;
-
-            _isCustomTitleBarEnabled = value;
-            if (HostWindow is MainWindow mainWindow)
-                mainWindow.IsCustomTitleBarEnabled = value;
-
-            OnPropertyChanged();
-            OnPropertyChanged(nameof(CustomTitleBarVisibility));
-        }
-    }
-
-    public Visibility CustomTitleBarVisibility => IsCustomTitleBarEnabled ? Visibility.Visible : Visibility.Collapsed;
-
-    public int Theme
-    {
-        get => _theme;
-        set
-        {
-            if (value < 0 || _theme == value)
-                return;
-
-            _theme = value;
-            ApplyTheme();
-            OnPropertyChanged();
-        }
-    }
-
-    public int Backdrop
-    {
-        get => _backdrop;
-        set
-        {
-            if (value < 0)
-                return;
-
-            if (!IsMicaAvailable && value >= 2)
-                value = 0;
-
-            if (_backdrop == value)
-                return;
-
-            _backdrop = value;
-            ApplyBackdrop();
-            ApplyBackground();
-            OnPropertyChanged();
-        }
-    }
 
     public static bool IsMicaAvailable => QueryWindowsBuildNumber() >= 22621;
 
     private void Initialize()
     {
+        ViewModel.PropertyChanged += ViewModel_PropertyChanged;
         _uiSettings.ColorValuesChanged += UiSettings_ColorValuesChanged;
         StringResTextBlock.Text = LoadStringResource("Hello", "\"Hello\"");
         ApplyTheme();
@@ -106,8 +49,9 @@ public sealed partial class MainPage : Page, INotifyPropertyChanged
     private void RootPage_Loaded(object sender, RoutedEventArgs e)
     {
         HostWindow ??= WinUIIslands.Application.Current.MainWindow;
+        ViewModel.HostWindow = HostWindow;
         if (HostWindow is MainWindow mainWindow)
-            _isCustomTitleBarEnabled = mainWindow.IsCustomTitleBarEnabled;
+            ViewModel.IsCustomTitleBarEnabled = mainWindow.IsCustomTitleBarEnabled;
 
         ApplyTheme();
         ApplyBackdrop();
@@ -130,14 +74,28 @@ public sealed partial class MainPage : Page, INotifyPropertyChanged
     {
         _ = Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
         {
-            if (Theme == 0)
+            if (ViewModel.Theme == 0)
                 ApplyTheme();
         });
     }
 
+    private void ViewModel_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        switch (e.PropertyName)
+        {
+            case nameof(MainPageViewModel.Theme):
+                ApplyTheme();
+                break;
+            case nameof(MainPageViewModel.Backdrop):
+                ApplyBackdrop();
+                ApplyBackground();
+                break;
+        }
+    }
+
     private void ApplyTheme()
     {
-        RequestedTheme = Theme switch
+        RequestedTheme = ViewModel.Theme switch
         {
             1 => ElementTheme.Light,
             2 => ElementTheme.Dark,
@@ -153,7 +111,7 @@ public sealed partial class MainPage : Page, INotifyPropertyChanged
         if (HostWindow is null)
             return;
 
-        HostWindow.SystemBackdrop = Backdrop switch
+        HostWindow.SystemBackdrop = ViewModel.Backdrop switch
         {
             1 => new DesktopAcrylicBackdrop(),
             2 => new MicaBackdrop(),
@@ -166,7 +124,7 @@ public sealed partial class MainPage : Page, INotifyPropertyChanged
     {
         bool lightTheme = RequestedTheme != ElementTheme.Dark;
 
-        if (IsMicaAvailable && Backdrop != 0)
+        if (IsMicaAvailable && ViewModel.Backdrop != 0)
         {
             Background = null;
             return;
@@ -174,7 +132,7 @@ public sealed partial class MainPage : Page, INotifyPropertyChanged
 
         Color backgroundColor = lightTheme ? Color.FromArgb(255, 243, 243, 243) : Color.FromArgb(255, 32, 32, 32);
 
-        if (Backdrop == 1)
+        if (ViewModel.Backdrop == 1)
         {
             Background = new AcrylicBrush
             {
@@ -286,11 +244,6 @@ public sealed partial class MainPage : Page, INotifyPropertyChanged
             for (int i = 0; i < count; i++)
                 queue.Enqueue(VisualTreeHelper.GetChild(current, i));
         }
-    }
-
-    private void OnPropertyChanged([CallerMemberName] string? propertyName = null)
-    {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 
     private static unsafe uint QueryWindowsBuildNumber()
