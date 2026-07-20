@@ -1,9 +1,9 @@
-﻿using System.Runtime.InteropServices;
+﻿using Windows.Win32;
 using Windows.Win32.Foundation;
 
 namespace WinUIIslands;
 
-internal static partial class ShellAppBar
+internal static class ShellAppBar
 {
     private const uint ABM_GETSTATE = 0x00000004;
     private const uint ABM_GETAUTOHIDEBAREX = 0x0000000b;
@@ -23,13 +23,13 @@ internal static partial class ShellAppBar
             rc = monitorRect,
         };
 
-        return SHAppBarMessage(ABM_GETAUTOHIDEBAREX, ref data) != 0;
+        return PInvoke.SHAppBarMessage(ABM_GETAUTOHIDEBAREX, ref data) != 0;
     }
 
     public static bool HasAnyAutoHideTaskbar()
     {
         APPBARDATA data = CreateAppBarData();
-        return (SHAppBarMessage(ABM_GETSTATE, ref data) & ABS_AUTOHIDE) != 0;
+        return (PInvoke.SHAppBarMessage(ABM_GETSTATE, ref data) & ABS_AUTOHIDE) != 0;
     }
 
     public static bool HasTopAutoHideTaskbar(RECT monitorRect) => HasAutoHideTaskbar(monitorRect, ABE_TOP);
@@ -44,19 +44,4 @@ internal static partial class ShellAppBar
     {
         cbSize = (uint)sizeof(APPBARDATA),
     };
-
-    // APPBARDATA is architecture-specific in Win32 metadata, so CsWin32 cannot generate it for this AnyCPU library.
-    [LibraryImport("shell32.dll")]
-    private static partial nuint SHAppBarMessage(uint dwMessage, ref APPBARDATA pData);
-
-    [StructLayout(LayoutKind.Sequential)]
-    private struct APPBARDATA
-    {
-        public uint cbSize;
-        public IntPtr hWnd;
-        public uint uCallbackMessage;
-        public uint uEdge;
-        public RECT rc;
-        public IntPtr lParam;
-    }
 }
