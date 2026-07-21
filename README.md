@@ -2,6 +2,7 @@
 
 [![NuGet](https://img.shields.io/nuget/v/WinUIIslands?label=WinUIIslands)](https://www.nuget.org/packages/WinUIIslands/)
 [![Templates](https://img.shields.io/nuget/v/WinUIIslands.Templates?label=templates)](https://www.nuget.org/packages/WinUIIslands.Templates/)
+[![CLI BuildTools](https://img.shields.io/nuget/v/ModernUwp.CLI.BuildTools?label=CLI%20BuildTools)](https://www.nuget.org/packages/ModernUwp.CLI.BuildTools/)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/license/mit)
 
 WinUI Islands brings UWP XAML and WinUI 2 controls to unpackaged .NET 10 desktop applications. It provides a native Win32 window host, XAML Islands startup, custom title bars, backdrop support, AppWindow-style APIs and a NativeAOT-compatible build pipeline. Support Windows 10 version 1903 (build 18362) and later.
