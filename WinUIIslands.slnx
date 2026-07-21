@@ -15,7 +15,9 @@
     </Project>
   </Folder>
   <Folder Name="/BuildTools/">
-    <Project Path="BuildTools/ModernUwp.CLI.BuildTools/ModernUwp.CLI.BuildTools.csproj" />
+    <Project Path="BuildTools/ModernUwp.CLI.BuildTools/ModernUwp.CLI.BuildTools.csproj">
+      <BuildDependency Project="BuildTools/ModernUwp.XamlHost/ModernUwp.XamlHost.csproj" />
+    </Project>
     <Project Path="BuildTools/ModernUwp.XamlHost/ModernUwp.XamlHost.csproj" />
   </Folder>
   <Project Path="Templates/WinUIIslands.Templates.csproj" />

@@ -15,13 +15,9 @@
     <SuppressDependenciesWhenPacking>false</SuppressDependenciesWhenPacking>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <NoWarn>$(NoWarn);NU1702;NU5128</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ModernUwp.XamlHost\ModernUwp.XamlHost.csproj"
-                      ReferenceOutputAssembly="false"
-                      PrivateAssets="all" />
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools"
                       Version="10.0.26100.4654"
                       PrivateAssets="contentfiles;analyzers;build;buildtransitive" />
