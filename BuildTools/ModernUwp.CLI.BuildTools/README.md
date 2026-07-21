@@ -4,7 +4,7 @@ NuGet build tools for building modern .NET UWP XAML applications with `dotnet bu
 
 ```xml
 <PackageReference Include="ModernUwp.CLI.BuildTools"
-                  Version="1.0.0"
+                  Version="1.0.1"
                   PrivateAssets="all" />
 ```
 
