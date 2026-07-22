@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
     <id>WinUIIslands</id>
-    <version>1.1.3</version>
+    <version>1.1.4</version>
     <title>WinUIIslands</title>
     <authors>WinUIIslands</authors>
     <license type="expression">MIT</license>
@@ -14,7 +14,7 @@
     <dependencies>
       <group targetFramework="net10.0-windows10.0.26100">
         <dependency id="Microsoft.UI.Xaml" version="2.8.7" />
-        <dependency id="ModernUwp.CLI.BuildTools" version="[1.0.1]" />
+        <dependency id="ModernUwp.CLI.BuildTools" version="[1.0.2]" />
       </group>
     </dependencies>
     <frameworkReferences>

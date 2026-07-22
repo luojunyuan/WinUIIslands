@@ -1,4 +1,4 @@
-﻿# WinUIIslands 1.1.2
+﻿# WinUIIslands 1.1.4
 
 Build unpackaged .NET 10 desktop applications with UWP XAML, WinUI 2.8.7 controls and NativeAOT deployment.
 
