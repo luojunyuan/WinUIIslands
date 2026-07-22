@@ -4,7 +4,7 @@
                                                '$(BuildingInsideVisualStudio)' != 'true' AND
                                                '$(UseUwp)' == 'true' AND
                                                '$(UseUwpTools)' != 'false' AND
-                                               '$(OutputType)' == 'WinExe'">true</_ModernUwpBuildToolsActive>
+                                               ('$(OutputType)' == 'WinExe' Or '$(OutputType)' == 'Exe')">true</_ModernUwpBuildToolsActive>
   </PropertyGroup>
 
   <Import Project="$(MSBuildThisFileDirectory)ModernUwp.CLI.BuildTools.Core.targets"
