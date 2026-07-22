@@ -19,6 +19,10 @@
 	  <allowunsafeblocks>true</allowunsafeblocks>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(OutputType)' == 'Exe' AND '$(MSBuildRuntimeType)' != 'Core'">
+    <WindowsAppContainer>true</WindowsAppContainer>
+  </PropertyGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\..\WinUIIslands\WinUIIslands.csproj" />
     <PackageReference Include="ModernUwp.CLI.BuildTools" Version="1.0.2" PrivateAssets="all" />
