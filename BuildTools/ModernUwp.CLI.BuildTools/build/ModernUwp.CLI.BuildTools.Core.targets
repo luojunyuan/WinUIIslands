@@ -15,9 +15,9 @@
     <SDKIdentifier Condition="'$(SDKIdentifier)' == ''">Windows</SDKIdentifier>
     <SDKVersion Condition="'$(SDKVersion)' == ''">10.0</SDKVersion>
     <RootNamespace Condition="'$(RootNamespace)' == ''">$(MSBuildProjectName)</RootNamespace>
-    <PriIndexNameOverridden Condition="'$(OutputType)' == 'WinExe'">true</PriIndexNameOverridden>
-    <PriIndexNameOverride Condition="'$(OutputType)' == 'WinExe'"></PriIndexNameOverride>
-    <PriIndexName Condition="'$(OutputType)' == 'WinExe'"></PriIndexName>
+    <PriIndexNameOverridden Condition="'$(OutputType)' == 'WinExe' Or '$(OutputType)' == 'Exe'">true</PriIndexNameOverridden>
+    <PriIndexNameOverride Condition="'$(OutputType)' == 'WinExe' Or '$(OutputType)' == 'Exe'"></PriIndexNameOverride>
+    <PriIndexName Condition="'$(OutputType)' == 'WinExe' Or '$(OutputType)' == 'Exe'"></PriIndexName>
     <IncludeCustomOutputGroupForPackaging>true</IncludeCustomOutputGroupForPackaging>
     <DisableEmbeddedXbf>false</DisableEmbeddedXbf>
 
