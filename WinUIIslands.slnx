@@ -13,6 +13,11 @@
       <Platform Solution="*|x64" Project="x64" />
       <Platform Solution="*|x86" Project="x86" />
     </Project>
+    <Project Path="IslandsApp1/IslandsApp1.csproj" Id="5942e8d6-7aea-4ce4-94e7-4ee0cf1146dc">
+      <Platform Solution="*|ARM64" Project="ARM64" />
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
   </Folder>
   <Folder Name="/BuildTools/">
     <Project Path="BuildTools/ModernUwp.CLI.BuildTools/ModernUwp.CLI.BuildTools.csproj">
