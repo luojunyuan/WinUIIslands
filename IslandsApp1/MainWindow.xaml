@@ -1,0 +1,40 @@
+﻿<island:Window
+    x:Class="IslandsApp1.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="using:WinUIIslands.Controls"
+    xmlns:island="using:WinUIIslands"
+    Title="WinUI Islands App">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <controls:TitleBar
+            x:Name="AppTitleBar"
+            AutoRefreshDragRegions="True"
+            Title="WinUI Islands" />
+
+        <StackPanel
+            Grid.Row="1"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Spacing="12">
+            <TextBlock
+                HorizontalAlignment="Center"
+                Style="{StaticResource TitleTextBlockStyle}"
+                Text="Hello, WinUI Islands!" />
+            <TextBlock
+                HorizontalAlignment="Center"
+                Opacity="0.7"
+                Text=".NET 10 · WinUI 2 · NativeAOT" />
+            <Button
+                x:Name="TestButton"
+                HorizontalAlignment="Center"
+                Click="Button_Click"
+                Content="Click me" />
+        </StackPanel>
+    </Grid>
+</island:Window>
