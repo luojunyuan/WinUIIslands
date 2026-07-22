@@ -1,10 +1,5 @@
-<Project>
+﻿<Project>
   <!-- Import XbfEmbed + Mux props; consumed by the auto-import convention build/{PackageId}.props -->
   <Import Project="$(MSBuildThisFileDirectory)WinUIIslands.XbfEmbed.props" Condition="'$(WinUIIslandsPackaging)' != 'true'" />
   <Import Project="$(MSBuildThisFileDirectory)WinUIIslands.Mux.props" Condition="'$(WinUIIslandsPackaging)' != 'true'" />
-
-  <!-- Force PRI generation for OutputType=Exe (same as WinExe) -->
-  <PropertyGroup Condition="'$(OutputType)' == 'Exe'">
-    <WindowsAppContainer>true</WindowsAppContainer>
-  </PropertyGroup>
 </Project>
