@@ -2,7 +2,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
     <PackageId>ModernUwp.CLI.BuildTools</PackageId>
-    <Version>1.0.2</Version>
+    <Version>1.0.3</Version>
     <Authors>ModernUwp.CLI.BuildTools contributors</Authors>
     <Description>CLI build support for modern .NET UWP XAML applications.</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
