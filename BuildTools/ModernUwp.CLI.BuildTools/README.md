@@ -19,4 +19,5 @@ Build and publish `WinExe` projects for `win-x86`, `win-x64`, and `win-arm64`:
 ```powershell
 dotnet build -c Debug -r win-x64
 dotnet publish -c Release -r win-x64
+dotnet run -v:minimal -r win-x64
 ```

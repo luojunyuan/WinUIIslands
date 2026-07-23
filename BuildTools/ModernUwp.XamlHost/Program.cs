@@ -216,7 +216,7 @@ namespace ModernUwp.XamlHost
             XDocument document = new XDocument(new XDeclaration("1.0", "utf-8", null), project);
             string auditProjectPath = GetAuditProjectPath(request);
             string internalProjectPath = Path.Combine(
-                Path.GetDirectoryName(request.ProjectPath),
+                Path.GetDirectoryName(request.RequestPath),
                 ".ModernUwp.XamlHost." + request.Pass + "." + Guid.NewGuid().ToString("N") + ".proj");
             SaveProject(document, auditProjectPath);
             SaveProject(document, internalProjectPath);
