@@ -16,13 +16,8 @@
     <WinUIIslandsPackaging>false</WinUIIslandsPackaging>
   </PropertyGroup>
 
-  <!-- For VS MSBuild: set WindowsAppContainer to trigger VS's own PRI generation -->
-  <PropertyGroup Condition="'$(OutputType)' == 'Exe' AND '$(MSBuildRuntimeType)' != 'Core'">
-    <WindowsAppContainer>true</WindowsAppContainer>
-  </PropertyGroup>
-
   <ItemGroup>
-    <PackageReference Include="WinUIIslands" Version="1.1.2" />
+    <PackageReference Include="WinUIIslands" Version="1.1.8" />
     <!-- If you need WebView2, remove ExcludeAssets="All". -->
     <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.4078.44" ExcludeAssets="All" />
   </ItemGroup>

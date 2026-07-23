@@ -1,4 +1,11 @@
 ﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!-- The project file has been evaluated, but AppX/PRI targets have not been imported yet. -->
+  <PropertyGroup Condition="'$(MSBuildRuntimeType)' != 'Core' AND
+                           '$(UseUwp)' == 'true' AND
+                           '$(OutputType)' == 'Exe'">
+    <WindowsAppContainer>true</WindowsAppContainer>
+  </PropertyGroup>
+
   <PropertyGroup>
     <_ModernUwpBeforeCommonActive Condition="'$(MSBuildRuntimeType)' == 'Core' AND
                                                    '$(BuildingInsideVisualStudio)' != 'true' AND
