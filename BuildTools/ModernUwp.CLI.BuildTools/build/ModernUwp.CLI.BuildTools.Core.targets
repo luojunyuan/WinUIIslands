@@ -1,6 +1,4 @@
 ﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(NuGetPackageRoot)\microsoft.windows.sdk.buildtools.msix\1.7.20250806.1\build\Microsoft.Windows.SDK.BuildTools.MSIX.targets" />
-
   <PropertyGroup>
     <ModernUwpBuildToolsActive>true</ModernUwpBuildToolsActive>
     <UseUwpTools>true</UseUwpTools>

@@ -8,9 +8,10 @@
     <PlatformTarget Condition="'$(RuntimeIdentifier)' == '' AND ('$(PlatformTarget)' == '' OR '$(PlatformTarget)' == 'AnyCPU' OR '$(PlatformTarget)' == 'Any CPU') AND ('$(Platform)' == 'x86' OR '$(Platform)' == 'x64' OR '$(Platform)' == 'arm64')">$(Platform)</PlatformTarget>
   </PropertyGroup>
 
-  <PropertyGroup>
-    <_ModernUwpOriginalCustomBeforeMicrosoftCommonTargets>$(CustomBeforeMicrosoftCommonTargets)</_ModernUwpOriginalCustomBeforeMicrosoftCommonTargets>
-    <CustomBeforeMicrosoftCommonTargets>$(MSBuildThisFileDirectory)ModernUwp.CLI.BuildTools.BeforeCommon.props</CustomBeforeMicrosoftCommonTargets>
-  </PropertyGroup>
+  <!--
+    Microsoft.Windows.SDK.BuildTools and Microsoft.Windows.SDK.BuildTools.MSIX are
+    package dependencies now. Their buildTransitive assets own the
+    CustomBeforeMicrosoftCommonTargets chain; do not replace it here.
+  -->
 </Project>
 
