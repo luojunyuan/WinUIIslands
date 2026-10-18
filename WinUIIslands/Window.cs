@@ -244,6 +244,11 @@ public unsafe partial class Window
                     return new LRESULT(1);
                 break;
 
+            case PInvoke.WM_CLOSE:
+                if (WinUIIslands.Windowing.AppWindow.OnWindowClosing(_hwnd))
+                    return default;
+                break;
+
             case PInvoke.WM_SIZE:
                 _isMaximized = PInvoke.IsZoomed(_hwnd);
                 if (wParam.Value != PInvoke.SIZE_MINIMIZED)
@@ -261,6 +266,7 @@ public unsafe partial class Window
                 return default;
 
             case PInvoke.WM_DESTROY:
+                WinUIIslands.Windowing.AppWindow.OnWindowDestroyed(_hwnd);
                 if (!_titleBarHwnd.IsNull)
                 {
                     PInvoke.DestroyWindow(_titleBarHwnd);

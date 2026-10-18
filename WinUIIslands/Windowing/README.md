@@ -18,6 +18,7 @@
 ## 使用方式
 
 ```csharp
+using Windows.Graphics;
 using WinUIIslands;
 using WinUIIslands.Windowing;
 
@@ -28,6 +29,11 @@ var hWnd = WindowNative.GetWindowHandle(window);
 WindowId windowId = Win32Interop.GetWindowIdFromWindow(hWnd);
 AppWindow appWindow = AppWindow.GetFromWindowId(windowId);
 
+appWindow.SetIcon("Assets/AppIcon.ico");
+appWindow.Title = "My application";
+appWindow.Move(new PointInt32(100, 100));
+appWindow.Resize(new SizeInt32(800, 600));
+
 if (appWindow.Presenter is OverlappedPresenter presenter)
 {
     presenter.IsResizable = false;
@@ -35,9 +41,12 @@ if (appWindow.Presenter is OverlappedPresenter presenter)
     presenter.PreferredMinimumWidth = 640;
     presenter.PreferredMinimumHeight = 500;
 }
-
-appWindow.Resize(new SizeInt32(800, 600));
 ```
+
+`SetIcon` loads an `.ico` file and applies its small and large icons to the window. Relative paths are resolved from the process working directory; use an absolute path when that is not predictable.
+
+`Position`, `Size`, `Move`, `Resize`, and `MoveAndResize` use physical screen coordinates and the full window bounds.
+`ClientSize` and `ResizeClient` use the client area. `SetTaskbarIcon` and `SetTitleBarIcon` can update the two icons separately.
 
 也可以直接从 `Window` 获取 `AppWindow`：
 
