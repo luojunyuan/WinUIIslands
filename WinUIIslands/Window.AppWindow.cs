@@ -15,7 +15,7 @@ public unsafe partial class Window
         {
             if (_appWindow is null && _hwnd != default)
             {
-                var windowId = new WindowId((uint)_hwnd.Value);
+                var windowId = new WindowId(unchecked((ulong)_hwnd.Value));
                 _appWindow = AppWindow.GetFromWindowId(windowId);
             }
             return _appWindow;

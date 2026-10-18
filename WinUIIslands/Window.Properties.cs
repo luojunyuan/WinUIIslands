@@ -55,7 +55,7 @@ public partial class Window
 
     public string Title
     {
-        get => field;
+        get => _hwnd.IsNull ? field : WinUIIslands.Windowing.AppWindow.GetWindowTitle(_hwnd);
         set { field = value; PInvoke.SetWindowText(_hwnd, value); }
     } = string.Empty;
 

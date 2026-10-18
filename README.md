@@ -54,6 +54,25 @@ The application is written to:
 bin\x64\Release\net10.0-windows10.0.26100.0\win-x64\publish\
 ```
 
+## AppWindow
+
+Set a window icon and adjust the native window through the `AppWindow` API:
+
+```csharp
+using Windows.Graphics;
+using WinUIIslands;
+
+var window = new Window();
+window.Activate();
+
+var appWindow = window.AppWindow!;
+appWindow.SetIcon("Assets/AppIcon.ico");
+appWindow.Move(new PointInt32(100, 100));
+appWindow.Resize(new SizeInt32(800, 600));
+```
+
+The icon path is resolved from the process working directory. `Resize` uses the full window bounds; use `ResizeClient` to size the client area.
+
 ## Build this repository
 
 ```powershell
