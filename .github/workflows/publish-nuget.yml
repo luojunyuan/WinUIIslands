@@ -25,7 +25,16 @@ jobs:
           if ([string]::IsNullOrWhiteSpace($env:NUGET_API_KEY)) {
             throw "NUGET_API_KEY is not configured."
           }
-          dotnet nuget push WinUIIslands\bin\Release\WinUIIslands.2.0.0.nupkg `
+          dotnet nuget push WinUIIslands\bin\Release\WinUIIslands.2.0.1-preview.1.nupkg `
             --api-key $env:NUGET_API_KEY `
             --source https://api.nuget.org/v3/index.json `
             --skip-duplicate
+      - name: Unlist stable 2.0.0
+        if: github.ref == 'refs/tags/v2.0.1-preview.1'
+        env:
+          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+        run: |
+          nuget delete WinUIIslands 2.0.0 `
+            -ApiKey $env:NUGET_API_KEY `
+            -Source https://api.nuget.org/v3/index.json `
+            -NonInteractive

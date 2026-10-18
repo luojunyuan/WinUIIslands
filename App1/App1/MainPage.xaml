@@ -90,6 +90,21 @@
                     CornerRadius="4">
                     <TextBlock Text="WinUIIslands" />
                 </Border>
+                <Rectangle
+                    Height="1"
+                    Margin="-8,4,-8,4"
+                    HorizontalAlignment="Stretch"
+                    Fill="{ThemeResource DividerBackgroundBrush}" />
+                <TextBlock Text="AppWindow icon" />
+                <Button
+                    HorizontalAlignment="Stretch"
+                    Click="SetWindowIcon_Click"
+                    Content="Apply Assets/AppIcon.ico" />
+                <TextBlock
+                    x:Name="WindowIconStatusTextBlock"
+                    HorizontalAlignment="Center"
+                    Text="Not applied"
+                    TextWrapping="Wrap" />
             </StackPanel>
         </Border>
     </Grid>

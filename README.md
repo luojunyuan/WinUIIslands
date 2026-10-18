@@ -71,7 +71,29 @@ appWindow.Move(new PointInt32(100, 100));
 appWindow.Resize(new SizeInt32(800, 600));
 ```
 
-The icon path is resolved from the process working directory. `Resize` uses the full window bounds; use `ResizeClient` to size the client area.
+Relative icon paths are resolved from the application directory. Add the `.ico` file to your project and copy it to the output directory. `Resize` uses the full window bounds; use `ResizeClient` to size the client area.
+
+## AppWindow sample without XAML
+
+`AppWindowSample` is a small WinForms app that uses `UseUwpTools=false` and references the local library project. Publish and run it in Release:
+
+```powershell
+dotnet publish .\AppWindowSample\AppWindowSample.csproj -c Release -r win-x64
+.\AppWindowSample\bin\Release\net10.0-windows10.0.26100.0\win-x64\publish\AppWindowSample.exe
+```
+
+Click **Apply Assets/AppIcon.ico** to set the native window and taskbar icons.
+
+## App1 XAML sample
+
+The App1 XAML sample requires the Microsoft.VCLibs 14.0 SDK extension and the Windows SDK XAML compiler. The default SDK version is 10.0.26100.0; when using another installed version, set `EffectiveTargetPlatformVersion` to that version. Publish and run the interactive sample:
+
+```powershell
+dotnet publish .\App1\App1\App1.csproj -c Release -r win-x64 -p:EffectiveTargetPlatformVersion=10.0.28000.0
+.\App1\App1\bin\x64\Release\net10.0-windows10.0.26100.0\win-x64\publish\App1.exe
+```
+
+In App1, click **Apply Assets/AppIcon.ico**. Turn off **Custom titlebar** to see the native title-bar icon; the taskbar icon is updated as well.
 
 ## Build this repository
 

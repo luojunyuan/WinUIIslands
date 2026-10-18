@@ -27,6 +27,14 @@
     <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.4078.44" ExcludeAssets="All" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Remove="Assets\AppIcon.ico" />
+    <Content Include="Assets\AppIcon.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
   <Import Project="..\..\WinUIIslands\buildTransitive\WinUIIslands.props" />
   <Import Project="..\..\WinUIIslands\buildTransitive\WinUIIslands.targets" />
 </Project>

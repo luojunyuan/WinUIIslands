@@ -304,7 +304,8 @@ public sealed unsafe partial class AppWindow
     {
         int width = Math.Max(1, GetSystemMetrics(widthMetric));
         int height = Math.Max(1, GetSystemMetrics(heightMetric));
-        nint icon = LoadImageW(default, iconPath, IMAGE_ICON, width, height, LR_LOADFROMFILE);
+        string absolutePath = Path.GetFullPath(iconPath, AppContext.BaseDirectory);
+        nint icon = LoadImageW(default, absolutePath, IMAGE_ICON, width, height, LR_LOADFROMFILE);
         if (icon == 0)
             throw new Win32Exception(Marshal.GetLastPInvokeError());
 

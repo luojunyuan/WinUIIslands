@@ -69,6 +69,25 @@ public sealed partial class MainPage : Page
         }
     }
 
+    private void SetWindowIcon_Click(object sender, RoutedEventArgs e)
+    {
+        if (HostWindow?.AppWindow is not { } appWindow)
+        {
+            WindowIconStatusTextBlock.Text = "AppWindow is not available.";
+            return;
+        }
+
+        try
+        {
+            appWindow.SetIcon("Assets/AppIcon.ico");
+            WindowIconStatusTextBlock.Text = "Applied to the title bar and taskbar.";
+        }
+        catch (Exception exception)
+        {
+            WindowIconStatusTextBlock.Text = exception.Message;
+        }
+    }
+
     private void UiSettings_ColorValuesChanged(UISettings sender, object args)
     {
         _ = Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>

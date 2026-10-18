@@ -43,7 +43,7 @@ if (appWindow.Presenter is OverlappedPresenter presenter)
 }
 ```
 
-`SetIcon` loads an `.ico` file and applies its small and large icons to the window. Relative paths are resolved from the process working directory; use an absolute path when that is not predictable.
+`SetIcon` loads an `.ico` file and applies its small and large icons to the window. Relative paths are resolved from the application directory. Add the `.ico` file to the project and copy it to the output directory.
 
 `Position`, `Size`, `Move`, `Resize`, and `MoveAndResize` use physical screen coordinates and the full window bounds.
 `ClientSize` and `ResizeClient` use the client area. `SetTaskbarIcon` and `SetTitleBarIcon` can update the two icons separately.
