@@ -2,7 +2,7 @@
 
 public readonly struct WindowId
 {
-    public uint Value { get; }
+    public ulong Value { get; }
 
-    internal WindowId(uint value) => Value = value;
+    internal WindowId(ulong value) => Value = value;
 }
